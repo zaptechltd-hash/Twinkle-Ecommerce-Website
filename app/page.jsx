@@ -774,7 +774,6 @@ function CartSidebar({ cart, onClose, onRemove }) {
   );
 }
 
-// ─── Product Item (with wishlist heart) ───────────────────────────────────────
 
 function ProductItem({ product, onClick, wishlisted, onWishlistToggle }) {
   const [hovered, setHovered] = useState(false);
