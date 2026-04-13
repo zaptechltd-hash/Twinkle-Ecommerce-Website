@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
+ import Image from "next/image";
 
 const products = [
   {
@@ -69,7 +69,7 @@ const products = [
     price: 4600,
     images: ["/product9.jpg", "/product10.jpg"],
     description:
-      "Second-skin softness in the finest micro-modal. A relaxed long-sleeve top pairs with tapered lounge trousers — perfect for slow mornings.",
+     "Second-skin softness in the finest micro-modal. A relaxed long-sleeve top pairs with tapered lounge trousers, perfect for slow mornings.",
     details: [
       "96% MicroModal, 4% Elastane",
       "Relaxed crop top",
@@ -84,7 +84,7 @@ const products = [
     price: 3900,
     images: ["/product11.jpg", "/product12.jpg"],
     description:
-      "A free-flowing nightdress in double-layered cotton gauze. Smocked at the yoke, tied at the back — effortlessly romantic for warm nights.",
+      "A free-flowing nightdress in double-layered cotton gauze. Smocked at the yoke and tied at the back, effortlessly romantic for warm nights.",
     details: [
       "100% Cotton Gauze",
       "Smocked yoke detail",
@@ -95,7 +95,6 @@ const products = [
   },
 ];
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
 
 function Navbar({
   cartCount,
@@ -141,7 +140,7 @@ function Navbar({
           </button>
           <nav className="hidden md:flex items-center gap-7">
             {["Collection", "About"].map((l) => (
-              <a
+               <a
                 key={l}
                 href="#"
                 className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
@@ -157,21 +156,12 @@ function Navbar({
 
         {/* Right icons */}
         <div className="flex items-center gap-5">
-          {/* Wishlist */}
           <button
             className="hover:opacity-60 transition-opacity relative"
             onClick={onWishlistOpen}
             aria-label="Wishlist"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              className="text-stone-700"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             {wishlistCount > 0 && (
@@ -181,21 +171,12 @@ function Navbar({
             )}
           </button>
 
-          {/* Cart */}
           <button
             className="hover:opacity-60 transition-opacity relative"
             onClick={onCartOpen}
             aria-label="Bag"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              className="text-stone-700"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 01-8 0" />
@@ -207,7 +188,6 @@ function Navbar({
             )}
           </button>
 
-          {/* User */}
           <button
             className="hover:opacity-60 transition-opacity relative"
             onClick={onUserClick}
@@ -218,15 +198,7 @@ function Navbar({
                 {userInitials}
               </div>
             ) : (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                className="text-stone-700"
-              >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
@@ -235,49 +207,98 @@ function Navbar({
         </div>
       </header>
 
-      {/* Dropdown mega-menu */}
+      {/* ── Mega Menu ── */}
       {menuOpen && (
-  <div
-    className="fixed inset-0 z-[100] bg-[#1c1917] flex flex-col px-8 pt-24 pb-10"
-    style={{ animation: 'slideDown 0.5s cubic-bezier(0.76,0,0.24,1) forwards' }}
-  >
-    <button
-      onClick={() => setMenuOpen(false)}
-      className="absolute top-6 right-8 text-[9px] tracking-[0.3em] text-stone-500 uppercase"
-    >
-      Close ✕
-    </button>
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/20"
+            style={{ top: "73px" }}
+            onClick={() => setMenuOpen(false)}
+          />
 
-    <nav className="flex-1 flex flex-col justify-center">
-      {["Collection", "New In", "Loungewear", "Sets", "Robes"].map((item) => (
-         <a
-          key={item}
-          href="#"
-          onClick={() => setMenuOpen(false)}
-          className="text-[28px] md:text-[40px] font-light text-stone-300 tracking-widest uppercase
-                     border-b border-stone-800 py-4 flex justify-between items-center
-                     hover:text-white transition-colors"
-        >
-          {item}
-          <span className="text-sm text-stone-600">↗</span>
-        </a>
-      ))}
-    </nav>
+          {/* Dropdown panel */}
+          <div
+            className="fixed left-0 right-0 z-50 bg-white border-b border-stone-100 shadow-sm"
+            style={{
+              top: "73px",
+              animation: "menuSlide 0.22s cubic-bezier(0.4,0,0.2,1) forwards",
+            }}
+          >
+            <div className="px-6 md:px-12 py-10 grid grid-cols-2 md:grid-cols-4 gap-10">
+              {menuCols.map((col) => (
+                <div key={col.title}>
+                  <p className="text-[9px] tracking-[0.35em] text-stone-400 uppercase mb-4">
+                    {col.title}
+                  </p>
+                  <div className="flex flex-col gap-1">
+                    {col.links.map((link) => (
+                         <a
+                        key={link}
+                        href="#"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
+                      >
+                        {link}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
-    <div className="flex gap-8 pt-6 border-t border-stone-800">
-      {["About", "Sustainability", "Contact"].map((l) => (
-        <a key={l} href="#" className="text-[9px] tracking-[0.25em] text-stone-600 uppercase hover:text-stone-400 transition-colors">
-          {l}
-        </a>
-      ))}
-    </div>
-  </div>
-)}
+              {/* Featured column */}
+              <div>
+                <p className="text-[9px] tracking-[0.35em] text-stone-400 uppercase mb-4">
+                  Featured
+                </p>
+                <div className="relative overflow-hidden group cursor-pointer">
+                  <img
+                    src="/background.jpg"
+                    alt="New Collection"
+                    className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-stone-900/30 flex flex-col justify-end p-3">
+                    <p className="text-[9px] tracking-[0.25em] text-stone-200 uppercase">
+                      Now Live
+                    </p>
+                    <p className="text-[12px] tracking-[0.15em] text-white uppercase font-light">
+                      Night Elegance
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom strip */}
+            <div className="border-t border-stone-100 px-6 md:px-12 py-3 flex items-center justify-between">
+              <div className="flex gap-6">
+                {["Free shipping over PKR 5,000", "Easy returns"].map((note) => (
+                  <span key={note} className="text-[10px] tracking-wide text-stone-400">
+                    {note}
+                  </span>
+                ))}
+              </div>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
+              >
+                Close ✕
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      <style>{`
+        @keyframes menuSlide {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
 
-// ─── Auth Modal ───────────────────────────────────────────────────────────────
 
 function AuthModal({ onClose, onLogin, onLogout, user }) {
   const [mode, setMode] = useState("login");
@@ -593,7 +614,7 @@ function ProductModal({ product, onClose, onAddToCart }) {
                 key={d}
                 className="text-[11px] text-stone-400 tracking-wide flex gap-2 items-start"
               >
-                <span className="text-stone-200 mt-0.5">—</span> {d}
+                {d}
               </li>
             ))}
           </ul>
@@ -831,7 +852,7 @@ function Hero() {
       <div className="absolute inset-0 bg-stone-900/20" />
       <div className="absolute bottom-12 left-8 md:left-14">
         <p className="text-[10px] tracking-[0.35em] text-stone-200 uppercase mb-2">
-          New Collection — 2025
+          New Collection 2026
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide text-white leading-none">
           Night
@@ -847,7 +868,7 @@ function Hero() {
       </div>
       <div className="absolute top-6 right-8 md:right-14">
         <p className="text-[10px] tracking-[0.25em] text-stone-300 uppercase">
-          SS 2025
+          SS 2026
         </p>
       </div>
     </section>
@@ -868,14 +889,13 @@ function Marquee() {
 
   return (
     <div className="overflow-hidden border-y border-stone-100 py-4 bg-white">
-      <div className="flex gap-16 animate-marquee whitespace-nowrap">
+      <div className="flex gap-32 animate-marquee whitespace-nowrap">
         {repeated.map((item, i) => (
           <span
             key={i}
             className="text-[10px] tracking-[0.35em] text-stone-400 uppercase flex-shrink-0"
           >
             {item}
-            <span className="mx-8 text-stone-200">—</span>
           </span>
         ))}
       </div>
@@ -991,38 +1011,57 @@ function EditorialStrip() {
   );
 }
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
-
 function Footer() {
   return (
     <footer className="bg-[#1c1917] px-6 md:px-12 pt-14 pb-8">
-      {/* Brand */}
-      <div className="mb-12">
-        <p className="text-2xl font-light tracking-[0.2em] text-stone-100 uppercase mb-3">
-          TwinkleOfficial
-        </p>
-        <p className="text-[12px] text-stone-600 leading-relaxed max-w-[260px]">
-          Premium nightwear crafted for elegance, softness, and quiet luxury — inspired by Pakistani nights.
-        </p>
-      </div>
 
-      {/* Links grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12 pb-12 border-b border-stone-800">
-        {[
-          { title: "Shop", links: ["New In", "Nightwear", "Loungewear", "Sets", "Robes"] },
-          { title: "Help", links: ["Size Guide", "Shipping", "Returns", "Contact"] },
-          { title: "Company", links: ["About", "Sustainability", "Press"] },
-          { title: "Follow", links: ["Instagram", "TikTok", "Pinterest"] },
-        ].map((col) => (
-          <div key={col.title}>
-            <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-4">{col.title}</p>
-            {col.links.map((l) => (
-              <a key={l} href="#" className="block text-[12px] text-stone-500 hover:text-stone-200 transition-colors mb-2.5 tracking-wide">
-                {l}
+      <div className="flex flex-col md:flex-row gap-10 mb-12 pb-12 border-b border-stone-800">
+
+        <div className="md:w-[40%] shrink-0 flex flex-col justify-between">
+          <div>
+            <p className="text-3xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
+              TwinkleOfficial
+            </p>
+            <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-8">
+              Premium nightwear crafted for elegance, softness, and quiet luxury inspired by Pakistani nights.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {["Instagram"].map((s) => (
+              <a
+                key={s}
+                href="#"
+                className="text-[9px] tracking-[0.2em] text-stone-600 uppercase border border-stone-800 px-3 py-2 hover:border-stone-500 hover:text-stone-400 transition-all"
+              >
+                {s}
               </a>
             ))}
           </div>
-        ))}
+        </div>
+
+        <div className="md:w-[60%] grid grid-cols-2 md:grid-cols-4 gap-10">
+          {[
+            { title: "Shop", links: ["New In", "Nightwear", "Loungewear", "Sets", "Robes"] },
+            { title: "Help", links: ["Size Guide", "Shipping", "Returns", "Contact"] },
+            { title: "Company", links: ["About", "Sustainability", "Press"] },
+            { title: "Follow", links: ["Instagram", "TikTok", "Pinterest"] },
+          ].map((col) => (
+            <div key={col.title}>
+              <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-4">{col.title}</p>
+              {col.links.map((l) => (
+                <a
+                  key={l}
+                  href="#"
+                  className="block text-[12px] text-stone-500 hover:text-stone-200 transition-colors mb-2.5 tracking-wide"
+                >
+                  {l}
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+
       </div>
 
       {/* Newsletter */}
@@ -1040,15 +1079,6 @@ function Footer() {
         </div>
       </div>
 
-      {/* Social pills */}
-      <div className="flex gap-3 mb-10">
-        {["Instagram", "TikTok", "Pinterest"].map((s) => (
-          <a key={s} href="#" className="text-[9px] tracking-[0.2em] text-stone-600 uppercase border border-stone-800 px-3 py-2 hover:border-stone-500 hover:text-stone-400 transition-all">
-            {s}
-          </a>
-        ))}
-      </div>
-
       {/* Bottom bar */}
       <div className="border-t border-stone-800 pt-6 flex flex-col md:flex-row justify-between gap-3">
         <p className="text-[10px] text-stone-700 tracking-wide">© 2025 TwinkleOfficial. All rights reserved.</p>
@@ -1060,6 +1090,7 @@ function Footer() {
           ))}
         </div>
       </div>
+
     </footer>
   );
 }
