@@ -1,304 +1,11 @@
 "use client";
 import { useState } from "react";
- import Image from "next/image";
-
-const products = [
-  {
-    id: 1,
-    name: "SILK NIGHT SLIP",
-    price: 4900,
-    images: ["/product1.jpg", "/product2.jpg"],
-    description:
-      "A whisper-light slip crafted from pure mulberry silk. Falls effortlessly at mid-thigh with delicate adjustable straps and a barely-there lace trim at the hem.",
-    details: [
-      "100% Mulberry Silk",
-      "Adjustable spaghetti straps",
-      "Lace trim hem",
-      "Hand wash cold",
-    ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-  },
-  {
-    id: 2,
-    name: "VELVET ROBE",
-    price: 6200,
-    images: ["/product3.jpg", "/product4.jpg"],
-    description:
-      "Envelop yourself in the soft weight of crushed velvet. A generous tie-waist and wide lapels make this robe as elegant as it is comfortable.",
-    details: [
-      "95% Viscose, 5% Elastane",
-      "Tie waist belt",
-      "Two side pockets",
-      "Dry clean only",
-    ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-  },
-  {
-    id: 3,
-    name: "LACE TRIM SET",
-    price: 5500,
-    images: ["/product5.jpg", "/product6.jpg"],
-    description:
-      "A matched camisole and short set trimmed in Chantilly lace. The blush-toned fabric drapes softly and moves with you through the night.",
-    details: [
-      "Modal & Lace blend",
-      "Matching cami + shorts",
-      "Elasticated waist",
-      "Machine wash gentle",
-    ],
-    sizes: ["XS", "S", "M", "L"],
-  },
-  {
-    id: 4,
-    name: "SATIN PYJAMA",
-    price: 5100,
-    images: ["/product7.jpg", "/product8.jpg"],
-    description:
-      "Classic pyjama tailoring reimagined in liquid satin. Notch collar, mother-of-pearl buttons, and a relaxed trouser with contrast piping.",
-    details: [
-      "100% Satin Polyester",
-      "Button front top",
-      "Wide-leg trousers",
-      "Machine wash cold",
-    ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-  },
-  {
-    id: 5,
-    name: "MODAL LOUNGE SET",
-    price: 4600,
-    images: ["/product9.jpg", "/product10.jpg"],
-    description:
-     "Second-skin softness in the finest micro-modal. A relaxed long-sleeve top pairs with tapered lounge trousers, perfect for slow mornings.",
-    details: [
-      "96% MicroModal, 4% Elastane",
-      "Relaxed crop top",
-      "Tapered trousers",
-      "Machine wash cold",
-    ],
-    sizes: ["S", "M", "L", "XL"],
-  },
-  {
-    id: 6,
-    name: "GAUZE NIGHTDRESS",
-    price: 3900,
-    images: ["/product11.jpg", "/product12.jpg"],
-    description:
-      "A free-flowing nightdress in double-layered cotton gauze. Smocked at the yoke and tied at the back, effortlessly romantic for warm nights.",
-    details: [
-      "100% Cotton Gauze",
-      "Smocked yoke detail",
-      "Back tie closure",
-      "Machine wash warm",
-    ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-  },
-];
-
-
-function Navbar({
-  cartCount,
-  onCartOpen,
-  wishlistCount,
-  onWishlistOpen,
-  user,
-  onUserClick,
-}) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const menuCols = [
-    {
-      title: "Shop",
-      links: ["New In", "Nightwear", "Loungewear", "Sets", "Robes"],
-    },
-    {
-      title: "Discover",
-      links: ["The Edit", "Campaign", "About Us", "Sustainability"],
-    },
-    { title: "Help", links: ["Size Guide", "Shipping", "Returns", "Contact"] },
-  ];
-
-  const userInitials = user
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "";
-
-  return (
-    <>
-      <header className="w-full px-6 md:px-12 py-5 flex items-center justify-between bg-white z-50 relative border-b border-stone-100">
-        {/* Left */}
-        <div className="flex items-center gap-8">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-[11px] tracking-[0.25em] text-stone-700 uppercase hover:text-stone-900 transition-colors"
-          >
-            {menuOpen ? "Close" : "Menu"}
-          </button>
-          <nav className="hidden md:flex items-center gap-7">
-            {["Collection", "About"].map((l) => (
-               <a
-                key={l}
-                href="#"
-                className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
-              >
-                {l}
-              </a>
-            ))}
-          </nav>
-        </div>
-
-        {/* Logo */}
-        <Image src="/logo.png" alt="TwinkleOfficial" width={80} height={40} />
-
-        {/* Right icons */}
-        <div className="flex items-center gap-5">
-          <button
-            className="hover:opacity-60 transition-opacity relative"
-            onClick={onWishlistOpen}
-            aria-label="Wishlist"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-            {wishlistCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-stone-800 text-white text-[9px] flex items-center justify-center font-medium">
-                {wishlistCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            className="hover:opacity-60 transition-opacity relative"
-            onClick={onCartOpen}
-            aria-label="Bag"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 01-8 0" />
-            </svg>
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-stone-800 text-white text-[9px] flex items-center justify-center font-medium">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            className="hover:opacity-60 transition-opacity relative"
-            onClick={onUserClick}
-            aria-label="Account"
-          >
-            {user ? (
-              <div className="w-7 h-7 rounded-full bg-stone-900 text-white text-[10px] flex items-center justify-center font-medium tracking-wide">
-                {userInitials}
-              </div>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </header>
-
-      {/* ── Mega Menu ── */}
-      {menuOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-black/20"
-            style={{ top: "73px" }}
-            onClick={() => setMenuOpen(false)}
-          />
-
-          {/* Dropdown panel */}
-          <div
-            className="fixed left-0 right-0 z-50 bg-white border-b border-stone-100 shadow-sm"
-            style={{
-              top: "73px",
-              animation: "menuSlide 0.22s cubic-bezier(0.4,0,0.2,1) forwards",
-            }}
-          >
-            <div className="px-6 md:px-12 py-10 grid grid-cols-2 md:grid-cols-4 gap-10">
-              {menuCols.map((col) => (
-                <div key={col.title}>
-                  <p className="text-[9px] tracking-[0.35em] text-stone-400 uppercase mb-4">
-                    {col.title}
-                  </p>
-                  <div className="flex flex-col gap-1">
-                    {col.links.map((link) => (
-                         <a
-                        key={link}
-                        href="#"
-                        onClick={() => setMenuOpen(false)}
-                        className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
-                      >
-                        {link}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              {/* Featured column */}
-              <div>
-                <p className="text-[9px] tracking-[0.35em] text-stone-400 uppercase mb-4">
-                  Featured
-                </p>
-                <div className="relative overflow-hidden group cursor-pointer">
-                  <img
-                    src="/background.jpg"
-                    alt="New Collection"
-                    className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-stone-900/30 flex flex-col justify-end p-3">
-                    <p className="text-[9px] tracking-[0.25em] text-stone-200 uppercase">
-                      Now Live
-                    </p>
-                    <p className="text-[12px] tracking-[0.15em] text-white uppercase font-light">
-                      Night Elegance
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom strip */}
-            <div className="border-t border-stone-100 px-6 md:px-12 py-3 flex items-center justify-between">
-              <div className="flex gap-6">
-                {["Free shipping over PKR 5,000", "Easy returns"].map((note) => (
-                  <span key={note} className="text-[10px] tracking-wide text-stone-400">
-                    {note}
-                  </span>
-                ))}
-              </div>
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
-              >
-                Close ✕
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-
-      <style>{`
-        @keyframes menuSlide {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-    </>
-  );
-}
-
+import Navbar from "./components/Header";
+import Image from "next/image";
+import { products } from "./lib/products";
+import ProductModal from "./components/ProductModal";
+import Footer from "./components/Footer";
+import ProductCard from "./components/ProductCard";
 
 function AuthModal({ onClose, onLogin, onLogout, user }) {
   const [mode, setMode] = useState("login");
@@ -466,7 +173,6 @@ function AuthModal({ onClose, onLogin, onLogout, user }) {
   );
 }
 
-// ─── Wishlist Sidebar ─────────────────────────────────────────────────────────
 
 function WishlistSidebar({ wishlist, onClose, onRemove, onMoveToCart }) {
   return (
@@ -535,161 +241,6 @@ function WishlistSidebar({ wishlist, onClose, onRemove, onMoveToCart }) {
     </div>
   );
 }
-
-// ─── Product Modal ────────────────────────────────────────────────────────────
-
-function ProductModal({ product, onClose, onAddToCart }) {
-  const [selectedSize, setSelectedSize] = useState("");
-  const [qty, setQty] = useState(1);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [added, setAdded] = useState(false);
-
-  if (!product) return null;
-
-  function handleAdd() {
-    if (!selectedSize) return;
-    onAddToCart({ ...product, selectedSize, qty });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
-  }
-
-  return (
-    <div
-      className="fixed inset-0 z-[200] flex items-end md:items-center justify-center"
-      style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-white w-full md:max-w-3xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Image pane */}
-        <div className="w-full md:w-1/2 relative flex-shrink-0">
-          <img
-            src={product.images[activeIndex]}
-            alt={product.name}
-            className="w-full h-[340px] md:h-full object-cover"
-            style={{ minHeight: 340 }}
-          />
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {product.images.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveIndex(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  activeIndex === i ? "bg-white scale-125" : "bg-white/40"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Info pane */}
-        <div className="w-full md:w-1/2 p-8 flex flex-col gap-5">
-          <button
-            onClick={onClose}
-            className="self-end text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
-          >
-            Close
-          </button>
-          <div>
-            <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">
-              TwinkleOfficial
-            </p>
-            <h2 className="text-xl font-light tracking-[0.15em] text-stone-800 uppercase">
-              {product.name}
-            </h2>
-            <p className="text-[13px] text-stone-500 mt-1 tracking-wide">
-              PKR {product.price.toLocaleString()}
-            </p>
-          </div>
-
-          <p className="text-[12px] text-stone-500 leading-relaxed">
-            {product.description}
-          </p>
-
-          <ul className="flex flex-col gap-1">
-            {product.details.map((d) => (
-              <li
-                key={d}
-                className="text-[11px] text-stone-400 tracking-wide flex gap-2 items-start"
-              >
-                {d}
-              </li>
-            ))}
-          </ul>
-
-          {/* Size */}
-          <div>
-            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">
-              Select Size
-            </p>
-            <div className="flex gap-2 flex-wrap">
-              {product.sizes.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSelectedSize(s)}
-                  className={`w-10 h-10 text-[11px] tracking-wide border transition-all ${
-                    selectedSize === s
-                      ? "border-stone-800 bg-stone-800 text-white"
-                      : "border-stone-200 text-stone-600 hover:border-stone-400"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-            {!selectedSize && (
-              <p className="text-[10px] text-stone-300 mt-1.5 tracking-wide">
-                Please select a size
-              </p>
-            )}
-          </div>
-
-          {/* Qty */}
-          <div className="flex items-center gap-3">
-            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">
-              Qty
-            </p>
-            <div className="flex items-center border border-stone-200">
-              <button
-                onClick={() => setQty(Math.max(1, qty - 1))}
-                className="w-8 h-8 text-stone-500 hover:bg-stone-50 transition-colors text-sm"
-              >
-                −
-              </button>
-              <span className="w-8 text-center text-[12px] text-stone-700">
-                {qty}
-              </span>
-              <button
-                onClick={() => setQty(qty + 1)}
-                className="w-8 h-8 text-stone-500 hover:bg-stone-50 transition-colors text-sm"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={handleAdd}
-            disabled={!selectedSize}
-            className={`w-full py-3.5 text-[11px] tracking-[0.3em] uppercase transition-all ${
-              added
-                ? "bg-stone-200 text-stone-500"
-                : selectedSize
-                ? "bg-stone-900 text-white hover:bg-stone-700"
-                : "bg-stone-100 text-stone-300 cursor-not-allowed"
-            }`}
-          >
-            {added ? "Added to Bag ✓" : "Add to Bag"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Cart Sidebar ─────────────────────────────────────────────────────────────
 
 function CartSidebar({ cart, onClose, onRemove }) {
   const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
@@ -775,71 +326,6 @@ function CartSidebar({ cart, onClose, onRemove }) {
 }
 
 
-function ProductItem({ product, onClick, wishlisted, onWishlistToggle }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      className="group cursor-pointer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => onClick(product)}
-    >
-      <div className="relative overflow-hidden">
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className={`w-full h-[420px] object-cover transition-opacity duration-500 absolute inset-0 ${
-            hovered ? "opacity-0" : "opacity-100"
-          }`}
-        />
-        <img
-          src={product.images[1]}
-          alt={product.name + " back"}
-          className={`w-full h-[420px] object-cover transition-opacity duration-500 ${
-            hovered ? "opacity-100" : "opacity-0"
-          }`}
-        />
-
-        {/* Wishlist heart button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onWishlistToggle(product);
-          }}
-          className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white transition-all ${
-            wishlisted
-              ? "opacity-100"
-              : "opacity-0 group-hover:opacity-100"
-          }`}
-          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill={wishlisted ? "#1c1917" : "none"}
-            stroke="#1c1917"
-            strokeWidth="1.6"
-          >
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-        </button>
-      </div>
-      <div className="pt-3 pb-1">
-        <p className="text-[11px] tracking-[0.2em] text-stone-800 uppercase">
-          {product.name}
-        </p>
-        <p className="text-[11px] tracking-[0.1em] text-stone-400 mt-0.5">
-          PKR {product.price.toLocaleString()}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ─── Hero ─────────────────────────────────────────────────────────────────────
-
 function Hero() {
   return (
     <section className="relative w-full h-[92vh] overflow-hidden">
@@ -874,7 +360,6 @@ function Hero() {
   );
 }
 
-// ─── Marquee ──────────────────────────────────────────────────────────────────
 
 function Marquee() {
   const items = [
@@ -902,8 +387,6 @@ function Marquee() {
   );
 }
 
-// ─── Product Grid ─────────────────────────────────────────────────────────────
-
 function ProductGrid({ onProductClick, wishlist, onWishlistToggle }) {
   return (
     <section id="collection" className="px-6 md:px-12 pt-20 pb-24">
@@ -925,14 +408,14 @@ function ProductGrid({ onProductClick, wishlist, onWishlistToggle }) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-14">
         {products.map((product) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            onClick={onProductClick}
-            wishlisted={wishlist.some((w) => w.id === product.id)}
-            onWishlistToggle={onWishlistToggle}
-          />
-        ))}
+  <ProductCard
+    key={product.id}
+    product={product}
+    wishlisted={wishlist.some((w) => w.id === product.id)}
+    onWishlistToggle={onWishlistToggle}
+    onClick={onProductClick}     
+  />
+))}
       </div>
       <div className="mt-14 text-center md:hidden">
         <a
@@ -946,7 +429,6 @@ function ProductGrid({ onProductClick, wishlist, onWishlistToggle }) {
   );
 }
 
-// ─── Collection Banner ────────────────────────────────────────────────────────
 
 function CollectionBanner() {
   return (
@@ -975,7 +457,6 @@ function CollectionBanner() {
   );
 }
 
-// ─── Editorial Strip ──────────────────────────────────────────────────────────
 
 function EditorialStrip() {
   return (
@@ -1010,91 +491,6 @@ function EditorialStrip() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[#1c1917] px-6 md:px-12 pt-14 pb-8">
-
-      <div className="flex flex-col md:flex-row gap-10 mb-12 pb-12 border-b border-stone-800">
-
-        <div className="md:w-[40%] shrink-0 flex flex-col justify-between">
-          <div>
-            <p className="text-3xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
-              TwinkleOfficial
-            </p>
-            <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-8">
-              Premium nightwear crafted for elegance, softness, and quiet luxury inspired by Pakistani nights.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {["Instagram"].map((s) => (
-              <a
-                key={s}
-                href="#"
-                className="text-[9px] tracking-[0.2em] text-stone-600 uppercase border border-stone-800 px-3 py-2 hover:border-stone-500 hover:text-stone-400 transition-all"
-              >
-                {s}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="md:w-[60%] grid grid-cols-2 md:grid-cols-4 gap-10">
-          {[
-            { title: "Shop", links: ["New In", "Nightwear", "Loungewear", "Sets", "Robes"] },
-            { title: "Help", links: ["Size Guide", "Shipping", "Returns", "Contact"] },
-            { title: "Company", links: ["About", "Sustainability", "Press"] },
-            { title: "Follow", links: ["Instagram", "TikTok", "Pinterest"] },
-          ].map((col) => (
-            <div key={col.title}>
-              <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-4">{col.title}</p>
-              {col.links.map((l) => (
-                <a
-                  key={l}
-                  href="#"
-                  className="block text-[12px] text-stone-500 hover:text-stone-200 transition-colors mb-2.5 tracking-wide"
-                >
-                  {l}
-                </a>
-              ))}
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* Newsletter */}
-      <div className="mb-10">
-        <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-3">Stay in the edit</p>
-        <div className="flex max-w-sm">
-          <input
-            type="email"
-            placeholder="your@email.com"
-            className="flex-1 bg-stone-800 border border-stone-700 text-stone-300 text-[11px] px-4 py-2.5 outline-none placeholder:text-stone-600 focus:border-stone-500 transition-colors"
-          />
-          <button className="bg-stone-100 text-stone-900 text-[9px] tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white transition-colors">
-            Subscribe
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="border-t border-stone-800 pt-6 flex flex-col md:flex-row justify-between gap-3">
-        <p className="text-[10px] text-stone-700 tracking-wide">© 2025 TwinkleOfficial. All rights reserved.</p>
-        <div className="flex gap-5">
-          {["Privacy Policy", "Terms", "Cookies"].map((l) => (
-            <a key={l} href="#" className="text-[10px] text-stone-700 hover:text-stone-500 transition-colors tracking-wide">
-              {l}
-            </a>
-          ))}
-        </div>
-      </div>
-
-    </footer>
-  );
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function TwinklePage() {
   const [activeProduct, setActiveProduct] = useState(null);
@@ -1182,7 +578,6 @@ export default function TwinklePage() {
       <EditorialStrip />
       <Footer />
 
-      {/* Product modal */}
       {activeProduct && (
         <ProductModal
           product={activeProduct}
@@ -1192,10 +587,11 @@ export default function TwinklePage() {
             setActiveProduct(null);
             setCartOpen(true);
           }}
+          onWishlistToggle={handleWishlistToggle}
+          wishlisted={wishlist.some((w) => w.id === activeProduct.id)}
         />
       )}
 
-      {/* Cart sidebar */}
       {cartOpen && (
         <CartSidebar
           cart={cart}
@@ -1204,7 +600,6 @@ export default function TwinklePage() {
         />
       )}
 
-      {/* Auth modal */}
       {authOpen && (
         <AuthModal
           user={user}
@@ -1214,7 +609,6 @@ export default function TwinklePage() {
         />
       )}
 
-      {/* Wishlist sidebar */}
       {wishlistOpen && (
         <WishlistSidebar
           wishlist={wishlist}
