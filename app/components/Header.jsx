@@ -22,16 +22,35 @@ export default function Navbar({
 const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
 
   const menuCols = [
-    {
-      title: "Shop",
-      links: ["New In", "Nightwear", "Loungewear", "Sets", "Robes"],
-    },
-    {
-      title: "Discover",
-      links: ["The Edit", "Campaign", "About Us", "Sustainability"],
-    },
-    { title: "Help", links: ["Size Guide", "Shipping", "Returns", "Contact"] },
-  ];
+  {
+    title: "Shop",
+    links: [
+      { label: "New In", href: "/collection" },
+      { label: "Nightwear", href: "/collection" },
+      { label: "Loungewear", href: "/collection" },
+      { label: "Sets", href: "/collection" },
+      { label: "Robes", href: "/collection" },
+    ],
+  },
+  {
+    title: "Discover",
+    links: [
+      { label: "The Edit", href: "#" },
+      { label: "Campaign", href: "#" },
+      { label: "About Us", href: "/about" },
+      { label: "Sustainability", href: "#" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { label: "Size Guide", href: "#" },
+      { label: "Shipping", href: "#" },
+      { label: "Returns", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
+  },
+];
 
   const userInitials = user
     ? user.name
@@ -144,16 +163,16 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
                     {col.title}
                   </p>
                   <div className="flex flex-col gap-1">
-                    {col.links.map((link) => (
-                         <a
-                        key={link}
-                        href="#"
-                        onClick={() => setMenuOpen(false)}
-                        className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
-                      >
-                        {link}
-                      </a>
-                    ))}
+                  {col.links.map((link) => (
+  <a
+    key={link.label}
+    href={link.href}
+    onClick={() => setMenuOpen(false)}
+    className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
+  >
+    {link.label}
+  </a>
+))}
                   </div>
                 </div>
               ))}
