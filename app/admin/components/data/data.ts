@@ -1,3 +1,27 @@
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Package,
+  Users,
+  Ticket,
+  Settings,
+} from "lucide-react";
+import { LucideIcon } from "lucide-react";
+
+export type NavItem = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+};
+
+export const NAV_ITEMS: NavItem[] = [
+  { id: "dashboard",     label: "Dashboard", icon: LayoutDashboard },
+  { id: "orders",        label: "Orders",    icon: ShoppingBag     },
+  { id: "products",      label: "Products",  icon: Package         },
+  { id: "customers",     label: "Customers", icon: Users           },
+  { id: "coupons",       label: "Coupons",   icon: Ticket          },
+  { id: "settings",      label: "Settings",  icon: Settings        },
+];
 export const STATS = [
   { label: "Total Revenue", value: "PKR 2,847,320", change: "+12.4%", up: true, icon: "₨" },
   { label: "Total Orders", value: "1,284", change: "+8.1%", up: true, icon: "📦" },
@@ -86,16 +110,16 @@ export const CATEGORY_DATA = [
   { name: "Nightwear", value: 16, color: "#d6d3d1" },
 ];
 
-export const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: "⬚" },
-  { id: "orders", label: "Orders", icon: "◻" },
-  { id: "products", label: "Products", icon: "▣" },
-  { id: "customers", label: "Customers", icon: "◯" },
-  // { id: "payments", label: "Payments", icon: "◈" },
-  // { id: "analytics", label: "Analytics", icon: "▦" },
-  { id: "coupons", label: "Coupons", icon: "◆" },
-  { id: "settings", label: "Settings", icon: "⚙" },
-];
+// export const NAV_ITEMS = [
+//   { id: "dashboard", label: "Dashboard", icon: "⬚" },
+//   { id: "orders", label: "Orders", icon: "◻" },
+//   { id: "products", label: "Products", icon: "▣" },
+//   { id: "customers", label: "Customers", icon: "◯" },
+//   // { id: "payments", label: "Payments", icon: "◈" },
+//   // { id: "analytics", label: "Analytics", icon: "▦" },
+//   { id: "coupons", label: "Coupons", icon: "◆" },
+//   { id: "settings", label: "Settings", icon: "⚙" },
+// ];
 
 
 export const STATUS_STYLES = {

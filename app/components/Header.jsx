@@ -9,8 +9,17 @@ export default function Navbar({
   onWishlistOpen,
   user,
   onUserClick,
+  currentPage
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const allLinks = [
+  { label: "Home", href: "/" },
+  { label: "Collection", href: "/collection" },
+  { label: "About", href: "/about" },
+];
+
+// inside the component, after userInitials:
+const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
 
   const menuCols = [
     {
@@ -35,7 +44,7 @@ export default function Navbar({
 
   return (
     <>
-      <header className="w-full px-6 md:px-12 py-5 flex items-center justify-between bg-white z-50 relative border-b border-stone-100">
+      <header className="w-full px-6 md:px-12 py-5 flex items-center justify-between bg-white z-50 sticky top-0 border-b border-stone-100">
         {/* Left */}
         <div className="flex items-center gap-8">
           <button
@@ -45,16 +54,13 @@ export default function Navbar({
             {menuOpen ? "Close" : "Menu"}
           </button>
           <nav className="hidden md:flex items-center gap-7">
-            {["collection", "About"].map((l) => (
-               <a
-                key={l}
-                href={`/${l}`}
-                className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
-              >
-                {l}
-              </a>
-            ))}
-          </nav>
+  {navLinks.map((l) => (
+    <a key={l.href} href={l.href}
+      className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors">
+      {l.label}
+    </a>
+  ))}
+</nav>
         </div>
 
         {/* Logo */}
