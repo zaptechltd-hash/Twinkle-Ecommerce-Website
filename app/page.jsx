@@ -213,7 +213,7 @@ function ProductGrid({ onProductClick, wishlist, onWishlistToggle }) {
           <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-2">Shop</p>
           <h2 className="text-2xl md:text-3xl font-light tracking-widest text-stone-800 uppercase">The Collection</h2>
         </div>
-        <a href="#" className="hidden md:block text-[10px] tracking-[0.25em] text-stone-400 uppercase border-b border-stone-300 pb-0.5 hover:text-stone-700 hover:border-stone-600 transition-colors">View All</a>
+        <a href="/collection" className="hidden md:block text-[10px] tracking-[0.25em] text-stone-400 uppercase border-b border-stone-300 pb-0.5 hover:text-stone-700 hover:border-stone-600 transition-colors">View All</a>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-14">
         {products.map((product) => (
@@ -227,7 +227,7 @@ function ProductGrid({ onProductClick, wishlist, onWishlistToggle }) {
         ))}
       </div>
       <div className="mt-14 text-center md:hidden">
-        <a href="#" className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border-b border-stone-300 pb-0.5">View All</a>
+        <a href="/collection" className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border-b border-stone-300 pb-0.5">View All</a>
       </div>
     </section>
   );
