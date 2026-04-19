@@ -268,7 +268,8 @@ const INITIAL_PRODUCTS = [
 ];
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-const getTotalStock = (variants) => variants.reduce((s, v) => s + v.stock, 0);
+const getTotalStock = (variants) =>
+  variants.reduce((s, v) => s + (v.sizes ?? []).reduce((a, sz) => a + sz.stock, 0), 0);
 const getBasePrice  = (variants) => (variants.length ? Math.min(...variants.map((v) => v.price)) : 0);
 const getColors     = (variants) => [...new Set(variants.map((v) => v.colorHex))];
 const newVid        = () => `v-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
@@ -419,73 +420,74 @@ function VariantRow({ variant: v, onChange, onDelete }) {
   const upd = (field, value) => onChange({ ...v, [field]: value });
   const ic = "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
 
+  const addSize = () =>
+    upd("sizes", [...(v.sizes ?? []), { size: "S", stock: 0 }]);
+
+  const updateSize = (i, field, value) =>
+    upd("sizes", v.sizes.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
+
+  const removeSize = (i) =>
+    upd("sizes", v.sizes.filter((_, idx) => idx !== i));
+
   return (
-    <div
-      className="grid gap-2 items-center bg-[#fafaf8] border border-[#e8e5df] rounded-xl p-2"
-      style={{ gridTemplateColumns: "52px 96px 1fr 80px 112px 66px 28px" }}
-    >
-      {/* Variant Image */}
-      <ImageUploadButton
-        value={v.image}
-        onChange={(base64) => upd("image", base64)}
-        size="sm"
-      />
+    <div className="bg-[#fafaf8] border border-[#e8e5df] rounded-xl p-3 flex flex-col gap-2">
 
-      {/* Size */}
-      <select value={v.size} onChange={(e) => upd("size", e.target.value)} className={ic}>
-        {SIZE_OPTS.map((s) => <option key={s}>{s}</option>)}
-      </select>
+      {/* Top row: image / colour / price / sku / delete */}
+      <div className="grid gap-2 items-center" style={{ gridTemplateColumns: "52px 1fr 80px 112px 28px" }}>
+        <ImageUploadButton value={v.image} onChange={(b) => upd("image", b)} size="sm" />
 
-      {/* Colour swatch + name */}
-      <div className="flex items-center gap-1.5">
-        <input
-          type="color"
-          value={v.colorHex}
-          onChange={(e) => upd("colorHex", e.target.value)}
-          className="w-8 h-8 rounded-lg border border-[#e8e5df] cursor-pointer flex-shrink-0 p-0.5"
-        />
-        <input
-          value={v.color}
-          onChange={(e) => upd("color", e.target.value)}
-          placeholder="Name"
-          className={`flex-1 min-w-0 ${ic}`}
-        />
+        {/* Colour */}
+        <div className="flex items-center gap-1.5">
+          <input type="color" value={v.colorHex} onChange={(e) => upd("colorHex", e.target.value)}
+            className="w-8 h-8 rounded-lg border border-[#e8e5df] cursor-pointer flex-shrink-0 p-0.5" />
+          <input value={v.color} onChange={(e) => upd("color", e.target.value)}
+            placeholder="Colour name" className={`flex-1 min-w-0 ${ic}`} />
+        </div>
+
+        {/* Price */}
+        <input type="number" value={v.price} min={0} onChange={(e) => upd("price", +e.target.value)}
+          className={ic} placeholder="PKR" />
+
+        {/* SKU */}
+        <input value={v.sku} onChange={(e) => upd("sku", e.target.value.toUpperCase())}
+          placeholder="SKU-XX" className={`${ic} font-mono`} />
+
+        {/* Delete variant */}
+        <button onClick={onDelete}
+          className="w-7 h-7 rounded-lg bg-[#fcebeb] text-[#e24b4a] flex items-center justify-center text-base hover:bg-[#e24b4a] hover:text-white transition-all leading-none">
+          ×
+        </button>
       </div>
 
-      {/* Price */}
-      <input
-        type="number"
-        value={v.price}
-        min={0}
-        onChange={(e) => upd("price", +e.target.value)}
-        className={ic}
-        placeholder="PKR"
-      />
+      {/* Sizes sub-rows */}
+      <div className="ml-2 pl-3 border-l-2 border-[#e8e5df] flex flex-col gap-1.5">
+        <div className="grid gap-2 mb-1" style={{ gridTemplateColumns: "1fr 80px 24px" }}>
+          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">Size</p>
+          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">Stock</p>
+          <span />
+        </div>
 
-      {/* SKU */}
-      <input
-        value={v.sku}
-        onChange={(e) => upd("sku", e.target.value.toUpperCase())}
-        placeholder="SKU-XX-XX"
-        className={`${ic} font-mono`}
-      />
+        {(v.sizes ?? []).map((sz, i) => (
+          <div key={i} className="grid gap-2 items-center" style={{ gridTemplateColumns: "1fr 80px 24px" }}>
+            <select value={sz.size} onChange={(e) => updateSize(i, "size", e.target.value)}
+              className={ic}>
+              {SIZE_OPTS.map((s) => <option key={s}>{s}</option>)}
+            </select>
+            <input type="number" value={sz.stock} min={0}
+              onChange={(e) => updateSize(i, "stock", +e.target.value)}
+              className={ic} />
+            <button onClick={() => removeSize(i)}
+              className="w-6 h-6 rounded-md bg-[#f1efe8] text-[#b4b2a9] flex items-center justify-center text-sm hover:bg-[#fcebeb] hover:text-[#e24b4a] transition-all leading-none">
+              ×
+            </button>
+          </div>
+        ))}
 
-      {/* Stock */}
-      <input
-        type="number"
-        value={v.stock}
-        min={0}
-        onChange={(e) => upd("stock", +e.target.value)}
-        className={ic}
-      />
-
-      {/* Delete */}
-      <button
-        onClick={onDelete}
-        className="w-7 h-7 rounded-lg bg-[#fcebeb] text-[#e24b4a] flex items-center justify-center text-base hover:bg-[#e24b4a] hover:text-white transition-all leading-none"
-      >
-        ×
-      </button>
+        <button onClick={addSize}
+          className="self-start text-[10px] font-medium px-2.5 py-1 rounded-lg border border-dashed border-[#c8c5be] text-[#888780] hover:border-[#1a1916] hover:text-[#1a1916] transition-all mt-0.5">
+          + Add Size
+        </button>
+      </div>
     </div>
   );
 }
@@ -513,7 +515,7 @@ function ProductModal({ product, onClose, onSave }) {
   const addVariant = () =>
     setVariants((vs) => [
       ...vs,
-      { id: newVid(), size: "S", color: "Blush", colorHex: "#e8c4b8", price: 0, sku: "", stock: 0, image: null },
+     { id: newVid(), sizes: [{ size: "S", stock: 0 }], color: "Blush", colorHex: "#e8c4b8", price: 0, sku: "", image: null }
     ]);
 
   const updateVariant = (id, updated) =>
@@ -697,9 +699,9 @@ function ProductModal({ product, onClose, onSave }) {
                   {/* Column headers */}
                   <div
                     className="grid gap-2 mb-2 px-2"
-                    style={{ gridTemplateColumns: "52px 96px 1fr 80px 112px 66px 28px" }}
+                    style={{ gridTemplateColumns: "52px 1fr 80px 112px 28px" }}
                   >
-                    {["Image", "Size", "Colour", "Price", "SKU", "Stock", ""].map((h) => (
+                    {["Image", "Colour", "Price", "SKU", ""].map((h) => (
                       <p key={h} className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">
                         {h}
                       </p>

@@ -1,15 +1,15 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { STATS, ORDERS, PRODUCTS, CUSTOMERS, TRANSACTIONS, COUPONS, REVIEWS, NOTIFICATIONS, REVENUE_DATA, CATEGORY_DATA, NAV_ITEMS, STATUS_STYLES  } from './components/data/data'
-import { Badge } from './components/ui/Badge'
-import { Stars } from './components/ui/Stars'
-import { SearchBar } from './components/ui/SearchBar'
-import { Modal } from './components/ui/Modal'
-import { FormField } from './components/ui/FormField'
-import { Pagination } from './components/ui/Pagination'
-import { RevenueChart } from './components/charts/RevenueChart'
-import { DonutChart } from "./components/charts/DonutChart";
-import { SectionHeader } from "./components/layout/SectionHeader";
+// import { Badge } from './components/ui/Badge'
+// import { Stars } from './components/ui/Stars'
+// import { SearchBar } from './components/ui/SearchBar'
+// import { Modal } from './components/ui/Modal'
+// import { FormField } from './components/ui/FormField'
+// import { Pagination } from './components/ui/Pagination'
+// import { RevenueChart } from './components/charts/RevenueChart'
+// import { DonutChart } from "./components/charts/DonutChart";
+// import { SectionHeader } from "./components/layout/SectionHeader";
 import { TopBar } from './components/layout/TopBar'
 import { Sidebar } from './components/layout/Sidebar'
 import DashboardSection from "./components/sections/DashboardSection";

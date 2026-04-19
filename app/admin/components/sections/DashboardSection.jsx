@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
-// ─── Product Data (from your products array) ──────────────────────────────────
-
 const PRODUCTS = [
   {
     id: 1, name: "Silk Night Slip", price: 4900,
@@ -55,8 +53,6 @@ const PRODUCTS = [
     baseSold: 22, basePct: 9,
   },
 ];
-
-// ─── Period Data (all PKR, payment data per period) ───────────────────────────
 
 const PERIOD_DATA = {
   today: {
