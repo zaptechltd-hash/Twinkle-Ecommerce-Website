@@ -1,268 +1,257 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 const CATEGORIES_OPTS = ["Nightwear", "Robes", "Loungewear", "Sets"];
-const FABRIC_OPTS     = ["Silk", "Velvet", "Modal", "Satin", "Cotton", "Cashmere"];
 const SIZE_OPTS       = ["XS", "S", "M", "L", "XL", "Free Size"];
 const TAG_OPTS        = ["New In", "Best Seller", "Limited", "Sale"];
 const LOCATION_OPTS   = ["Home", "Collection", "Both"];
-const FABRIC_ICONS    = { Silk: "🕯", Velvet: "🧴", Modal: "🧺", Satin: "✨", Cotton: "🌿", Cashmere: "☁️" };
 const PER_PAGE        = 7;
 
-// ─── Product Catalog (from products.js) ────────────────────────────────────
-export const PRODUCTS_CATALOG = [
-  {
-    id: 1,
-    name: "SILK NIGHT SLIP",
-    price: 4900,
-    images: ["/product1.jpg", "/product2.jpg"],
-    description: "A whisper-light slip crafted from pure mulberry silk.",
-    details: ["100% Mulberry Silk", "Adjustable spaghetti straps", "Lace trim hem", "Hand wash cold"],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    fabric: "Silk",
-    color: "Blush",
-    colorHex: "#e8c4b8",
-    tag: "New In",
-  },
-  {
-    id: 2,
-    name: "VELVET ROBE",
-    price: 6200,
-    images: ["/product3.jpg", "/product4.jpg"],
-    description: "Envelop yourself in the soft weight of crushed velvet.",
-    details: ["95% Viscose, 5% Elastane", "Tie waist belt", "Two side pockets", "Dry clean only"],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    fabric: "Velvet",
-    color: "Noir",
-    colorHex: "#2a2a2a",
-    tag: "Best Seller",
-  },
-  {
-    id: 3,
-    name: "LACE TRIM SET",
-    price: 5500,
-    images: ["/product5.jpg", "/product6.jpg"],
-    description: "A matched camisole and short set trimmed in Chantilly lace.",
-    details: ["Modal & Lace blend", "Matching cami + shorts", "Elasticated waist", "Machine wash gentle"],
-    sizes: ["XS", "S", "M", "L"],
-    fabric: "Modal",
-    color: "Blush",
-    colorHex: "#e8c4b8",
-    tag: "New In",
-  },
-  {
-    id: 4,
-    name: "SATIN PYJAMA",
-    price: 5100,
-    images: ["/product7.jpg", "/product8.jpg"],
-    description: "Classic pyjama tailoring reimagined in liquid satin.",
-    details: ["100% Satin Polyester", "Button front top", "Wide-leg trousers", "Machine wash cold"],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    fabric: "Satin",
-    color: "Ivory",
-    colorHex: "#f5f0e8",
-    tag: null,
-  },
-  {
-    id: 5,
-    name: "MODAL LOUNGE SET",
-    price: 4600,
-    images: ["/product9.jpg", "/product10.jpg"],
-    description: "Second-skin softness in the finest micro-modal.",
-    details: ["96% MicroModal, 4% Elastane", "Relaxed crop top", "Tapered trousers", "Machine wash cold"],
-    sizes: ["S", "M", "L", "XL"],
-    fabric: "Modal",
-    color: "Stone",
-    colorHex: "#b5a99a",
-    tag: null,
-  },
-  {
-    id: 6,
-    name: "GAUZE NIGHTDRESS",
-    price: 3900,
-    images: ["/product11.jpg", "/product12.jpg"],
-    description: "A free-flowing nightdress in double-layered cotton gauze.",
-    details: ["100% Cotton Gauze", "Smocked yoke detail", "Back tie closure", "Machine wash warm"],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    fabric: "Cotton",
-    color: "Ivory",
-    colorHex: "#f5f0e8",
-    tag: "Best Seller",
-  },
-  {
-    id: 7,
-    name: "SILK KIMONO ROBE",
-    price: 7200,
-    images: ["/product1.jpg", "/product3.jpg"],
-    description: "A floor-length kimono robe in weighted crepe silk.",
-    details: ["100% Crepe Silk", "Floor length", "Obi sash belt", "Dry clean only"],
-    sizes: ["XS", "S", "M", "L"],
-    fabric: "Silk",
-    color: "Noir",
-    colorHex: "#2a2a2a",
-    tag: "Limited",
-  },
-  {
-    id: 8,
-    name: "CASHMERE LOUNGE TOP",
-    price: 8100,
-    images: ["/product5.jpg", "/product7.jpg"],
-    description: "Impossibly soft cashmere in a relaxed ribbed knit.",
-    details: ["100% Grade A Cashmere", "Ribbed knit", "Drop shoulder", "Hand wash cold"],
-    sizes: ["S", "M", "L", "XL"],
-    fabric: "Cashmere",
-    color: "Stone",
-    colorHex: "#b5a99a",
-    tag: "New In",
-  },
-];
-
-// ─── Initial Products (admin inventory with variants) ───────────────────────
+// ─── Initial Products ────────────────────────────────────────────────────────
 const INITIAL_PRODUCTS = [
   {
     id: 1,
     name: "Silk Night Slip",
     category: "Nightwear",
-    fabric: "Silk",
     status: "Active",
     tag: "New In",
+    price: 4900,
     sales: 241,
     location: "Home",
-    image: "/product1.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v1-1", size: "XS", color: "Blush", colorHex: "#e8c4b8", price: 4900, sku: "SNS-XS-BL", stock: 15, image: "/product1.jpg" },
-      { id: "v1-2", size: "S",  color: "Blush", colorHex: "#e8c4b8", price: 4900, sku: "SNS-S-BL",  stock: 22, image: "/product2.jpg" },
-      { id: "v1-3", size: "M",  color: "Blush", colorHex: "#e8c4b8", price: 4900, sku: "SNS-M-BL",  stock: 18, image: null },
-      { id: "v1-4", size: "L",  color: "Blush", colorHex: "#e8c4b8", price: 5100, sku: "SNS-L-BL",  stock: 7,  image: null },
+      {
+        id: "v1-1",
+        color: "Blush",
+        colorHex: "#e8c4b8",
+        sku: "SNS-BL",
+        image: "/product1.jpg",
+        sizes: [
+          { size: "XS", stock: 15 },
+          { size: "S",  stock: 22 },
+          { size: "M",  stock: 18 },
+          { size: "L",  stock: 7  },
+        ],
+      },
     ],
   },
   {
     id: 2,
     name: "Velvet Robe",
     category: "Robes",
-    fabric: "Velvet",
     status: "Active",
     tag: "Best Seller",
+    price: 6200,
     sales: 188,
     location: "Both",
-    image: "/product3.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v2-1", size: "S", color: "Noir",  colorHex: "#2a2a2a", price: 6200, sku: "VR-S-NO", stock: 11, image: "/product3.jpg" },
-      { id: "v2-2", size: "M", color: "Noir",  colorHex: "#2a2a2a", price: 6200, sku: "VR-M-NO", stock: 14, image: "/product4.jpg" },
-      { id: "v2-3", size: "L", color: "Noir",  colorHex: "#2a2a2a", price: 6400, sku: "VR-L-NO", stock: 6,  image: null },
-      { id: "v2-4", size: "S", color: "Stone", colorHex: "#b5a99a", price: 6200, sku: "VR-S-ST", stock: 9,  image: null },
-      { id: "v2-5", size: "M", color: "Stone", colorHex: "#b5a99a", price: 6200, sku: "VR-M-ST", stock: 0,  image: null },
+      {
+        id: "v2-1",
+        color: "Noir",
+        colorHex: "#2a2a2a",
+        sku: "VR-NO",
+        image: "/product3.jpg",
+        sizes: [
+          { size: "S", stock: 11 },
+          { size: "M", stock: 14 },
+          { size: "L", stock: 6  },
+        ],
+      },
+      {
+        id: "v2-2",
+        color: "Stone",
+        colorHex: "#b5a99a",
+        sku: "VR-ST",
+        image: "/product4.jpg",
+        sizes: [
+          { size: "S", stock: 9 },
+          { size: "M", stock: 0 },
+        ],
+      },
     ],
   },
   {
     id: 3,
     name: "Lace Trim Set",
     category: "Sets",
-    fabric: "Modal",
     status: "Active",
     tag: "New In",
+    price: 5500,
     sales: 144,
     location: "Collection",
-    image: "/product5.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v3-1", size: "S", color: "Blush", colorHex: "#e8c4b8", price: 5500, sku: "LTS-S-BL", stock: 20, image: "/product5.jpg" },
-      { id: "v3-2", size: "M", color: "Blush", colorHex: "#e8c4b8", price: 5500, sku: "LTS-M-BL", stock: 17, image: "/product6.jpg" },
-      { id: "v3-3", size: "L", color: "Blush", colorHex: "#e8c4b8", price: 5700, sku: "LTS-L-BL", stock: 8,  image: null },
+      {
+        id: "v3-1",
+        color: "Blush",
+        colorHex: "#e8c4b8",
+        sku: "LTS-BL",
+        image: "/product5.jpg",
+        sizes: [
+          { size: "S", stock: 20 },
+          { size: "M", stock: 17 },
+          { size: "L", stock: 8  },
+        ],
+      },
     ],
   },
   {
     id: 4,
     name: "Satin Pyjama",
     category: "Nightwear",
-    fabric: "Satin",
     status: "Active",
     tag: null,
+    price: 5100,
     sales: 103,
     location: "Home",
-    image: "/product7.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v4-1", size: "S", color: "Ivory", colorHex: "#f5f0e8", price: 5100, sku: "SP-S-IV", stock: 13, image: "/product7.jpg" },
-      { id: "v4-2", size: "M", color: "Ivory", colorHex: "#f5f0e8", price: 5100, sku: "SP-M-IV", stock: 19, image: "/product8.jpg" },
-      { id: "v4-3", size: "L", color: "Ivory", colorHex: "#f5f0e8", price: 5300, sku: "SP-L-IV", stock: 5,  image: null },
-      { id: "v4-4", size: "S", color: "Blush", colorHex: "#e8c4b8", price: 5100, sku: "SP-S-BL", stock: 0,  image: null },
+      {
+        id: "v4-1",
+        color: "Ivory",
+        colorHex: "#f5f0e8",
+        sku: "SP-IV",
+        image: "/product7.jpg",
+        sizes: [
+          { size: "S", stock: 13 },
+          { size: "M", stock: 19 },
+          { size: "L", stock: 5  },
+        ],
+      },
+      {
+        id: "v4-2",
+        color: "Blush",
+        colorHex: "#e8c4b8",
+        sku: "SP-BL",
+        image: "/product8.jpg",
+        sizes: [
+          { size: "S", stock: 0 },
+        ],
+      },
     ],
   },
   {
     id: 5,
     name: "Modal Lounge Set",
     category: "Loungewear",
-    fabric: "Modal",
     status: "Active",
     tag: null,
+    price: 4600,
     sales: 69,
     location: "Both",
-    image: "/product9.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v5-1", size: "S", color: "Stone", colorHex: "#b5a99a", price: 4600, sku: "MLS-S-ST", stock: 25, image: "/product9.jpg" },
-      { id: "v5-2", size: "M", color: "Stone", colorHex: "#b5a99a", price: 4600, sku: "MLS-M-ST", stock: 30, image: "/product10.jpg" },
-      { id: "v5-3", size: "L", color: "Stone", colorHex: "#b5a99a", price: 4800, sku: "MLS-L-ST", stock: 12, image: null },
+      {
+        id: "v5-1",
+        color: "Stone",
+        colorHex: "#b5a99a",
+        sku: "MLS-ST",
+        image: "/product9.jpg",
+        sizes: [
+          { size: "S", stock: 25 },
+          { size: "M", stock: 30 },
+          { size: "L", stock: 12 },
+        ],
+      },
     ],
   },
   {
     id: 6,
     name: "Gauze Nightdress",
     category: "Nightwear",
-    fabric: "Cotton",
     status: "Active",
     tag: "Best Seller",
+    price: 3900,
     sales: 56,
     location: "Collection",
-    image: "/product11.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v6-1", size: "Free Size", color: "Ivory", colorHex: "#f5f0e8", price: 3900, sku: "GN-FS-IV", stock: 3, image: "/product11.jpg" },
+      {
+        id: "v6-1",
+        color: "Ivory",
+        colorHex: "#f5f0e8",
+        sku: "GN-IV",
+        image: "/product11.jpg",
+        sizes: [
+          { size: "Free Size", stock: 3 },
+        ],
+      },
     ],
   },
   {
     id: 7,
     name: "Silk Kimono Robe",
     category: "Robes",
-    fabric: "Silk",
     status: "Active",
     tag: "Limited",
+    price: 7200,
     sales: 38,
     location: "Home",
-    image: "/product1.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v7-1", size: "S", color: "Noir", colorHex: "#2a2a2a", price: 7200, sku: "SKR-S-NO", stock: 4, image: "/product1.jpg" },
-      { id: "v7-2", size: "M", color: "Noir", colorHex: "#2a2a2a", price: 7200, sku: "SKR-M-NO", stock: 2, image: "/product3.jpg" },
-      { id: "v7-3", size: "L", color: "Noir", colorHex: "#2a2a2a", price: 7400, sku: "SKR-L-NO", stock: 0, image: null },
+      {
+        id: "v7-1",
+        color: "Noir",
+        colorHex: "#2a2a2a",
+        sku: "SKR-NO",
+        image: "/product1.jpg",
+        sizes: [
+          { size: "S", stock: 4 },
+          { size: "M", stock: 2 },
+          { size: "L", stock: 0 },
+        ],
+      },
     ],
   },
   {
     id: 8,
     name: "Cashmere Lounge Top",
     category: "Loungewear",
-    fabric: "Cashmere",
     status: "Draft",
     tag: "New In",
+    price: 8100,
     sales: 22,
     location: "Collection",
-    image: "/product5.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v8-1", size: "S", color: "Stone", colorHex: "#b5a99a", price: 8100, sku: "CLT-S-ST", stock: 8,  image: "/product5.jpg" },
-      { id: "v8-2", size: "M", color: "Stone", colorHex: "#b5a99a", price: 8100, sku: "CLT-M-ST", stock: 10, image: "/product7.jpg" },
+      {
+        id: "v8-1",
+        color: "Stone",
+        colorHex: "#b5a99a",
+        sku: "CLT-ST",
+        image: "/product5.jpg",
+        sizes: [
+          { size: "S", stock: 8  },
+          { size: "M", stock: 10 },
+        ],
+      },
     ],
   },
   {
     id: 9,
     name: "Linen Sleep Shirt",
     category: "Nightwear",
-    fabric: "Cotton",
     status: "Archived",
     tag: null,
+    price: 3200,
     sales: 88,
     location: "Home",
-    image: "/product11.jpg",
+    sizeGuide: null,
     variants: [
-      { id: "v9-1", size: "S", color: "Ivory", colorHex: "#f5f0e8", price: 3200, sku: "LSS-S-IV", stock: 0, image: "/product11.jpg" },
-      { id: "v9-2", size: "M", color: "Ivory", colorHex: "#f5f0e8", price: 3200, sku: "LSS-M-IV", stock: 0, image: "/product12.jpg" },
+      {
+        id: "v9-1",
+        color: "Ivory",
+        colorHex: "#f5f0e8",
+        sku: "LSS-IV",
+        image: "/product11.jpg",
+        sizes: [
+          { size: "S", stock: 0 },
+          { size: "M", stock: 0 },
+        ],
+      },
     ],
   },
 ];
@@ -270,9 +259,10 @@ const INITIAL_PRODUCTS = [
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const getTotalStock = (variants) =>
   variants.reduce((s, v) => s + (v.sizes ?? []).reduce((a, sz) => a + sz.stock, 0), 0);
-const getBasePrice  = (variants) => (variants.length ? Math.min(...variants.map((v) => v.price)) : 0);
-const getColors     = (variants) => [...new Set(variants.map((v) => v.colorHex))];
-const newVid        = () => `v-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
+
+const getColors = (variants) => [...new Set(variants.map((v) => v.colorHex))];
+
+const newVid = () => `v-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
 
 const STATUS_STYLES = {
   Active:   { pill: "bg-[#eaf3de] text-[#3b6d11]", dot: "bg-[#639922]" },
@@ -298,7 +288,6 @@ function readFileAsBase64(file) {
 }
 
 // ─── Shared UI Primitives ────────────────────────────────────────────────────
-
 function StatusPill({ status }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.Draft;
   return (
@@ -407,7 +396,7 @@ function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
           >
             {value ? "Change" : label}
           </button>
-          <p className="text-[10px] text-[#b4b2a9] mt-1">Shown in product list</p>
+          <p className="text-[10px] text-[#b4b2a9] mt-1">PNG or JPG recommended</p>
         </div>
       )}
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleChange} />
@@ -419,6 +408,15 @@ function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
 function VariantRow({ variant: v, onChange, onDelete }) {
   const upd = (field, value) => onChange({ ...v, [field]: value });
   const ic = "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
+  const imgFileRef = useRef(null);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const base64 = await readFileAsBase64(file);
+    upd("image", base64);
+    e.target.value = "";
+  };
 
   const addSize = () =>
     upd("sizes", [...(v.sizes ?? []), { size: "S", stock: 0 }]);
@@ -432,29 +430,57 @@ function VariantRow({ variant: v, onChange, onDelete }) {
   return (
     <div className="bg-[#fafaf8] border border-[#e8e5df] rounded-xl p-3 flex flex-col gap-2">
 
-      {/* Top row: image / colour / price / sku / delete */}
-      <div className="grid gap-2 items-center" style={{ gridTemplateColumns: "52px 1fr 80px 112px 28px" }}>
-        <ImageUploadButton value={v.image} onChange={(b) => upd("image", b)} size="sm" />
+      {/* Top row: image / colour / sku / delete */}
+      <div className="grid gap-2 items-center" style={{ gridTemplateColumns: "52px 1fr 112px 28px" }}>
+
+        {/* Variant image — required */}
+        <div
+          onClick={() => imgFileRef.current?.click()}
+          title="Upload variant image (required)"
+          className={`w-11 h-11 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden flex-shrink-0 border transition-all hover:border-[#1a1916] relative ${
+            v.image ? "border-[#e8e5df]" : "border-dashed border-[#e24b4a] bg-[#fafaf8]"
+          }`}
+        >
+          {v.image ? (
+            <img src={v.image} alt="variant" className="w-full h-full object-cover" />
+          ) : (
+            <>
+              <span className="text-[#e24b4a] text-xl leading-none">+</span>
+              <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[#e24b4a]" />
+            </>
+          )}
+          <input ref={imgFileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+        </div>
 
         {/* Colour */}
         <div className="flex items-center gap-1.5">
-          <input type="color" value={v.colorHex} onChange={(e) => upd("colorHex", e.target.value)}
-            className="w-8 h-8 rounded-lg border border-[#e8e5df] cursor-pointer flex-shrink-0 p-0.5" />
-          <input value={v.color} onChange={(e) => upd("color", e.target.value)}
-            placeholder="Colour name" className={`flex-1 min-w-0 ${ic}`} />
+          <input
+            type="color"
+            value={v.colorHex}
+            onChange={(e) => upd("colorHex", e.target.value)}
+            className="w-8 h-8 rounded-lg border border-[#e8e5df] cursor-pointer flex-shrink-0 p-0.5"
+          />
+          <input
+            value={v.color}
+            onChange={(e) => upd("color", e.target.value)}
+            placeholder="Colour name"
+            className={`flex-1 min-w-0 ${ic}`}
+          />
         </div>
 
-        {/* Price */}
-        <input type="number" value={v.price} min={0} onChange={(e) => upd("price", +e.target.value)}
-          className={ic} placeholder="PKR" />
-
         {/* SKU */}
-        <input value={v.sku} onChange={(e) => upd("sku", e.target.value.toUpperCase())}
-          placeholder="SKU-XX" className={`${ic} font-mono`} />
+        <input
+          value={v.sku}
+          onChange={(e) => upd("sku", e.target.value.toUpperCase())}
+          placeholder="SKU-XX"
+          className={`${ic} font-mono`}
+        />
 
         {/* Delete variant */}
-        <button onClick={onDelete}
-          className="w-7 h-7 rounded-lg bg-[#fcebeb] text-[#e24b4a] flex items-center justify-center text-base hover:bg-[#e24b4a] hover:text-white transition-all leading-none">
+        <button
+          onClick={onDelete}
+          className="w-7 h-7 rounded-lg bg-[#fcebeb] text-[#e24b4a] flex items-center justify-center text-base hover:bg-[#e24b4a] hover:text-white transition-all leading-none"
+        >
           ×
         </button>
       </div>
@@ -469,22 +495,33 @@ function VariantRow({ variant: v, onChange, onDelete }) {
 
         {(v.sizes ?? []).map((sz, i) => (
           <div key={i} className="grid gap-2 items-center" style={{ gridTemplateColumns: "1fr 80px 24px" }}>
-            <select value={sz.size} onChange={(e) => updateSize(i, "size", e.target.value)}
-              className={ic}>
+            <select
+              value={sz.size}
+              onChange={(e) => updateSize(i, "size", e.target.value)}
+              className={ic}
+            >
               {SIZE_OPTS.map((s) => <option key={s}>{s}</option>)}
             </select>
-            <input type="number" value={sz.stock} min={0}
+            <input
+              type="number"
+              value={sz.stock}
+              min={0}
               onChange={(e) => updateSize(i, "stock", +e.target.value)}
-              className={ic} />
-            <button onClick={() => removeSize(i)}
-              className="w-6 h-6 rounded-md bg-[#f1efe8] text-[#b4b2a9] flex items-center justify-center text-sm hover:bg-[#fcebeb] hover:text-[#e24b4a] transition-all leading-none">
+              className={ic}
+            />
+            <button
+              onClick={() => removeSize(i)}
+              className="w-6 h-6 rounded-md bg-[#f1efe8] text-[#b4b2a9] flex items-center justify-center text-sm hover:bg-[#fcebeb] hover:text-[#e24b4a] transition-all leading-none"
+            >
               ×
             </button>
           </div>
         ))}
 
-        <button onClick={addSize}
-          className="self-start text-[10px] font-medium px-2.5 py-1 rounded-lg border border-dashed border-[#c8c5be] text-[#888780] hover:border-[#1a1916] hover:text-[#1a1916] transition-all mt-0.5">
+        <button
+          onClick={addSize}
+          className="self-start text-[10px] font-medium px-2.5 py-1 rounded-lg border border-dashed border-[#c8c5be] text-[#888780] hover:border-[#1a1916] hover:text-[#1a1916] transition-all mt-0.5"
+        >
           + Add Size
         </button>
       </div>
@@ -497,16 +534,17 @@ function ProductModal({ product, onClose, onSave }) {
   const isNew = !product.id;
 
   const [form, setForm] = useState({
-    name:     product.name     ?? "",
-    category: product.category ?? "Nightwear",
-    fabric:   product.fabric   ?? "Silk",
-    status:   product.status   ?? "Active",
-    tag:      product.tag      ?? "",
-    location: product.location ?? "Home",
-    image:    product.image    ?? null,
+    name:      product.name      ?? "",
+    category:  product.category  ?? "Nightwear",
+    status:    product.status    ?? "Active",
+    tag:       product.tag       ?? "",
+    location:  product.location  ?? "Home",
+    price:     product.price     ?? 0,
+    sizeGuide: product.sizeGuide ?? null,
   });
+
   const [variants, setVariants] = useState(
-    (product.variants ?? []).map((v) => ({ ...v }))
+    (product.variants ?? []).map((v) => ({ ...v, sizes: v.sizes ? [...v.sizes] : [] }))
   );
   const [error, setError] = useState("");
 
@@ -515,7 +553,7 @@ function ProductModal({ product, onClose, onSave }) {
   const addVariant = () =>
     setVariants((vs) => [
       ...vs,
-     { id: newVid(), sizes: [{ size: "S", stock: 0 }], color: "Blush", colorHex: "#e8c4b8", price: 0, sku: "", image: null }
+      { id: newVid(), sizes: [{ size: "S", stock: 0 }], color: "Blush", colorHex: "#e8c4b8", sku: "", image: null },
     ]);
 
   const updateVariant = (id, updated) =>
@@ -524,11 +562,17 @@ function ProductModal({ product, onClose, onSave }) {
   const removeVariant = (id) => setVariants((vs) => vs.filter((v) => v.id !== id));
 
   const handleSave = () => {
-    if (!form.name.trim())                   { setError("Product name is required."); return; }
-    if (variants.length === 0)               { setError("Add at least one variant."); return; }
-    if (variants.some((v) => !v.sku.trim())) { setError("All variants need a SKU."); return; }
+    if (!form.name.trim())                    { setError("Product name is required."); return; }
+    if (form.price <= 0)                      { setError("Please set a valid price."); return; }
+    if (variants.length === 0)                { setError("Add at least one variant."); return; }
+    if (variants.some((v) => !v.image))       { setError("Every variant requires an image."); return; }
+    if (variants.some((v) => !v.sku.trim()))  { setError("All variants need a SKU."); return; }
     const skus = variants.map((v) => v.sku.trim());
-    if (new Set(skus).size !== skus.length)  { setError("Each variant must have a unique SKU."); return; }
+    if (new Set(skus).size !== skus.length)   { setError("Each variant must have a unique SKU."); return; }
+    if (variants.some((v) => !v.sizes || v.sizes.length === 0)) {
+      setError("Each variant needs at least one size.");
+      return;
+    }
     setError("");
     onSave({
       ...product,
@@ -592,10 +636,15 @@ function ProductModal({ product, onClose, onSave }) {
                 </select>
               </div>
               <div>
-                <label className={fieldLabel}>Fabric</label>
-                <select className={fieldSelect} value={form.fabric} onChange={(e) => set("fabric", e.target.value)}>
-                  {FABRIC_OPTS.map((f) => <option key={f}>{f}</option>)}
-                </select>
+                <label className={fieldLabel}>Price (PKR) *</label>
+                <input
+                  type="number"
+                  min={0}
+                  className={fieldInput}
+                  value={form.price}
+                  onChange={(e) => set("price", +e.target.value)}
+                  placeholder="e.g. 4900"
+                />
               </div>
               <div>
                 <label className={fieldLabel}>Tag</label>
@@ -613,18 +662,6 @@ function ProductModal({ product, onClose, onSave }) {
             </div>
           </div>
 
-          {/* ── Product Image ── */}
-          <div className="mb-5 pb-5 border-b border-[#f1efe8]">
-            <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] font-medium mb-3">
-              Product Image
-            </p>
-            <ImageUploadButton
-              value={form.image}
-              onChange={(base64) => set("image", base64)}
-              label="Upload Image"
-            />
-          </div>
-
           {/* ── Location ── */}
           <div className="mb-5 pb-5 border-b border-[#f1efe8]">
             <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] font-medium mb-1">
@@ -637,7 +674,7 @@ function ProductModal({ product, onClose, onSave }) {
               {LOCATION_OPTS.map((loc) => {
                 const isActive = form.location === loc;
                 const activeStyle =
-                  loc === "Home"       ? "bg-[#e6f1fb] text-[#185fa5] border-[#85b7eb]"
+                  loc === "Home"         ? "bg-[#e6f1fb] text-[#185fa5] border-[#85b7eb]"
                   : loc === "Collection" ? "bg-[#eeedfe] text-[#534ab7] border-[#afa9ec]"
                   :                       "bg-[#e1f5ee] text-[#0f6e56] border-[#5dcaa5]";
                 return (
@@ -658,6 +695,21 @@ function ProductModal({ product, onClose, onSave }) {
             </div>
           </div>
 
+          {/* ── Size Guide ── */}
+          <div className="mb-5 pb-5 border-b border-[#f1efe8]">
+            <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] font-medium mb-1">
+              Size Guide
+            </p>
+            <p className="text-[11px] text-[#888780] mb-3">
+              Upload a size chart or measurement guide shown to customers on the product page.
+            </p>
+            <ImageUploadButton
+              value={form.sizeGuide}
+              onChange={(base64) => set("sizeGuide", base64)}
+              label="Upload Size Guide"
+            />
+          </div>
+
           {/* ── Variants ── */}
           <div className="mb-5">
             <div className="flex items-center justify-between mb-3">
@@ -669,7 +721,9 @@ function ProductModal({ product, onClose, onSave }) {
                   </span>
                 </p>
                 <p className="text-[11px] text-[#888780] mt-0.5">
-                  Each variant needs a unique SKU, price, stock — and optionally an image
+                  Each variant needs an image{" "}
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#fcebeb] text-[#a32d2d]">required</span>
+                  , colour, SKU — and sizes with stock below
                 </p>
               </div>
               <button
@@ -684,7 +738,7 @@ function ProductModal({ product, onClose, onSave }) {
               <div className="border-2 border-dashed border-[#e8e5df] rounded-xl p-8 text-center">
                 <p className="text-[13px] text-[#b4b2a9]">No variants yet</p>
                 <p className="text-[11px] text-[#b4b2a9] mt-1">
-                  Add size / colour variants — each with its own SKU, price, stock, and image
+                  Add colour variants — each with its own image, SKU, and sizes
                 </p>
                 <button
                   onClick={addVariant}
@@ -695,13 +749,12 @@ function ProductModal({ product, onClose, onSave }) {
               </div>
             ) : (
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="min-w-[620px]">
-                  {/* Column headers */}
+                <div className="min-w-[560px]">
                   <div
                     className="grid gap-2 mb-2 px-2"
-                    style={{ gridTemplateColumns: "52px 1fr 80px 112px 28px" }}
+                    style={{ gridTemplateColumns: "52px 1fr 112px 28px" }}
                   >
-                    {["Image", "Colour", "Price", "SKU", ""].map((h) => (
+                    {["Image *", "Colour", "SKU", ""].map((h) => (
                       <p key={h} className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">
                         {h}
                       </p>
@@ -745,11 +798,7 @@ function ProductModal({ product, onClose, onSave }) {
 
 // ─── Product Thumbnail ────────────────────────────────────────────────────────
 function ProductThumb({ product }) {
-  // Priority: product image → first variant image → fabric emoji
-  const src =
-    product.image ||
-    product.variants?.find((v) => v.image)?.image ||
-    null;
+  const src = product.variants?.find((v) => v.image)?.image || null;
 
   if (src) {
     return (
@@ -762,7 +811,7 @@ function ProductThumb({ product }) {
   }
   return (
     <div className="w-10 h-10 rounded-xl bg-[#f5f2ed] flex items-center justify-center text-lg flex-shrink-0">
-      {FABRIC_ICONS[product.fabric] || "🛍"}
+      🛍
     </div>
   );
 }
@@ -770,16 +819,15 @@ function ProductThumb({ product }) {
 // ─── Main Products Page ───────────────────────────────────────────────────────
 export default function ProductsPage() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
-  const [search,      setSearch]  = useState("");
-  const [catFilter,   setCat]     = useState("All");
-  const [fabFilter,   setFab]     = useState("All");
-  const [locFilter,   setLoc]     = useState("All");
-  const [statusFilter, setStat]   = useState("All");
-  const [sortBy,      setSort]    = useState("sales");
-  const [page,        setPage]    = useState(1);
-  const [selected,    setSelected] = useState(new Set());
-  const [modal,       setModal]   = useState(null);
-  const [toast,       setToast]   = useState("");
+  const [search, setSearch]     = useState("");
+  const [catFilter, setCat]     = useState("All");
+  const [locFilter, setLoc]     = useState("All");
+  const [statusFilter, setStat] = useState("All");
+  const [sortBy, setSort]       = useState("sales");
+  const [page, setPage]         = useState(1);
+  const [selected, setSelected] = useState(new Set());
+  const [modal, setModal]       = useState(null);
+  const [toast, setToast]       = useState("");
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
   const resetPage = () => setPage(1);
@@ -803,7 +851,6 @@ export default function ProductsPage() {
           p.variants.some((v) => v.sku.toLowerCase().includes(search.toLowerCase()))
       );
     if (catFilter !== "All")    d = d.filter((p) => p.category === catFilter);
-    if (fabFilter !== "All")    d = d.filter((p) => p.fabric   === fabFilter);
     if (locFilter !== "All")    d = d.filter((p) => p.location === locFilter);
     if (statusFilter !== "All") d = d.filter((p) => p.status   === statusFilter);
 
@@ -811,10 +858,10 @@ export default function ProductsPage() {
     else if (sortBy === "sales")      d.sort((a, b) => b.sales - a.sales);
     else if (sortBy === "stock_asc")  d.sort((a, b) => getTotalStock(a.variants) - getTotalStock(b.variants));
     else if (sortBy === "stock_desc") d.sort((a, b) => getTotalStock(b.variants) - getTotalStock(a.variants));
-    else if (sortBy === "price_asc")  d.sort((a, b) => getBasePrice(a.variants) - getBasePrice(b.variants));
-    else if (sortBy === "price_desc") d.sort((a, b) => getBasePrice(b.variants) - getBasePrice(a.variants));
+    else if (sortBy === "price_asc")  d.sort((a, b) => a.price - b.price);
+    else if (sortBy === "price_desc") d.sort((a, b) => b.price - a.price);
     return d;
-  }, [products, search, catFilter, fabFilter, locFilter, statusFilter, sortBy]);
+  }, [products, search, catFilter, locFilter, statusFilter, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage   = Math.min(page, totalPages);
@@ -864,7 +911,10 @@ export default function ProductsPage() {
     setSelected(new Set());
   };
 
-  const openAdd  = () => setModal({ name: "", category: "Nightwear", fabric: "Silk", status: "Active", tag: null, location: "Home", image: null, variants: [], sales: 0 });
+  const openAdd  = () => setModal({
+    name: "", category: "Nightwear", status: "Active", tag: null,
+    location: "Home", price: 0, sizeGuide: null, variants: [], sales: 0,
+  });
   const openEdit = (p) => setModal(p);
 
   return (
@@ -942,14 +992,6 @@ export default function ProductsPage() {
               {CATEGORIES_OPTS.map((c) => <option key={c}>{c}</option>)}
             </select>
             <select
-              value={fabFilter}
-              onChange={(e) => { setFab(e.target.value); resetPage(); }}
-              className="text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none"
-            >
-              <option value="All">All Fabrics</option>
-              {FABRIC_OPTS.map((f) => <option key={f}>{f}</option>)}
-            </select>
-            <select
               value={locFilter}
               onChange={(e) => { setLoc(e.target.value); resetPage(); }}
               className="text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none"
@@ -1014,10 +1056,10 @@ export default function ProductsPage() {
 
           {/* Table */}
           <div className="overflow-x-auto scrollbar-hide">
-            <table className="w-full min-w-[980px]">
+            <table className="w-full min-w-[880px]">
               <thead>
                 <tr className="border-b border-[#e8e5df]">
-                  {["", "Product", "Category", "Variants", "Colours", "Total Stock", "From", "Location", "Sales", "Status", ""].map((h, i) => (
+                  {["", "Product", "Category", "Variants", "Colours", "Total Stock", "Price", "Location", "Sales", "Status", ""].map((h, i) => (
                     <th key={i} className="text-left text-[9px] tracking-[0.18em] uppercase text-[#b4b2a9] font-medium pb-3 pr-4 last:pr-0">
                       {h}
                     </th>
@@ -1034,7 +1076,6 @@ export default function ProductsPage() {
                 ) : (
                   pageSlice.map((p) => {
                     const stock  = getTotalStock(p.variants);
-                    const price  = getBasePrice(p.variants);
                     const colors = getColors(p.variants);
                     const isOut  = stock === 0;
                     const isLow  = !isOut && stock <= 10;
@@ -1054,7 +1095,7 @@ export default function ProductsPage() {
                           />
                         </td>
 
-                        {/* Product (thumbnail + name) */}
+                        {/* Product */}
                         <td className="py-3.5 pr-4">
                           <div className="flex items-center gap-2.5">
                             <ProductThumb product={p} />
@@ -1067,7 +1108,6 @@ export default function ProductsPage() {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[10px] text-[#b4b2a9] mt-0.5">{p.fabric}</p>
                             </div>
                           </div>
                         </td>
@@ -1119,10 +1159,10 @@ export default function ProductsPage() {
                           </div>
                         </td>
 
-                        {/* Base price */}
+                        {/* Price — single price per product */}
                         <td className="py-3.5 pr-4">
                           <span className="text-[12px] font-medium text-[#1a1916]">
-                            PKR {price.toLocaleString()}
+                            PKR {p.price.toLocaleString()}
                           </span>
                         </td>
 
@@ -1136,7 +1176,7 @@ export default function ProductsPage() {
                           <span className="text-[11px] text-[#5f5e5a]">{p.sales.toLocaleString()}</span>
                         </td>
 
-                        {/* Status — click to cycle */}
+                        {/* Status */}
                         <td className="py-3.5 pr-4">
                           <button
                             onClick={() => cycleStatus(p.id)}
