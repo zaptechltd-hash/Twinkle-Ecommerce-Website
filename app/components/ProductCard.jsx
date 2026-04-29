@@ -137,23 +137,17 @@ export default function ProductCard({ product, onWishlistToggle, wishlisted, onC
         <div className="flex items-start justify-between gap-2">
           <p className="text-[11px] tracking-[0.2em] text-stone-800 uppercase leading-snug">{product.name}</p>
         </div>
-        <div className="flex items-center justify-between mt-1">
-          <p className="text-[11px] tracking-[0.1em] text-stone-400">
-            PKR {basePrice.toLocaleString()}
-          </p>
-          {swatches.length > 1 && (
-            <div className="flex gap-1">
-              {swatches.slice(0, 4).map(([color, hex]) => (
-                <span
-                  key={color}
-                  className="w-3 h-3 rounded-full ring-1 ring-stone-200"
-                  style={{ backgroundColor: hex }}
-                  title={color}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+       {/* Replace your existing price display with this */}
+<div className="flex items-center gap-2 mt-1">
+  <p className="text-[12px] tracking-wide text-stone-700">
+    PKR {(product.discountPrice ?? product.price).toLocaleString()}
+  </p>
+  {product.discountPrice && (
+    <p className="text-[10px] text-stone-300 line-through">
+      PKR {product.price.toLocaleString()}
+    </p>
+  )}
+</div>
       </div>
     </div>
   );

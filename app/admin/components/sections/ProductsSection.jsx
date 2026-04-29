@@ -1,287 +1,44 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+// ⚠️  Adjust this import path to match your project structure
+// import useProductService from "@/services/products/useProductService";
+import useProductService from "../../../services/product/index";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 const CATEGORIES_OPTS = ["Nightwear", "Robes", "Loungewear", "Sets"];
-const SIZE_OPTS       = ["XS", "S", "M", "L", "XL", "Free Size"];
-const TAG_OPTS        = ["New In", "Best Seller", "Limited", "Sale"];
-const LOCATION_OPTS   = ["Home", "Collection", "Both"];
-const PER_PAGE        = 7;
-
-// ─── Initial Products ────────────────────────────────────────────────────────
-const INITIAL_PRODUCTS = [
-  {
-    id: 1,
-    name: "Silk Night Slip",
-    category: "Nightwear",
-    status: "Active",
-    tag: "New In",
-    price: 4900,
-    sales: 241,
-    location: "Home",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v1-1",
-        color: "Blush",
-        colorHex: "#e8c4b8",
-        sku: "SNS-BL",
-        image: "/product1.jpg",
-        sizes: [
-          { size: "XS", stock: 15 },
-          { size: "S",  stock: 22 },
-          { size: "M",  stock: 18 },
-          { size: "L",  stock: 7  },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Velvet Robe",
-    category: "Robes",
-    status: "Active",
-    tag: "Best Seller",
-    price: 6200,
-    sales: 188,
-    location: "Both",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v2-1",
-        color: "Noir",
-        colorHex: "#2a2a2a",
-        sku: "VR-NO",
-        image: "/product3.jpg",
-        sizes: [
-          { size: "S", stock: 11 },
-          { size: "M", stock: 14 },
-          { size: "L", stock: 6  },
-        ],
-      },
-      {
-        id: "v2-2",
-        color: "Stone",
-        colorHex: "#b5a99a",
-        sku: "VR-ST",
-        image: "/product4.jpg",
-        sizes: [
-          { size: "S", stock: 9 },
-          { size: "M", stock: 0 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Lace Trim Set",
-    category: "Sets",
-    status: "Active",
-    tag: "New In",
-    price: 5500,
-    sales: 144,
-    location: "Collection",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v3-1",
-        color: "Blush",
-        colorHex: "#e8c4b8",
-        sku: "LTS-BL",
-        image: "/product5.jpg",
-        sizes: [
-          { size: "S", stock: 20 },
-          { size: "M", stock: 17 },
-          { size: "L", stock: 8  },
-        ],
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: "Satin Pyjama",
-    category: "Nightwear",
-    status: "Active",
-    tag: null,
-    price: 5100,
-    sales: 103,
-    location: "Home",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v4-1",
-        color: "Ivory",
-        colorHex: "#f5f0e8",
-        sku: "SP-IV",
-        image: "/product7.jpg",
-        sizes: [
-          { size: "S", stock: 13 },
-          { size: "M", stock: 19 },
-          { size: "L", stock: 5  },
-        ],
-      },
-      {
-        id: "v4-2",
-        color: "Blush",
-        colorHex: "#e8c4b8",
-        sku: "SP-BL",
-        image: "/product8.jpg",
-        sizes: [
-          { size: "S", stock: 0 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: "Modal Lounge Set",
-    category: "Loungewear",
-    status: "Active",
-    tag: null,
-    price: 4600,
-    sales: 69,
-    location: "Both",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v5-1",
-        color: "Stone",
-        colorHex: "#b5a99a",
-        sku: "MLS-ST",
-        image: "/product9.jpg",
-        sizes: [
-          { size: "S", stock: 25 },
-          { size: "M", stock: 30 },
-          { size: "L", stock: 12 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 6,
-    name: "Gauze Nightdress",
-    category: "Nightwear",
-    status: "Active",
-    tag: "Best Seller",
-    price: 3900,
-    sales: 56,
-    location: "Collection",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v6-1",
-        color: "Ivory",
-        colorHex: "#f5f0e8",
-        sku: "GN-IV",
-        image: "/product11.jpg",
-        sizes: [
-          { size: "Free Size", stock: 3 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 7,
-    name: "Silk Kimono Robe",
-    category: "Robes",
-    status: "Active",
-    tag: "Limited",
-    price: 7200,
-    sales: 38,
-    location: "Home",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v7-1",
-        color: "Noir",
-        colorHex: "#2a2a2a",
-        sku: "SKR-NO",
-        image: "/product1.jpg",
-        sizes: [
-          { size: "S", stock: 4 },
-          { size: "M", stock: 2 },
-          { size: "L", stock: 0 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 8,
-    name: "Cashmere Lounge Top",
-    category: "Loungewear",
-    status: "Draft",
-    tag: "New In",
-    price: 8100,
-    sales: 22,
-    location: "Collection",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v8-1",
-        color: "Stone",
-        colorHex: "#b5a99a",
-        sku: "CLT-ST",
-        image: "/product5.jpg",
-        sizes: [
-          { size: "S", stock: 8  },
-          { size: "M", stock: 10 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 9,
-    name: "Linen Sleep Shirt",
-    category: "Nightwear",
-    status: "Archived",
-    tag: null,
-    price: 3200,
-    sales: 88,
-    location: "Home",
-    sizeGuide: null,
-    variants: [
-      {
-        id: "v9-1",
-        color: "Ivory",
-        colorHex: "#f5f0e8",
-        sku: "LSS-IV",
-        image: "/product11.jpg",
-        sizes: [
-          { size: "S", stock: 0 },
-          { size: "M", stock: 0 },
-        ],
-      },
-    ],
-  },
-];
+const SIZE_OPTS = ["XS", "S", "M", "L", "XL", "Free Size"];
+const TAG_OPTS = ["New In", "Best Seller", "Limited", "Sale"];
+const LOCATION_OPTS = ["Home", "Collection", "Both"];
+const PER_PAGE = 7;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const getTotalStock = (variants) =>
-  variants.reduce((s, v) => s + (v.sizes ?? []).reduce((a, sz) => a + sz.stock, 0), 0);
+  variants.reduce(
+    (s, v) => s + (v.sizes ?? []).reduce((a, sz) => a + sz.stock, 0),
+    0,
+  );
 
 const getColors = (variants) => [...new Set(variants.map((v) => v.colorHex))];
 
-const newVid = () => `v-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
-
 const STATUS_STYLES = {
-  Active:   { pill: "bg-[#eaf3de] text-[#3b6d11]", dot: "bg-[#639922]" },
-  Draft:    { pill: "bg-[#faeeda] text-[#854f0b]", dot: "bg-[#ef9f27]" },
+  Active: { pill: "bg-[#eaf3de] text-[#3b6d11]", dot: "bg-[#639922]" },
+  Draft: { pill: "bg-[#faeeda] text-[#854f0b]", dot: "bg-[#ef9f27]" },
   Archived: { pill: "bg-[#f1efe8] text-[#5f5e5a]", dot: "bg-[#b4b2a9]" },
 };
 const STATUS_CYCLE = { Active: "Draft", Draft: "Archived", Archived: "Active" };
 
 const LOCATION_STYLES = {
-  Home:       "bg-[#e6f1fb] text-[#185fa5]",
+  Home: "bg-[#e6f1fb] text-[#185fa5]",
   Collection: "bg-[#eeedfe] text-[#534ab7]",
-  Both:       "bg-[#e1f5ee] text-[#0f6e56]",
+  Both: "bg-[#e1f5ee] text-[#0f6e56]",
 };
 
 // ─── Image helpers ───────────────────────────────────────────────────────────
 function readFileAsBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload  = (e) => resolve(e.target.result);
+    reader.onload = (e) => resolve(e.target.result);
     reader.onerror = () => reject(new Error("File read failed"));
     reader.readAsDataURL(file);
   });
@@ -291,7 +48,9 @@ function readFileAsBase64(file) {
 function StatusPill({ status }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.Draft;
   return (
-    <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-md ${s.pill}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-md ${s.pill}`}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
       {status}
     </span>
@@ -301,7 +60,9 @@ function StatusPill({ status }) {
 function LocationBadge({ location }) {
   if (!location) return null;
   return (
-    <span className={`text-[10px] font-medium px-2 py-0.5 rounded ${LOCATION_STYLES[location] || "bg-[#f1efe8] text-[#5f5e5a]"}`}>
+    <span
+      className={`text-[10px] font-medium px-2 py-0.5 rounded ${LOCATION_STYLES[location] || "bg-[#f1efe8] text-[#5f5e5a]"}`}
+    >
       {location}
     </span>
   );
@@ -316,13 +77,24 @@ function Toast({ message }) {
   );
 }
 
-function IndeterminateCheckbox({ checked, indeterminate, onChange, className }) {
+function IndeterminateCheckbox({
+  checked,
+  indeterminate,
+  onChange,
+  className,
+}) {
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current) ref.current.indeterminate = indeterminate;
   }, [indeterminate]);
   return (
-    <input ref={ref} type="checkbox" checked={checked} onChange={onChange} className={className} />
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className={className}
+    />
   );
 }
 
@@ -334,9 +106,9 @@ function BulkBar({ count, onAction, onClear }) {
         {count} product{count !== 1 ? "s" : ""} selected
       </span>
       {[
-        { label: "Set Active",  key: "Active"   },
-        { label: "Set Draft",   key: "Draft"    },
-        { label: "Archive",     key: "Archived" },
+        { label: "Set Active", key: "Active" },
+        { label: "Set Draft", key: "Draft" },
+        { label: "Archive", key: "Archived" },
       ].map((a) => (
         <button
           key={a.key}
@@ -352,7 +124,10 @@ function BulkBar({ count, onAction, onClear }) {
       >
         Delete Selected
       </button>
-      <button onClick={onClear} className="ml-auto text-white/40 hover:text-white/70 text-xl leading-none transition-colors">
+      <button
+        onClick={onClear}
+        className="ml-auto text-white/40 hover:text-white/70 text-xl leading-none transition-colors"
+      >
         ×
       </button>
     </div>
@@ -362,9 +137,8 @@ function BulkBar({ count, onAction, onClear }) {
 // ─── Image Upload Button ─────────────────────────────────────────────────────
 function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
   const fileRef = useRef(null);
-  const sizeClass = size === "sm"
-    ? "w-11 h-11 rounded-lg"
-    : "w-14 h-14 rounded-xl";
+  const sizeClass =
+    size === "sm" ? "w-11 h-11 rounded-lg" : "w-14 h-14 rounded-xl";
 
   const handleChange = async (e) => {
     const file = e.target.files?.[0];
@@ -382,7 +156,11 @@ function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
         style={{ background: value ? "transparent" : "#f5f2ed" }}
       >
         {value ? (
-          <img src={value} alt="preview" className="w-full h-full object-cover" />
+          <img
+            src={value}
+            alt="preview"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <span className="text-[#b4b2a9] text-xl leading-none">+</span>
         )}
@@ -396,10 +174,18 @@ function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
           >
             {value ? "Change" : label}
           </button>
-          <p className="text-[10px] text-[#b4b2a9] mt-1">PNG or JPG recommended</p>
+          <p className="text-[10px] text-[#b4b2a9] mt-1">
+            PNG or JPG recommended
+          </p>
         </div>
       )}
-      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleChange} />
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleChange}
+      />
     </div>
   );
 }
@@ -407,52 +193,76 @@ function ImageUploadButton({ value, onChange, size = "md", label = "Upload" }) {
 // ─── Variant Row ─────────────────────────────────────────────────────────────
 function VariantRow({ variant: v, onChange, onDelete }) {
   const upd = (field, value) => onChange({ ...v, [field]: value });
-  const ic = "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
+  const ic =
+    "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
   const imgFileRef = useRef(null);
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const base64 = await readFileAsBase64(file);
-    upd("image", base64);
-    e.target.value = "";
+  const STATIC_IMAGE_URL =
+    "https://images.unsplash.com/photo-1766056278842-b754f1e093c0?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+  const handleImageUpload = (e) => {
+    upd("image", STATIC_IMAGE_URL); // ✅ upd() already exists in VariantRow
   };
+
+
+
+  // const handleImageUpload = async (e) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+  //   const base64 = await readFileAsBase64(file);
+  //   upd("image", base64);
+  //   e.target.value = "";
+  // };
 
   const addSize = () =>
     upd("sizes", [...(v.sizes ?? []), { size: "S", stock: 0 }]);
-
   const updateSize = (i, field, value) =>
-    upd("sizes", v.sizes.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
-
+    upd(
+      "sizes",
+      v.sizes.map((s, idx) => (idx === i ? { ...s, [field]: value } : s)),
+    );
   const removeSize = (i) =>
-    upd("sizes", v.sizes.filter((_, idx) => idx !== i));
+    upd(
+      "sizes",
+      v.sizes.filter((_, idx) => idx !== i),
+    );
 
   return (
     <div className="bg-[#fafaf8] border border-[#e8e5df] rounded-xl p-3 flex flex-col gap-2">
-
-      {/* Top row: image / colour / sku / delete */}
-      <div className="grid gap-2 items-center" style={{ gridTemplateColumns: "52px 1fr 112px 28px" }}>
-
-        {/* Variant image — required */}
+      <div
+        className="grid gap-2 items-center"
+        style={{ gridTemplateColumns: "52px 1fr 112px 28px" }}
+      >
         <div
           onClick={() => imgFileRef.current?.click()}
           title="Upload variant image (required)"
           className={`w-11 h-11 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden flex-shrink-0 border transition-all hover:border-[#1a1916] relative ${
-            v.image ? "border-[#e8e5df]" : "border-dashed border-[#e24b4a] bg-[#fafaf8]"
+            v.image
+              ? "border-[#e8e5df]"
+              : "border-dashed border-[#e24b4a] bg-[#fafaf8]"
           }`}
         >
           {v.image ? (
-            <img src={v.image} alt="variant" className="w-full h-full object-cover" />
+            <img
+              src={v.image}
+              alt="variant"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <>
               <span className="text-[#e24b4a] text-xl leading-none">+</span>
               <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[#e24b4a]" />
             </>
           )}
-          <input ref={imgFileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          <input
+            ref={imgFileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
         </div>
 
-        {/* Colour */}
         <div className="flex items-center gap-1.5">
           <input
             type="color"
@@ -468,7 +278,6 @@ function VariantRow({ variant: v, onChange, onDelete }) {
           />
         </div>
 
-        {/* SKU */}
         <input
           value={v.sku}
           onChange={(e) => upd("sku", e.target.value.toUpperCase())}
@@ -476,7 +285,6 @@ function VariantRow({ variant: v, onChange, onDelete }) {
           className={`${ic} font-mono`}
         />
 
-        {/* Delete variant */}
         <button
           onClick={onDelete}
           className="w-7 h-7 rounded-lg bg-[#fcebeb] text-[#e24b4a] flex items-center justify-center text-base hover:bg-[#e24b4a] hover:text-white transition-all leading-none"
@@ -485,22 +293,34 @@ function VariantRow({ variant: v, onChange, onDelete }) {
         </button>
       </div>
 
-      {/* Sizes sub-rows */}
       <div className="ml-2 pl-3 border-l-2 border-[#e8e5df] flex flex-col gap-1.5">
-        <div className="grid gap-2 mb-1" style={{ gridTemplateColumns: "1fr 80px 24px" }}>
-          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">Size</p>
-          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">Stock</p>
+        <div
+          className="grid gap-2 mb-1"
+          style={{ gridTemplateColumns: "1fr 80px 24px" }}
+        >
+          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">
+            Size
+          </p>
+          <p className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">
+            Stock
+          </p>
           <span />
         </div>
 
         {(v.sizes ?? []).map((sz, i) => (
-          <div key={i} className="grid gap-2 items-center" style={{ gridTemplateColumns: "1fr 80px 24px" }}>
+          <div
+            key={i}
+            className="grid gap-2 items-center"
+            style={{ gridTemplateColumns: "1fr 80px 24px" }}
+          >
             <select
               value={sz.size}
               onChange={(e) => updateSize(i, "size", e.target.value)}
               className={ic}
             >
-              {SIZE_OPTS.map((s) => <option key={s}>{s}</option>)}
+              {SIZE_OPTS.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
             </select>
             <input
               type="number"
@@ -530,21 +350,25 @@ function VariantRow({ variant: v, onChange, onDelete }) {
 }
 
 // ─── Product Modal ────────────────────────────────────────────────────────────
-function ProductModal({ product, onClose, onSave }) {
+function ProductModal({ product, onClose, onSave, saving }) {
   const isNew = !product.id;
 
   const [form, setForm] = useState({
-    name:      product.name      ?? "",
-    category:  product.category  ?? "Nightwear",
-    status:    product.status    ?? "Active",
-    tag:       product.tag       ?? "",
-    location:  product.location  ?? "Home",
-    price:     product.price     ?? 0,
+    name: product.name ?? "",
+    category: product.category ?? "Nightwear",
+    status: product.status ?? "Active",
+    tag: product.tag ?? "",
+    location: product.location ?? "Home",
+    price: product.price ?? 0,
+    discountPrice: product.discountPrice ?? null,
     sizeGuide: product.sizeGuide ?? null,
   });
 
   const [variants, setVariants] = useState(
-    (product.variants ?? []).map((v) => ({ ...v, sizes: v.sizes ? [...v.sizes] : [] }))
+    (product.variants ?? []).map((v) => ({
+      ...v,
+      sizes: v.sizes ? [...v.sizes] : [],
+    })),
   );
   const [error, setError] = useState("");
 
@@ -553,40 +377,75 @@ function ProductModal({ product, onClose, onSave }) {
   const addVariant = () =>
     setVariants((vs) => [
       ...vs,
-      { id: newVid(), sizes: [{ size: "S", stock: 0 }], color: "Blush", colorHex: "#e8c4b8", sku: "", image: null },
+      {
+        sizes: [{ size: "S", stock: 0 }],
+        color: "Blush",
+        colorHex: "#e8c4b8",
+        sku: "",
+        image: null,
+      },
     ]);
 
-  const updateVariant = (id, updated) =>
-    setVariants((vs) => vs.map((v) => (v.id === id ? updated : v)));
-
-  const removeVariant = (id) => setVariants((vs) => vs.filter((v) => v.id !== id));
+  const updateVariant = (i, updated) =>
+    setVariants((vs) => vs.map((v, idx) => (idx === i ? updated : v)));
+  const removeVariant = (i) =>
+    setVariants((vs) => vs.filter((_, idx) => idx !== i));
 
   const handleSave = () => {
-    if (!form.name.trim())                    { setError("Product name is required."); return; }
-    if (form.price <= 0)                      { setError("Please set a valid price."); return; }
-    if (variants.length === 0)                { setError("Add at least one variant."); return; }
-    if (variants.some((v) => !v.image))       { setError("Every variant requires an image."); return; }
-    if (variants.some((v) => !v.sku.trim()))  { setError("All variants need a SKU."); return; }
+    if (!form.name.trim()) {
+      setError("Product name is required.");
+      return;
+    }
+    if (form.price <= 0) {
+      setError("Please set a valid price.");
+      return;
+    }
+    if (form.discountPrice !== null && form.discountPrice >= form.price) {
+      setError("Discount price must be less than the original price.");
+      return;
+    }
+    if (variants.length === 0) {
+      setError("Add at least one variant.");
+      return;
+    }
+    if (variants.some((v) => !v.image)) {
+      setError("Every variant requires an image.");
+      return;
+    }
+    if (variants.some((v) => !v.sku.trim())) {
+      setError("All variants need a SKU.");
+      return;
+    }
     const skus = variants.map((v) => v.sku.trim());
-    if (new Set(skus).size !== skus.length)   { setError("Each variant must have a unique SKU."); return; }
+    if (new Set(skus).size !== skus.length) {
+      setError("Each variant must have a unique SKU.");
+      return;
+    }
     if (variants.some((v) => !v.sizes || v.sizes.length === 0)) {
       setError("Each variant needs at least one size.");
       return;
     }
     setError("");
+    const cleanVariants = variants.map(({ id, sizes, ...rest }) => ({
+      ...rest,
+      sizes: (sizes ?? []).map(({ id, ...size }) => size),
+    }));
+
     onSave({
-      ...product,
+      ...(product.id ? { id: product.id } : {}),
       ...form,
-      tag:      form.tag || null,
-      variants,
-      id:       product.id || Date.now(),
-      sales:    product.sales ?? 0,
+      tag: form.tag || null,
+      variants: cleanVariants,
+      sales: product.sales ?? 0,
     });
   };
 
-  const fieldLabel  = "text-[10px] font-medium tracking-[0.08em] uppercase text-[#b4b2a9] mb-1 block";
-  const fieldInput  = "w-full text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#1a1916] transition-colors";
-  const fieldSelect = "w-full text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none focus:border-[#1a1916] transition-colors";
+  const fieldLabel =
+    "text-[10px] font-medium tracking-[0.08em] uppercase text-[#b4b2a9] mb-1 block";
+  const fieldInput =
+    "w-full text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#1a1916] transition-colors";
+  const fieldSelect =
+    "w-full text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none focus:border-[#1a1916] transition-colors";
 
   return (
     <div
@@ -595,7 +454,6 @@ function ProductModal({ product, onClose, onSave }) {
     >
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl my-8">
         <div className="p-6">
-
           {/* Header */}
           <div className="flex items-start justify-between mb-5">
             <div>
@@ -603,7 +461,7 @@ function ProductModal({ product, onClose, onSave }) {
                 {isNew ? "New Product" : "Edit Product"}
               </p>
               <h2 className="text-xl font-medium text-[#1a1916]">
-                {isNew ? "Add Product" : (form.name || product.name)}
+                {isNew ? "Add Product" : form.name || product.name}
               </h2>
             </div>
             <button
@@ -631,8 +489,14 @@ function ProductModal({ product, onClose, onSave }) {
               </div>
               <div>
                 <label className={fieldLabel}>Category</label>
-                <select className={fieldSelect} value={form.category} onChange={(e) => set("category", e.target.value)}>
-                  {CATEGORIES_OPTS.map((c) => <option key={c}>{c}</option>)}
+                <select
+                  className={fieldSelect}
+                  value={form.category}
+                  onChange={(e) => set("category", e.target.value)}
+                >
+                  {CATEGORIES_OPTS.map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -647,16 +511,49 @@ function ProductModal({ product, onClose, onSave }) {
                 />
               </div>
               <div>
+                <label className={fieldLabel}>
+                  Discount Price (PKR)
+                  <span className="ml-1.5 normal-case tracking-normal font-normal text-[#b4b2a9]">
+                    optional
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  className={fieldInput}
+                  value={form.discountPrice ?? ""}
+                  onChange={(e) =>
+                    set(
+                      "discountPrice",
+                      e.target.value ? +e.target.value : null,
+                    )
+                  }
+                  placeholder="e.g. 4000"
+                />
+              </div>
+              <div>
                 <label className={fieldLabel}>Tag</label>
-                <select className={fieldSelect} value={form.tag || ""} onChange={(e) => set("tag", e.target.value)}>
+                <select
+                  className={fieldSelect}
+                  value={form.tag || ""}
+                  onChange={(e) => set("tag", e.target.value)}
+                >
                   <option value="">No tag</option>
-                  {TAG_OPTS.map((t) => <option key={t}>{t}</option>)}
+                  {TAG_OPTS.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className={fieldLabel}>Status</label>
-                <select className={fieldSelect} value={form.status} onChange={(e) => set("status", e.target.value)}>
-                  {["Active", "Draft", "Archived"].map((s) => <option key={s}>{s}</option>)}
+                <select
+                  className={fieldSelect}
+                  value={form.status}
+                  onChange={(e) => set("status", e.target.value)}
+                >
+                  {["Active", "Draft", "Archived"].map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -674,9 +571,11 @@ function ProductModal({ product, onClose, onSave }) {
               {LOCATION_OPTS.map((loc) => {
                 const isActive = form.location === loc;
                 const activeStyle =
-                  loc === "Home"         ? "bg-[#e6f1fb] text-[#185fa5] border-[#85b7eb]"
-                  : loc === "Collection" ? "bg-[#eeedfe] text-[#534ab7] border-[#afa9ec]"
-                  :                       "bg-[#e1f5ee] text-[#0f6e56] border-[#5dcaa5]";
+                  loc === "Home"
+                    ? "bg-[#e6f1fb] text-[#185fa5] border-[#85b7eb]"
+                    : loc === "Collection"
+                      ? "bg-[#eeedfe] text-[#534ab7] border-[#afa9ec]"
+                      : "bg-[#e1f5ee] text-[#0f6e56] border-[#5dcaa5]";
                 return (
                   <button
                     key={loc}
@@ -701,7 +600,7 @@ function ProductModal({ product, onClose, onSave }) {
               Size Guide
             </p>
             <p className="text-[11px] text-[#888780] mb-3">
-              Upload a size chart or measurement guide shown to customers on the product page.
+              Upload a size chart shown to customers on the product page.
             </p>
             <ImageUploadButton
               value={form.sizeGuide}
@@ -722,7 +621,9 @@ function ProductModal({ product, onClose, onSave }) {
                 </p>
                 <p className="text-[11px] text-[#888780] mt-0.5">
                   Each variant needs an image{" "}
-                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#fcebeb] text-[#a32d2d]">required</span>
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#fcebeb] text-[#a32d2d]">
+                    required
+                  </span>
                   , colour, SKU — and sizes with stock below
                 </p>
               </div>
@@ -755,18 +656,21 @@ function ProductModal({ product, onClose, onSave }) {
                     style={{ gridTemplateColumns: "52px 1fr 112px 28px" }}
                   >
                     {["Image *", "Colour", "SKU", ""].map((h) => (
-                      <p key={h} className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]">
+                      <p
+                        key={h}
+                        className="text-[9px] font-medium tracking-[0.15em] uppercase text-[#b4b2a9]"
+                      >
                         {h}
                       </p>
                     ))}
                   </div>
                   <div className="flex flex-col gap-2">
-                    {variants.map((v) => (
+                    {variants.map((v, i) => (
                       <VariantRow
-                        key={v.id}
+                        key={i}
                         variant={v}
-                        onChange={(updated) => updateVariant(v.id, updated)}
-                        onDelete={() => removeVariant(v.id)}
+                        onChange={(updated) => updateVariant(i, updated)}
+                        onDelete={() => removeVariant(i)}
                       />
                     ))}
                   </div>
@@ -786,9 +690,10 @@ function ProductModal({ product, onClose, onSave }) {
           {/* CTA */}
           <button
             onClick={handleSave}
-            className="w-full py-3 bg-[#1a1916] text-[#f5f2ed] text-[12px] font-medium tracking-[0.15em] uppercase rounded-xl hover:bg-[#333] transition-colors"
+            disabled={saving}
+            className="w-full py-3 bg-[#1a1916] text-[#f5f2ed] text-[12px] font-medium tracking-[0.15em] uppercase rounded-xl hover:bg-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isNew ? "Add Product" : "Save Changes"}
+            {saving ? "Saving…" : isNew ? "Add Product" : "Save Changes"}
           </button>
         </div>
       </div>
@@ -799,7 +704,6 @@ function ProductModal({ product, onClose, onSave }) {
 // ─── Product Thumbnail ────────────────────────────────────────────────────────
 function ProductThumb({ product }) {
   const src = product.variants?.find((v) => v.image)?.image || null;
-
   if (src) {
     return (
       <img
@@ -816,104 +720,251 @@ function ProductThumb({ product }) {
   );
 }
 
+// ─── Skeleton Row ─────────────────────────────────────────────────────────────
+function SkeletonRow() {
+  return (
+    <tr className="animate-pulse">
+      {[44, 200, 80, 40, 60, 60, 80, 80, 50, 80, 60].map((w, i) => (
+        <td key={i} className="py-4 pr-4">
+          <div className="h-3 rounded bg-[#f1efe8]" style={{ width: w }} />
+        </td>
+      ))}
+    </tr>
+  );
+}
+
 // ─── Main Products Page ───────────────────────────────────────────────────────
 export default function ProductsPage() {
-  const [products, setProducts] = useState(INITIAL_PRODUCTS);
-  const [search, setSearch]     = useState("");
-  const [catFilter, setCat]     = useState("All");
-  const [locFilter, setLoc]     = useState("All");
-  const [statusFilter, setStat] = useState("All");
-  const [sortBy, setSort]       = useState("sales");
-  const [page, setPage]         = useState(1);
-  const [selected, setSelected] = useState(new Set());
-  const [modal, setModal]       = useState(null);
-  const [toast, setToast]       = useState("");
+  const {
+    getProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct: apiDeleteProduct,
+  } = useProductService();
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
+  // ── Table data ──
+  const [products, setProducts] = useState([]);
+  const [meta, setMeta] = useState({
+    total: 0,
+    page: 1,
+    limit: PER_PAGE,
+    totalPages: 1,
+  });
+  const [tableLoading, setTableLoading] = useState(false);
+
+  // ── Stats (full unfiltered counts) ──
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    draft: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  });
+  const [statusCounts, setStatusCounts] = useState({
+    All: 0,
+    Active: 0,
+    Draft: 0,
+    Archived: 0,
+  });
+
+  // ── Refresh triggers ──
+  const [tableTick, setTableTick] = useState(0);
+  const [statsTick, setStatsTick] = useState(0);
+
+  // ── Filters ──
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebounced] = useState("");
+  const [catFilter, setCat] = useState("All");
+  const [locFilter, setLoc] = useState("All");
+  const [statusFilter, setStat] = useState("All");
+  const [sortBy, setSort] = useState("sales");
+  const [page, setPage] = useState(1);
+
+  // ── UI ──
+  const [selected, setSelected] = useState(new Set());
+  const [modal, setModal] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 2500);
+  };
   const resetPage = () => setPage(1);
 
-  // ── Stats ──
-  const stats = useMemo(() => ({
-    total:      products.length,
-    active:     products.filter((p) => p.status === "Active").length,
-    draft:      products.filter((p) => p.status === "Draft").length,
-    lowStock:   products.filter((p) => { const s = getTotalStock(p.variants); return s > 0 && s <= 10; }).length,
-    outOfStock: products.filter((p) => getTotalStock(p.variants) === 0).length,
-  }), [products]);
+  // Helpers that trigger refetches after mutations
+  const refreshTable = () => setTableTick((t) => t + 1);
+  const refreshStats = () => setStatsTick((t) => t + 1);
+  const refreshAll = () => {
+    refreshTable();
+    refreshStats();
+  };
 
-  // ── Filtered & sorted ──
-  const filtered = useMemo(() => {
-    let d = [...products];
-    if (search)
-      d = d.filter(
-        (p) =>
-          p.name.toLowerCase().includes(search.toLowerCase()) ||
-          p.variants.some((v) => v.sku.toLowerCase().includes(search.toLowerCase()))
-      );
-    if (catFilter !== "All")    d = d.filter((p) => p.category === catFilter);
-    if (locFilter !== "All")    d = d.filter((p) => p.location === locFilter);
-    if (statusFilter !== "All") d = d.filter((p) => p.status   === statusFilter);
+  // ── Debounce search (400 ms) ──
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebounced(search);
+      resetPage();
+    }, 400);
+    return () => clearTimeout(t);
+  }, [search]);
 
-    if      (sortBy === "name")       d.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sortBy === "sales")      d.sort((a, b) => b.sales - a.sales);
-    else if (sortBy === "stock_asc")  d.sort((a, b) => getTotalStock(a.variants) - getTotalStock(b.variants));
-    else if (sortBy === "stock_desc") d.sort((a, b) => getTotalStock(b.variants) - getTotalStock(a.variants));
-    else if (sortBy === "price_asc")  d.sort((a, b) => a.price - b.price);
-    else if (sortBy === "price_desc") d.sort((a, b) => b.price - a.price);
-    return d;
-  }, [products, search, catFilter, locFilter, statusFilter, sortBy]);
+  // ── Fetch table (paginated + filtered) ──
+  useEffect(() => {
+    let cancelled = false;
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const safePage   = Math.min(page, totalPages);
-  const pageSlice  = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+    const fetchTable = async () => {
+      setTableLoading(true);
+
+      const params = { page, limit: PER_PAGE, sortBy };
+      if (debouncedSearch) params.search = debouncedSearch;
+      if (catFilter !== "All") params.category = catFilter;
+      if (locFilter !== "All") params.location = locFilter;
+      if (statusFilter !== "All") params.status = statusFilter;
+
+      const res = await getProducts(params);
+      if (!cancelled && res) {
+        setProducts(res.data);
+        setMeta(res.meta);
+      }
+      if (!cancelled) setTableLoading(false);
+    };
+
+    fetchTable();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    debouncedSearch,
+    catFilter,
+    locFilter,
+    statusFilter,
+    sortBy,
+    page,
+    tableTick,
+  ]);
+
+  // ── Fetch stats (all products, no filters) ──
+  useEffect(() => {
+    const fetchStats = async () => {
+      // fetch all products for accurate counts — limit 999 covers reasonable catalogue sizes
+      const res = await getProducts({ limit: 999 });
+      if (!res) return;
+
+      const all = res.data;
+      const total = res.meta.total;
+
+      setStats({
+        total,
+        active: all.filter((p) => p.status === "Active").length,
+        draft: all.filter((p) => p.status === "Draft").length,
+        lowStock: all.filter((p) => {
+          const s = getTotalStock(p.variants);
+          return s > 0 && s <= 10;
+        }).length,
+        outOfStock: all.filter((p) => getTotalStock(p.variants) === 0).length,
+      });
+      setStatusCounts({
+        All: total,
+        Active: all.filter((p) => p.status === "Active").length,
+        Draft: all.filter((p) => p.status === "Draft").length,
+        Archived: all.filter((p) => p.status === "Archived").length,
+      });
+    };
+
+    fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statsTick]);
+
+  // ── Derived ──
+  const totalPages = meta.totalPages || 1;
+  const safePage = Math.min(page, totalPages);
 
   // ── Selection ──
-  const toggleRow   = (id) => setSelected((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
-  const toggleAll   = (chk) => setSelected((prev) => { const n = new Set(prev); pageSlice.forEach((o) => chk ? n.add(o.id) : n.delete(o.id)); return n; });
-  const allChecked  = pageSlice.length > 0 && pageSlice.every((o) => selected.has(o.id));
-  const someChecked = pageSlice.some((o) => selected.has(o.id));
+  const toggleRow = (id) =>
+    setSelected((p) => {
+      const n = new Set(p);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+  const toggleAll = (chk) =>
+    setSelected((prev) => {
+      const n = new Set(prev);
+      products.forEach((o) => (chk ? n.add(o.id) : n.delete(o.id)));
+      return n;
+    });
+  const allChecked =
+    products.length > 0 && products.every((o) => selected.has(o.id));
+  const someChecked = products.some((o) => selected.has(o.id));
 
   // ── CRUD ──
-  const saveProduct = (p) => {
-    if (products.find((x) => x.id === p.id)) {
-      setProducts((prev) => prev.map((x) => (x.id === p.id ? p : x)));
-      showToast(`"${p.name}" updated`);
-    } else {
-      setProducts((prev) => [p, ...prev]);
-      showToast(`"${p.name}" added`);
+  const saveProduct = async (formData) => {
+    setSaving(true);
+    try {
+      if (formData.id) {
+        // Update existing product
+        const { id, sales, ...payload } = formData;
+        const res = await updateProduct(id, payload);
+        if (res) showToast(`"${res.name}" updated`);
+      } else {
+        // Create new product — no id in payload
+        const { sales, ...payload } = formData;
+        const res = await createProduct(payload);
+        if (res) showToast(`"${res.name}" added`);
+      }
+      setModal(null);
+      refreshAll();
+    } finally {
+      setSaving(false);
     }
-    setModal(null);
-    resetPage();
   };
 
-  const deleteProduct = (id) => {
+  const handleDelete = async (id) => {
     const p = products.find((x) => x.id === id);
-    setProducts((prev) => prev.filter((x) => x.id !== id));
-    setSelected((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    await apiDeleteProduct(id);
+    setSelected((prev) => {
+      const n = new Set(prev);
+      n.delete(id);
+      return n;
+    });
     showToast(`"${p?.name}" deleted`);
+    refreshAll();
   };
 
-  const cycleStatus = (id) => {
-    setProducts((prev) =>
-      prev.map((p) => p.id === id ? { ...p, status: STATUS_CYCLE[p.status] || "Active" } : p)
-    );
+  const cycleStatus = async (id) => {
+    const p = products.find((x) => x.id === id);
+    if (!p) return;
+    const nextStatus = STATUS_CYCLE[p.status] || "Active";
+    await updateProduct(id, { status: nextStatus });
+    refreshAll();
   };
 
-  const bulkAction = (key) => {
+  const bulkAction = async (key) => {
     const ids = [...selected];
     if (key === "delete") {
-      setProducts((prev) => prev.filter((p) => !ids.includes(p.id)));
+      await Promise.all(ids.map((id) => apiDeleteProduct(id)));
       showToast(`${ids.length} product${ids.length !== 1 ? "s" : ""} deleted`);
     } else {
-      setProducts((prev) => prev.map((p) => ids.includes(p.id) ? { ...p, status: key } : p));
+      await Promise.all(ids.map((id) => updateProduct(id, { status: key })));
       showToast(`${ids.length} product${ids.length !== 1 ? "s" : ""} → ${key}`);
     }
     setSelected(new Set());
+    refreshAll();
   };
 
-  const openAdd  = () => setModal({
-    name: "", category: "Nightwear", status: "Active", tag: null,
-    location: "Home", price: 0, sizeGuide: null, variants: [], sales: 0,
+const openAdd = () =>
+  setModal({
+    name: "",
+    category: "Nightwear",
+    status: "Active",
+    tag: null,
+    location: "Home",
+    price: 0,
+    discountPrice: null,  
+    sizeGuide: null,
+    variants: [],
+    sales: 0,
   });
   const openEdit = (p) => setModal(p);
 
@@ -932,12 +983,20 @@ export default function ProductsPage() {
       `}</style>
 
       <div className="bg-[#f5f2ed] min-h-screen p-6 md:p-8 text-[#1a1916]">
-
         {/* ── Top bar ── */}
         <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="serif text-[22px] font-normal tracking-tight text-[#1a1916]">Products</h1>
-            <p className="text-[12px] text-[#b4b2a9] mt-0.5">Saturday, 18 April 2026</p>
+            <h1 className="serif text-[22px] font-normal tracking-tight text-[#1a1916]">
+              Products
+            </h1>
+            <p className="text-[12px] text-[#b4b2a9] mt-0.5">
+              {new Date().toLocaleDateString("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
           </div>
           <button
             onClick={openAdd}
@@ -954,15 +1013,34 @@ export default function ProductsPage() {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {[
-              { label: "Total Products", value: stats.total,      color: "text-[#1a1916]" },
-              { label: "Active",         value: stats.active,     color: "text-[#3b6d11]" },
-              { label: "Draft",          value: stats.draft,      color: "text-[#854f0b]" },
-              { label: "Low Stock",      value: stats.lowStock,   color: "text-[#854f0b]" },
-              { label: "Out of Stock",   value: stats.outOfStock, color: "text-[#a32d2d]" },
+              {
+                label: "Total Products",
+                value: stats.total,
+                color: "text-[#1a1916]",
+              },
+              { label: "Active", value: stats.active, color: "text-[#3b6d11]" },
+              { label: "Draft", value: stats.draft, color: "text-[#854f0b]" },
+              {
+                label: "Low Stock",
+                value: stats.lowStock,
+                color: "text-[#854f0b]",
+              },
+              {
+                label: "Out of Stock",
+                value: stats.outOfStock,
+                color: "text-[#a32d2d]",
+              },
             ].map((s) => (
-              <div key={s.label} className="bg-white border border-[#e8e5df] rounded-xl p-4">
-                <p className="text-[10px] font-medium tracking-[0.08em] uppercase text-[#b4b2a9] mb-2">{s.label}</p>
-                <p className={`text-xl font-medium leading-none ${s.color}`}>{s.value}</p>
+              <div
+                key={s.label}
+                className="bg-white border border-[#e8e5df] rounded-xl p-4"
+              >
+                <p className="text-[10px] font-medium tracking-[0.08em] uppercase text-[#b4b2a9] mb-2">
+                  {s.label}
+                </p>
+                <p className={`text-xl font-medium leading-none ${s.color}`}>
+                  {s.value}
+                </p>
               </div>
             ))}
           </div>
@@ -970,34 +1048,45 @@ export default function ProductsPage() {
 
         {/* ── Table card ── */}
         <div className="bg-white border border-[#e8e5df] rounded-xl p-5">
-
           {/* Search & filter row */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b2a9] select-none">⌕</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b2a9] select-none">
+                ⌕
+              </span>
               <input
                 type="text"
                 value={search}
-                onChange={(e) => { setSearch(e.target.value); resetPage(); }}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name or SKU…"
                 className="w-full pl-8 pr-3 py-2 text-[12px] border border-[#e8e5df] rounded-xl bg-white text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#1a1916] transition-colors"
               />
             </div>
             <select
               value={catFilter}
-              onChange={(e) => { setCat(e.target.value); resetPage(); }}
+              onChange={(e) => {
+                setCat(e.target.value);
+                resetPage();
+              }}
               className="text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none"
             >
               <option value="All">All Categories</option>
-              {CATEGORIES_OPTS.map((c) => <option key={c}>{c}</option>)}
+              {CATEGORIES_OPTS.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
             </select>
             <select
               value={locFilter}
-              onChange={(e) => { setLoc(e.target.value); resetPage(); }}
+              onChange={(e) => {
+                setLoc(e.target.value);
+                resetPage();
+              }}
               className="text-[12px] px-3 py-2 border border-[#e8e5df] rounded-xl bg-white text-[#5f5e5a] outline-none"
             >
               <option value="All">All Locations</option>
-              {LOCATION_OPTS.map((l) => <option key={l}>{l}</option>)}
+              {LOCATION_OPTS.map((l) => (
+                <option key={l}>{l}</option>
+              ))}
             </select>
             <select
               value={sortBy}
@@ -1013,12 +1102,15 @@ export default function ProductsPage() {
             </select>
           </div>
 
-          {/* Status tabs */}
+          {/* Status tabs — counts from the stats fetch, not the current page */}
           <div className="flex gap-1.5 flex-wrap mb-4">
             {["All", "Active", "Draft", "Archived"].map((s) => (
               <button
                 key={s}
-                onClick={() => { setStat(s); resetPage(); }}
+                onClick={() => {
+                  setStat(s);
+                  resetPage();
+                }}
                 className={`text-[11px] font-medium px-3.5 py-1.5 rounded-lg transition-all ${
                   statusFilter === s
                     ? "bg-[#1a1916] text-[#f5f2ed]"
@@ -1026,8 +1118,10 @@ export default function ProductsPage() {
                 }`}
               >
                 {s}
-                <span className={`ml-1.5 text-[10px] ${statusFilter === s ? "opacity-60" : "opacity-50"}`}>
-                  {s === "All" ? products.length : products.filter((p) => p.status === s).length}
+                <span
+                  className={`ml-1.5 text-[10px] ${statusFilter === s ? "opacity-60" : "opacity-50"}`}
+                >
+                  {statusCounts[s] ?? 0}
                 </span>
               </button>
             ))}
@@ -1035,7 +1129,11 @@ export default function ProductsPage() {
 
           {/* Bulk bar */}
           {selected.size > 0 && (
-            <BulkBar count={selected.size} onAction={bulkAction} onClear={() => setSelected(new Set())} />
+            <BulkBar
+              count={selected.size}
+              onAction={bulkAction}
+              onClear={() => setSelected(new Set())}
+            />
           )}
 
           {/* Select-all row */}
@@ -1050,7 +1148,7 @@ export default function ProductsPage() {
               Select all visible
             </label>
             <span className="ml-auto text-[11px] text-[#b4b2a9]">
-              {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+              {meta.total} product{meta.total !== 1 ? "s" : ""} found
             </span>
           </div>
 
@@ -1059,155 +1157,210 @@ export default function ProductsPage() {
             <table className="w-full min-w-[880px]">
               <thead>
                 <tr className="border-b border-[#e8e5df]">
-                  {["", "Product", "Category", "Variants", "Colours", "Total Stock", "Price", "Location", "Sales", "Status", ""].map((h, i) => (
-                    <th key={i} className="text-left text-[9px] tracking-[0.18em] uppercase text-[#b4b2a9] font-medium pb-3 pr-4 last:pr-0">
+                  {[
+                    "",
+                    "Product",
+                    "Category",
+                    "Variants",
+                    "Colours",
+                    "Total Stock",
+                    "Price",
+                    "Location",
+                    "Sales",
+                    "Status",
+                    "",
+                  ].map((h, i) => (
+                    <th
+                      key={i}
+                      className="text-left text-[9px] tracking-[0.18em] uppercase text-[#b4b2a9] font-medium pb-3 pr-4 last:pr-0"
+                    >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f5f2ed]">
-                {pageSlice.length === 0 ? (
+                {/* Loading skeletons */}
+                {tableLoading &&
+                  products.length === 0 &&
+                  Array.from({ length: PER_PAGE }).map((_, i) => (
+                    <SkeletonRow key={i} />
+                  ))}
+
+                {/* Empty state */}
+                {!tableLoading && products.length === 0 && (
                   <tr>
-                    <td colSpan={11} className="py-14 text-center text-[12px] text-[#b4b2a9]">
+                    <td
+                      colSpan={11}
+                      className="py-14 text-center text-[12px] text-[#b4b2a9]"
+                    >
                       No products match your filters
                     </td>
                   </tr>
-                ) : (
-                  pageSlice.map((p) => {
-                    const stock  = getTotalStock(p.variants);
-                    const colors = getColors(p.variants);
-                    const isOut  = stock === 0;
-                    const isLow  = !isOut && stock <= 10;
+                )}
 
-                    return (
-                      <tr
-                        key={p.id}
-                        className={`transition-colors ${selected.has(p.id) ? "bg-[#f5f2f0]" : "hover:bg-[#fafaf8]"}`}
-                      >
-                        {/* Checkbox */}
-                        <td className="py-3.5 pr-3 w-5">
-                          <input
-                            type="checkbox"
-                            checked={selected.has(p.id)}
-                            onChange={() => toggleRow(p.id)}
-                            className="accent-[#1a1916] w-3.5 h-3.5 cursor-pointer"
-                          />
-                        </td>
+                {/* Rows (slightly dimmed while re-fetching) */}
+                {products.map((p) => {
+                  const stock = getTotalStock(p.variants);
+                  const colors = getColors(p.variants);
+                  const isOut = stock === 0;
+                  const isLow = !isOut && stock <= 10;
 
-                        {/* Product */}
-                        <td className="py-3.5 pr-4">
-                          <div className="flex items-center gap-2.5">
-                            <ProductThumb product={p} />
-                            <div>
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <p className="text-[12px] font-medium text-[#1a1916]">{p.name}</p>
-                                {p.tag && (
-                                  <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#f1efe8] text-[#5f5e5a]">
-                                    {p.tag}
-                                  </span>
-                                )}
-                              </div>
+                  return (
+                    <tr
+                      key={p.id}
+                      className={`transition-all ${selected.has(p.id) ? "bg-[#f5f2f0]" : "hover:bg-[#fafaf8]"} ${tableLoading ? "opacity-50" : ""}`}
+                    >
+                      {/* Checkbox */}
+                      <td className="py-3.5 pr-3 w-5">
+                        <input
+                          type="checkbox"
+                          checked={selected.has(p.id)}
+                          onChange={() => toggleRow(p.id)}
+                          className="accent-[#1a1916] w-3.5 h-3.5 cursor-pointer"
+                        />
+                      </td>
+
+                      {/* Product */}
+                      <td className="py-3.5 pr-4">
+                        <div className="flex items-center gap-2.5">
+                          <ProductThumb product={p} />
+                          <div>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <p className="text-[12px] font-medium text-[#1a1916]">
+                                {p.name}
+                              </p>
+                              {p.tag && (
+                                <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#f1efe8] text-[#5f5e5a]">
+                                  {p.tag}
+                                </span>
+                              )}
                             </div>
                           </div>
-                        </td>
+                        </div>
+                      </td>
 
-                        {/* Category */}
-                        <td className="py-3.5 pr-4">
-                          <span className="text-[11px] text-[#5f5e5a]">{p.category}</span>
-                        </td>
+                      {/* Category */}
+                      <td className="py-3.5 pr-4">
+                        <span className="text-[11px] text-[#5f5e5a]">
+                          {p.category}
+                        </span>
+                      </td>
 
-                        {/* Variants count */}
-                        <td className="py-3.5 pr-4">
-                          <span className="text-[11px] font-medium bg-[#f1efe8] text-[#5f5e5a] px-2 py-0.5 rounded-md">
-                            {p.variants.length}
-                          </span>
-                        </td>
+                      {/* Variants count */}
+                      <td className="py-3.5 pr-4">
+                        <span className="text-[11px] font-medium bg-[#f1efe8] text-[#5f5e5a] px-2 py-0.5 rounded-md">
+                          {p.variants.length}
+                        </span>
+                      </td>
 
-                        {/* Colour swatches */}
-                        <td className="py-3.5 pr-4">
-                          <div className="flex gap-1 items-center">
-                            {colors.slice(0, 5).map((hex, i) => (
-                              <span
-                                key={i}
-                                className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0"
-                                style={{ background: hex }}
-                              />
-                            ))}
-                            {colors.length > 5 && (
-                              <span className="text-[9px] text-[#b4b2a9]">+{colors.length - 5}</span>
-                            )}
-                          </div>
-                        </td>
-
-                        {/* Total Stock */}
-                        <td className="py-3.5 pr-4">
-                          <div className="flex items-center gap-1.5">
-                            <span className={`text-[12px] font-medium ${isOut ? "text-[#a32d2d]" : isLow ? "text-[#854f0b]" : "text-[#1a1916]"}`}>
-                              {stock}
+                      {/* Colour swatches */}
+                      <td className="py-3.5 pr-4">
+                        <div className="flex gap-1 items-center">
+                          {colors.slice(0, 5).map((hex, i) => (
+                            <span
+                              key={i}
+                              className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0"
+                              style={{ background: hex }}
+                            />
+                          ))}
+                          {colors.length > 5 && (
+                            <span className="text-[9px] text-[#b4b2a9]">
+                              +{colors.length - 5}
                             </span>
-                            {isOut && (
-                              <span className="text-[9px] font-semibold bg-[#fcebeb] text-[#a32d2d] px-1.5 py-0.5 rounded">
-                                OUT
-                              </span>
-                            )}
-                            {isLow && (
-                              <span className="text-[9px] font-semibold bg-[#faeeda] text-[#854f0b] px-1.5 py-0.5 rounded">
-                                LOW
-                              </span>
-                            )}
-                          </div>
-                        </td>
+                          )}
+                        </div>
+                      </td>
 
-                        {/* Price — single price per product */}
-                        <td className="py-3.5 pr-4">
-                          <span className="text-[12px] font-medium text-[#1a1916]">
-                            PKR {p.price.toLocaleString()}
-                          </span>
-                        </td>
-
-                        {/* Location */}
-                        <td className="py-3.5 pr-4">
-                          <LocationBadge location={p.location} />
-                        </td>
-
-                        {/* Sales */}
-                        <td className="py-3.5 pr-4">
-                          <span className="text-[11px] text-[#5f5e5a]">{p.sales.toLocaleString()}</span>
-                        </td>
-
-                        {/* Status */}
-                        <td className="py-3.5 pr-4">
-                          <button
-                            onClick={() => cycleStatus(p.id)}
-                            title="Click to cycle: Active → Draft → Archived"
-                            className="hover:opacity-75 transition-opacity"
+                      {/* Total Stock */}
+                      <td className="py-3.5 pr-4">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-[12px] font-medium ${isOut ? "text-[#a32d2d]" : isLow ? "text-[#854f0b]" : "text-[#1a1916]"}`}
                           >
-                            <StatusPill status={p.status} />
-                          </button>
-                        </td>
+                            {stock}
+                          </span>
+                          {isOut && (
+                            <span className="text-[9px] font-semibold bg-[#fcebeb] text-[#a32d2d] px-1.5 py-0.5 rounded">
+                              OUT
+                            </span>
+                          )}
+                          {isLow && (
+                            <span className="text-[9px] font-semibold bg-[#faeeda] text-[#854f0b] px-1.5 py-0.5 rounded">
+                              LOW
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                        {/* Actions */}
-                        <td className="py-3.5">
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              onClick={() => openEdit(p)}
-                              className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] hover:bg-[#1a1916] hover:text-[#f5f2ed] hover:border-[#1a1916] transition-all"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => deleteProduct(p.id)}
-                              className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg bg-[#fcebeb] text-[#a32d2d] hover:bg-[#e24b4a] hover:text-white transition-all"
-                            >
-                              Del
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
+                      {/* Price */}
+                      {/* <td className="py-3.5 pr-4">
+                        <span className="text-[12px] font-medium text-[#1a1916]">
+                          PKR {p.price.toLocaleString()}
+                        </span>
+                      </td> */}
+                      <td className="py-3.5 pr-4">
+  <div className="flex flex-col gap-0.5">
+    {p.discountPrice ? (
+      <>
+        <span className="text-[12px] font-medium text-[#1a1916]">
+          PKR {p.discountPrice.toLocaleString()}
+        </span>
+        <span className="text-[10px] text-[#b4b2a9] line-through">
+          PKR {p.price.toLocaleString()}
+        </span>
+      </>
+    ) : (
+      <span className="text-[12px] font-medium text-[#1a1916]">
+        PKR {p.price.toLocaleString()}
+      </span>
+    )}
+  </div>
+</td>
+
+                      {/* Location */}
+                      <td className="py-3.5 pr-4">
+                        <LocationBadge location={p.location} />
+                      </td>
+
+                      {/* Sales */}
+                      <td className="py-3.5 pr-4">
+                        <span className="text-[11px] text-[#5f5e5a]">
+                          {p.sales.toLocaleString()}
+                        </span>
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-3.5 pr-4">
+                        <button
+                          onClick={() => cycleStatus(p.id)}
+                          title="Click to cycle: Active → Draft → Archived"
+                          className="hover:opacity-75 transition-opacity"
+                        >
+                          <StatusPill status={p.status} />
+                        </button>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-3.5">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => openEdit(p)}
+                            className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] hover:bg-[#1a1916] hover:text-[#f5f2ed] hover:border-[#1a1916] transition-all"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p.id)}
+                            className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg bg-[#fcebeb] text-[#a32d2d] hover:bg-[#e24b4a] hover:text-white transition-all"
+                          >
+                            Del
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1216,10 +1369,10 @@ export default function ProductsPage() {
           <div className="flex items-center justify-between mt-5 flex-wrap gap-3">
             <p className="text-[11px] text-[#b4b2a9]">
               Showing{" "}
-              {filtered.length === 0
+              {meta.total === 0
                 ? 0
-                : `${(safePage - 1) * PER_PAGE + 1}–${Math.min(safePage * PER_PAGE, filtered.length)}`}{" "}
-              of {filtered.length}
+                : `${(safePage - 1) * PER_PAGE + 1}–${Math.min(safePage * PER_PAGE, meta.total)}`}{" "}
+              of {meta.total}
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -1234,7 +1387,9 @@ export default function ProductsPage() {
                   key={n}
                   onClick={() => setPage(n)}
                   className={`text-[11px] font-medium w-8 h-8 rounded-lg transition-all ${
-                    n === safePage ? "bg-[#1a1916] text-[#f5f2ed]" : "text-[#5f5e5a] hover:bg-[#f1efe8]"
+                    n === safePage
+                      ? "bg-[#1a1916] text-[#f5f2ed]"
+                      : "text-[#5f5e5a] hover:bg-[#f1efe8]"
                   }`}
                 >
                   {n}
@@ -1249,7 +1404,6 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -1259,6 +1413,7 @@ export default function ProductsPage() {
           product={modal}
           onClose={() => setModal(null)}
           onSave={saveProduct}
+          saving={saving}
         />
       )}
 
