@@ -9,48 +9,50 @@ export default function Navbar({
   onWishlistOpen,
   user,
   onUserClick,
-  currentPage
+  currentPage,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const allLinks = [
-  { label: "Home", href: "/" },
-  { label: "Collection", href: "/collection" },
-  { label: "About", href: "/about" },
-];
+    { label: "Home", href: "/" },
+    { label: "Collection", href: "/collection" },
+    { label: "About", href: "/about" },
+  ];
 
-// inside the component, after userInitials:
-const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
+  // inside the component, after userInitials:
+  const navLinks = allLinks.filter(
+    (l) => l.label.toLowerCase() !== currentPage,
+  );
 
   const menuCols = [
-  {
-    title: "Shop",
-    links: [
-      { label: "New In", href: "/collection" },
-      { label: "Nightwear", href: "/collection" },
-      { label: "Loungewear", href: "/collection" },
-      { label: "Sets", href: "/collection" },
-      { label: "Robes", href: "/collection" },
-    ],
-  },
-  {
-    title: "Discover",
-    links: [
-      { label: "The Edit", href: "#" },
-      { label: "Campaign", href: "#" },
-      { label: "About Us", href: "/about" },
-      { label: "Sustainability", href: "#" },
-    ],
-  },
-  {
-    title: "Help",
-    links: [
-      { label: "Size Guide", href: "#" },
-      { label: "Shipping", href: "#" },
-      { label: "Returns", href: "#" },
-      { label: "Contact", href: "#" },
-    ],
-  },
-];
+    {
+      title: "Shop",
+      links: [
+        { label: "New In", href: "/collection" },
+        { label: "Nightwear", href: "/collection" },
+        { label: "Loungewear", href: "/collection" },
+        { label: "Sets", href: "/collection" },
+        { label: "Robes", href: "/collection" },
+      ],
+    },
+    {
+      title: "Discover",
+      links: [
+        { label: "The Edit", href: "#" },
+        { label: "Campaign", href: "#" },
+        { label: "About Us", href: "/about" },
+        { label: "Sustainability", href: "#" },
+      ],
+    },
+    {
+      title: "Help",
+      links: [
+        { label: "Size Guide", href: "#" },
+        { label: "Shipping", href: "#" },
+        { label: "Returns", href: "#" },
+        { label: "Contact", href: "#" },
+      ],
+    },
+  ];
 
   const userInitials = user
     ? user.name
@@ -73,13 +75,16 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
             {menuOpen ? "Close" : "Menu"}
           </button>
           <nav className="hidden md:flex items-center gap-7">
-  {navLinks.map((l) => (
-    <a key={l.href} href={l.href}
-      className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors">
-      {l.label}
-    </a>
-  ))}
-</nav>
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-[11px] tracking-[0.2em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
         </div>
 
         {/* Logo */}
@@ -92,7 +97,15 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
             onClick={onWishlistOpen}
             aria-label="Wishlist"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              className="text-stone-700"
+            >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             {wishlistCount > 0 && (
@@ -107,7 +120,15 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
             onClick={onCartOpen}
             aria-label="Bag"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              className="text-stone-700"
+            >
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 01-8 0" />
@@ -129,7 +150,15 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
                 {userInitials}
               </div>
             ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="text-stone-700">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                className="text-stone-700"
+              >
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
@@ -163,16 +192,16 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
                     {col.title}
                   </p>
                   <div className="flex flex-col gap-1">
-                  {col.links.map((link) => (
-  <a
-    key={link.label}
-    href={link.href}
-    onClick={() => setMenuOpen(false)}
-    className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
-  >
-    {link.label}
-  </a>
-))}
+                    {col.links.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="text-[13px] text-stone-600 tracking-wide hover:text-stone-900 transition-colors py-1"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -203,11 +232,16 @@ const navLinks = allLinks.filter((l) => l.label.toLowerCase() !== currentPage);
             {/* Bottom strip */}
             <div className="border-t border-stone-100 px-6 md:px-12 py-3 flex items-center justify-between">
               <div className="flex gap-6">
-                {["Free shipping over PKR 5,000", "Easy returns"].map((note) => (
-                  <span key={note} className="text-[10px] tracking-wide text-stone-400">
-                    {note}
-                  </span>
-                ))}
+                {["Free shipping over PKR 5,000", "Easy returns"].map(
+                  (note) => (
+                    <span
+                      key={note}
+                      className="text-[10px] tracking-wide text-stone-400"
+                    >
+                      {note}
+                    </span>
+                  ),
+                )}
               </div>
               <button
                 onClick={() => setMenuOpen(false)}
