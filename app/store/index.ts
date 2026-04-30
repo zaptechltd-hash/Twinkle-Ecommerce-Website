@@ -44,6 +44,9 @@ const cartSlice = createSlice({
     removeFromCart(state, action: PayloadAction<number>) {
       state.splice(action.payload, 1);
     },
+      clearCart() {       // ← add this
+      return [];
+    },
   },
 });
 
@@ -105,7 +108,7 @@ export const store = configureStore({
 export const persistor = persistStore(store);
 
 // ── Exports ────────────────────────────────────────────
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 export const { toggleWishlist, removeFromWishlist } = wishlistSlice.actions;
 export const { login, logout } = authSlice.actions;
 
