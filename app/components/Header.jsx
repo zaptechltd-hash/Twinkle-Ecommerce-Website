@@ -88,7 +88,15 @@ export default function Navbar({
         </div>
 
         {/* Logo */}
-        <Image src="/logo.png" alt="TwinkleOfficial" width={80} height={40} />
+        <Image
+  src="/logo.png"
+  alt="TwinkleOfficial"
+  width={80}
+  height={40}
+  style={{ width: "80px", height: "auto" }}
+  loading="eager"
+  priority
+/>
 
         {/* Right icons */}
         <div className="flex items-center gap-5">

@@ -1,31 +1,17 @@
-// ─── Shared ───────────────────────────────────────────────────────────────
-
-export interface SizeStockPayload {
-  size: string;
-  stock: number;
-}
-
-export interface VariantPayload {
-  color: string;
-  colorHex: string;
-  sku: string;
-  image?: string;
-  sizes: SizeStockPayload[];
-}
-
 // ─── Query / Filters ──────────────────────────────────────────────────────
 
-export type ProductCategory = "Nightwear" | "Robes" | "Loungewear" | "Sets";
-export type ProductLocation  = "Home" | "Collection" | "Both";
-export type ProductStatus    = "Active" | "Draft" | "Archived";
+export type ProductCategory = 'Nightwear' | 'Robes' | 'Loungewear' | 'Sets';
+export type ProductLocation  = 'Home' | 'Collection' | 'Both';
+export type ProductStatus    = 'Active' | 'Draft' | 'Archived';
+export type ProductSize      = 'S' | 'M' | 'L' | 'XL';
 export type ProductSortBy    =
-  | "sales"
-  | "name"
-  | "price_asc"
-  | "price_desc"
-  | "createdAt"
-  | "stock_asc"
-  | "stock_desc";
+  | 'sales'
+  | 'name'
+  | 'price_asc'
+  | 'price_desc'
+  | 'createdAt'
+  | 'stock_asc'
+  | 'stock_desc';
 
 export interface ProductQueryParams {
   search?:   string;
@@ -37,53 +23,64 @@ export interface ProductQueryParams {
   sortBy?:   ProductSortBy;
 }
 
+// ─── Shared sub-shapes ────────────────────────────────────────────────────
+
+export interface ProductImagePayload {
+  url:    string;
+  order?: number;
+}
+
+export interface ProductSizePayload {
+  size:  ProductSize;
+  stock: number;
+}
+
 // ─── Request bodies ───────────────────────────────────────────────────────
 
 export interface CreateProductPayload {
-  name:       string;
-  category:   ProductCategory;
-  status:     ProductStatus;
-  tag?:       string;
-  price:      number;
-  discountPrice?: number;
-  location:   ProductLocation;
-  sizeGuide?: Record<string, unknown>;
-  variants:   VariantPayload[];
+  name:           string;
+  description?:   string | null;
+  category:       ProductCategory;
+  status:         ProductStatus;
+  tag?:           string | null;
+  price:          number;
+  discountPrice?: number | null;
+  location:       ProductLocation;
+  images:         ProductImagePayload[];
+  sizes:          ProductSizePayload[];
 }
 
 export type UpdateProductPayload = Partial<CreateProductPayload>;
 
 // ─── Responses ────────────────────────────────────────────────────────────
 
-export interface SizeStock {
+export interface ProductImageResponse {
   id:    string;
-  size:  string;
+  url:   string;
+  order: number;
+}
+
+export interface ProductSizeResponse {
+  id:    string;
+  size:  ProductSize;
   stock: number;
 }
 
-export interface ProductVariant {
-  id:       string;
-  color:    string;
-  colorHex: string;
-  sku:      string;
-  image:    string | null;
-  sizes:    SizeStock[];
-}
-
 export interface Product {
-  id:        string;
-  name:      string;
-  category:  ProductCategory;
-  status:    ProductStatus;
-  tag:       string | null;
-  price:     number;
+  id:           string;
+  name:         string;
+  description:  string | null;
+  category:     ProductCategory;
+  status:       ProductStatus;
+  tag:          string | null;
+  price:        number;
   discountPrice: number | null;
-  location:  ProductLocation;
-  sizeGuide: Record<string, unknown> | null;
-  sales:     number;
-  createdAt: string;
-  updatedAt: string;
-  variants:  ProductVariant[];
+  location:     ProductLocation;
+  sales:        number;
+  images:       ProductImageResponse[];
+  sizes:        ProductSizeResponse[];
+  createdAt:    string;
+  updatedAt:    string;
 }
 
 export interface PaginatedProductsResponse {

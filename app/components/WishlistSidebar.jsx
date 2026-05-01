@@ -2,13 +2,14 @@
 import { useState } from "react";
 
 function QuickAddModal({ item, onClose, onConfirm }) {
-  const variant = item.variants?.[0];
-  const sizes = variant?.sizes ?? [];
+  // Flat backend: sizes = [{ id, size, stock }, ...]
+  const sizes = item.sizes ?? [];
   const [selectedSize, setSelectedSize] = useState("");
 
   const effectivePrice = item.discountPrice ?? item.price;
-  const hasDiscount = item.discountPrice && item.discountPrice < item.price;
-  const imageSrc = variant?.image ?? item.images?.[0] ?? item.image ?? "/placeholder.jpg";
+  const hasDiscount =
+    item.discountPrice != null && item.discountPrice < item.price;
+  const imageSrc = item.images?.[0]?.url ?? "/placeholder.jpg";
 
   return (
     <div
@@ -61,7 +62,9 @@ function QuickAddModal({ item, onClose, onConfirm }) {
                   key={s.size}
                   onClick={() => !out && setSelectedSize(s.size)}
                   disabled={out}
-                  title={out ? "Out of stock" : low ? `Only ${s.stock} left` : ""}
+                  title={
+                    out ? "Out of stock" : low ? `Only ${s.stock} left` : ""
+                  }
                   className={`w-10 h-10 text-[11px] tracking-wide border transition-all relative ${
                     selectedSize === s.size
                       ? "border-stone-800 bg-stone-800 text-white"
@@ -103,7 +106,12 @@ function QuickAddModal({ item, onClose, onConfirm }) {
   );
 }
 
-export default function WishlistSidebar({ wishlist, onClose, onRemove, onMoveToCart }) {
+export default function WishlistSidebar({
+  wishlist,
+  onClose,
+  onRemove,
+  onMoveToCart,
+}) {
   const [quickAddItem, setQuickAddItem] = useState(null);
   const [quickAddIndex, setQuickAddIndex] = useState(null);
 
@@ -148,10 +156,11 @@ export default function WishlistSidebar({ wishlist, onClose, onRemove, onMoveToC
               </p>
             )}
             {wishlist.map((item, i) => {
-              const variant = item.variants?.[0];
-              const imageSrc = variant?.image ?? item.images?.[0] ?? item.image ?? "/placeholder.jpg";
+              // Flat backend: images = [{ id, url, order }, ...]
+              const imageSrc = item.images?.[0]?.url ?? "/placeholder.jpg";
               const effectivePrice = item.discountPrice ?? item.price;
-              const hasDiscount = item.discountPrice && item.discountPrice < item.price;
+              const hasDiscount =
+                item.discountPrice != null && item.discountPrice < item.price;
 
               return (
                 <div key={i} className="flex gap-4">
