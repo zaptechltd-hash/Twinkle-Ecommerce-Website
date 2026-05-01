@@ -1,7 +1,9 @@
 // ── Request Payloads ──────────────────────────────────────────
 
+
 export interface ValidateCouponPayload {
   code: string;
+  subtotal: number;
 }
 
 export interface CreateCouponPayload {
@@ -30,7 +32,8 @@ export interface Coupon {
 
 export interface ValidateCouponResponse {
   valid: boolean;
-  coupon?: Coupon;
+  code: string;
+  discountAmount: number; // ✅ add this
   message?: string;
 }
 

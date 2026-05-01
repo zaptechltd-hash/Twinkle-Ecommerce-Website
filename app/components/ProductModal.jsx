@@ -1,46 +1,37 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
-export default function ProductModal({ product, onClose, onAddToCart, onWishlistToggle, wishlisted }) {
+export default function ProductModal({
+  product,
+  onClose,
+  onAddToCart,
+  onWishlistToggle,
+  wishlisted,
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [added, setAdded] = useState(false);
-  const [qty, setQty] = useState(1);
-
-  // Derive unique colors from variants FIRST
-  const colors = useMemo(() => {
-    if (!product?.variants?.length) return [];
-    return [...new Map(product.variants.map((v) => [v.color, v])).values()];
-  }, [product]);
-
-  // Now initialize selectedColor using colors
-  const [selectedColor, setSelectedColor] = useState(() => colors[0]?.color ?? "");
   const [selectedSize, setSelectedSize] = useState("");
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
 
   if (!product) return null;
 
-  const variantsForColor = product.variants?.filter((v) => v.color === selectedColor) ?? [];
+  // Backend: images is [{id, url, order}, ...] already sorted by order
+  const images = product.images ?? [];
+  const activeImage = images[activeIndex]?.url ?? "/placeholder.jpg";
 
-  const sizesForColor = variantsForColor.flatMap((v) =>
-    v.sizes ?? [{ size: v.size, stock: v.stock ?? 99 }]
-  );
+  // Backend: sizes is [{id, size, stock}, ...]
+  const sizes = product.sizes ?? [];
 
-  const selectedSizeEntry = sizesForColor.find((s) => s.size === selectedSize);
-  const currentVariant = variantsForColor[0];
-  const displayPrice = currentVariant?.price ?? product.price ?? 0;
-  const colorObj = colors.find((c) => c.color === selectedColor);
-
-  const stockCount = selectedSizeEntry?.stock ?? null;
+  const selectedEntry = sizes.find((s) => s.size === selectedSize);
+  const stockCount = selectedEntry?.stock ?? null;
   const isOut = stockCount === 0;
-  const isLow = stockCount !== null && stockCount > 0 && stockCount <= 5;
+  const isLow = stockCount != null && stockCount > 0 && stockCount <= 5;
 
-  function handleColorSelect(color) {
-    setSelectedColor(color);
-    setSelectedSize("");
-  }
+  const effectivePrice = product.discountPrice ?? product.price ?? 0;
 
   function handleAdd() {
     if (!selectedSize || isOut) return;
-    onAddToCart({ ...product, selectedSize, selectedColor, qty });
+    onAddToCart({ ...product, selectedSize, qty });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   }
@@ -55,22 +46,17 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
         className="bg-white w-full md:max-w-3xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Image pane */}
+        {/* ── Image pane ── */}
         <div className="w-full md:w-1/2 relative flex-shrink-0">
           <img
-            src={
-              colorObj?.image ||
-              product.variants?.find((v) => v.color === selectedColor && v.image)?.image ||
-              product.images?.[activeIndex] ||
-              product.image
-            }
+            src={activeImage}
             alt={product.name}
             className="w-full h-[340px] md:h-full object-cover"
             style={{ minHeight: 340 }}
           />
-          {product.images?.length > 1 && (
+          {images.length > 1 && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {product.images.map((_, i) => (
+              {images.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveIndex(i)}
@@ -83,7 +69,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
           )}
         </div>
 
-        {/* Info pane */}
+        {/* ── Info pane ── */}
         <div className="w-full md:w-1/2 p-8 flex flex-col gap-5">
           <button
             onClick={onClose}
@@ -92,8 +78,11 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
             Close
           </button>
 
+          {/* Name + tag + price */}
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">TwinkleOfficial</p>
+            <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">
+              TwinkleOfficial
+            </p>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-light tracking-[0.15em] text-stone-800 uppercase">
                 {product.name}
@@ -104,50 +93,32 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
                 </span>
               )}
             </div>
-            <p className="text-[13px] text-stone-500 mt-1 tracking-wide">
-              PKR {displayPrice.toLocaleString()}
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-[13px] text-stone-500 tracking-wide">
+                PKR {effectivePrice.toLocaleString()}
+              </p>
+              {product.discountPrice != null && (
+                <p className="text-[11px] text-stone-300 line-through">
+                  PKR {product.price.toLocaleString()}
+                </p>
+              )}
+            </div>
           </div>
 
-          <p className="text-[12px] text-stone-500 leading-relaxed">{product.description}</p>
-
-          {/* Color selection */}
-          {colors.length > 0 && (
-            <div>
-              <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">
-                Colour —{" "}
-                <span className="text-stone-800">{selectedColor}</span>
-              </p>
-              <div className="flex gap-2 items-center">
-                {colors.map((c) => (
-                  <button
-                    key={c.color}
-                    onClick={() => handleColorSelect(c.color)}
-                    title={c.color}
-                    className={`w-6 h-6 rounded-full border-2 transition-all flex-shrink-0 ${
-                      selectedColor === c.color ? "border-stone-800 scale-110" : "border-transparent"
-                    }`}
-                    style={{
-                      backgroundColor: c.colorHex,
-                      boxShadow:
-                        selectedColor === c.color
-                          ? "0 0 0 1px #79716b"
-                          : "0 0 0 1px #e7e5e4",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
+          {/* Description */}
+          {product.description && (
+            <p className="text-[12px] text-stone-500 leading-relaxed">
+              {product.description}
+            </p>
           )}
 
           {/* Size selection */}
           <div>
-            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">Select Size</p>
+            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">
+              Select Size
+            </p>
             <div className="flex gap-2 flex-wrap">
-              {(sizesForColor.length > 0
-                ? sizesForColor
-                : (product.sizes ?? []).map((s) => ({ size: s, stock: 99 }))
-              ).map((s) => {
+              {sizes.map((s) => {
                 const out = s.stock === 0;
                 const low = !out && s.stock <= 5;
                 return (
@@ -155,7 +126,9 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
                     key={s.size}
                     onClick={() => !out && setSelectedSize(s.size)}
                     disabled={out}
-                    title={out ? "Out of stock" : low ? `Only ${s.stock} left` : ""}
+                    title={
+                      out ? "Out of stock" : low ? `Only ${s.stock} left` : ""
+                    }
                     className={`w-10 h-10 text-[11px] tracking-wide border transition-all relative ${
                       selectedSize === s.size
                         ? "border-stone-800 bg-stone-800 text-white"
@@ -173,23 +146,34 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
               })}
             </div>
 
-            {selectedSize && (
+            {selectedSize ? (
               <p
                 className={`text-[10px] mt-1.5 tracking-wide ${
-                  isOut ? "text-red-400" : isLow ? "text-amber-500" : "text-green-600"
+                  isOut
+                    ? "text-red-400"
+                    : isLow
+                    ? "text-amber-500"
+                    : "text-green-600"
                 }`}
               >
-                {isOut ? "Out of stock" : isLow ? `Only ${stockCount} left` : "In stock"}
+                {isOut
+                  ? "Out of stock"
+                  : isLow
+                  ? `Only ${stockCount} left`
+                  : "In stock"}
               </p>
-            )}
-            {!selectedSize && (
-              <p className="text-[10px] text-stone-300 mt-1.5 tracking-wide">Please select a size</p>
+            ) : (
+              <p className="text-[10px] text-stone-300 mt-1.5 tracking-wide">
+                Please select a size
+              </p>
             )}
           </div>
 
           {/* Qty */}
           <div className="flex items-center gap-3">
-            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">Qty</p>
+            <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">
+              Qty
+            </p>
             <div className="flex items-center border border-stone-200">
               <button
                 onClick={() => setQty(Math.max(1, qty - 1))}
@@ -197,7 +181,9 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
               >
                 −
               </button>
-              <span className="w-8 text-center text-[12px] text-stone-700">{qty}</span>
+              <span className="w-8 text-center text-[12px] text-stone-700">
+                {qty}
+              </span>
               <button
                 onClick={() => setQty(qty + 1)}
                 className="w-8 h-8 text-stone-500 hover:bg-stone-50 transition-colors text-sm"
@@ -207,15 +193,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
             </div>
           </div>
 
-          {/* Details */}
-          {product.details?.length > 0 && (
-            <ul className="flex flex-col gap-1">
-              {product.details.map((d) => (
-                <li key={d} className="text-[11px] text-stone-400 tracking-wide">{d}</li>
-              ))}
-            </ul>
-          )}
-
+          {/* Add to bag */}
           <button
             onClick={handleAdd}
             disabled={!selectedSize || isOut}
@@ -230,6 +208,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
             {added ? "Added to Bag ✓" : "Add to Bag"}
           </button>
 
+          {/* Wishlist */}
           <button
             onClick={() => onWishlistToggle(product)}
             className={`w-full py-3.5 text-[11px] tracking-[0.3em] uppercase border transition-all flex items-center justify-center gap-2 ${
@@ -238,9 +217,14 @@ export default function ProductModal({ product, onClose, onAddToCart, onWishlist
                 : "border-stone-200 text-stone-500 hover:border-stone-600 hover:text-stone-700"
             }`}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24"
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
               fill={wishlisted ? "#1c1917" : "none"}
-              stroke="#1c1917" strokeWidth="1.6">
+              stroke="#1c1917"
+              strokeWidth="1.6"
+            >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             {wishlisted ? "Saved to Wishlist" : "Save to Wishlist"}

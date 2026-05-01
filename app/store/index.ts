@@ -22,6 +22,7 @@ interface WishlistItem {
 }
 
 interface AuthUser {
+  id: string;  
   name: string;
   email: string;
 }

@@ -36,18 +36,11 @@ export default function CartSidebar({ cart, onClose, onRemove }) {
             </p>
           )}
           {cart.map((item, i) => {
-            // Resolve image: check selected color variant first, then fall back
-            const selectedVariant = item.variants?.find(
-              (v) => v.color === item.selectedColor
-            ) ?? item.variants?.[0];
-            const imageSrc =
-              selectedVariant?.image ??
-              item.images?.[0] ??
-              item.image ??
-              "/placeholder.jpg";
-
+            // Flat backend: images = [{ id, url, order }, ...]
+            const imageSrc = item.images?.[0]?.url ?? "/placeholder.jpg";
             const effectivePrice = item.discountPrice ?? item.price;
-            const hasDiscount = item.discountPrice && item.discountPrice < item.price;
+            const hasDiscount =
+              item.discountPrice != null && item.discountPrice < item.price;
 
             return (
               <div key={i} className="flex gap-4">
@@ -100,11 +93,11 @@ export default function CartSidebar({ cart, onClose, onRemove }) {
               </p>
             </div>
             <Link
-  href="/checkout"
-  className="block w-full py-3.5 bg-stone-900 text-white text-[11px] tracking-[0.3em] uppercase hover:bg-stone-700 transition-colors text-center"
->
-  Checkout
-</Link>
+              href="/checkout"
+              className="block w-full py-3.5 bg-stone-900 text-white text-[11px] tracking-[0.3em] uppercase hover:bg-stone-700 transition-colors text-center"
+            >
+              Checkout
+            </Link>
           </div>
         )}
       </div>

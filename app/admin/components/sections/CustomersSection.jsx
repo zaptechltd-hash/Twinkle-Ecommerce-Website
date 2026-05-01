@@ -1,14 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 
-// ─── Paste your real imports once you drop this into your project ──────────────
-// import { SectionHeader } from "../layout/SectionHeader";
-// import { SearchBar } from '../ui/SearchBar';
-// import { CUSTOMERS } from '../data/data';
-// import { Badge } from '../ui/Badge';
-// import { Pagination } from "../ui/Pagination";
-
-// ─── Sample data (remove when using your real CUSTOMERS import) ───────────────
 const CUSTOMERS = [
   { id:1,  name:"Sara Ahmed",          email:"sara.ahmed@gmail.com",      orders:14, spent:214800, joined:"Jan 2024", status:"Active",   tier:"VIP"   },
   { id:2,  name:"Mikael Koskinen",     email:"mikael.k@outlook.com",      orders:11, spent:178200, joined:"Mar 2024", status:"Active",   tier:"VIP"   },

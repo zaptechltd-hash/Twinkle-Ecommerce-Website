@@ -9,10 +9,7 @@ export type PaymentStatus  = "Paid" | "Unpaid" | "Failed";
 export interface CreateOrderItemPayload {
   productId:     string;
   productName:   string;
-  variantId:     string;
-  color:         string;
   size:          string;
-  sku:           string;
   image?:        string;
   unitPrice:     number;
   originalPrice: number;
@@ -31,6 +28,7 @@ export interface CreateOrderPayload {
   phone:         string;
   paymentMethod: PaymentMethod;
   discountCode?: string;
+  discountAmount?: number; 
   items:         CreateOrderItemPayload[];
 }
 
@@ -38,8 +36,6 @@ export interface UpdateOrderPayload {
   status?:        OrderStatus;
   paymentStatus?: PaymentStatus;
 }
-
-// ─── Query params (admin list) ────────────────────────────────────────────────
 
 export interface OrderQueryParams {
   search?:        string;
@@ -50,21 +46,18 @@ export interface OrderQueryParams {
   sort?:          "newest" | "oldest";
 }
 
-// ─── Response shapes ──────────────────────────────────────────────────────────
 
 export interface OrderItem {
   id:            string;
   productId:     string;
   productName:   string;
-  variantId:     string;
-  color:         string;
   size:          string;
-  sku:           string;
   image:         string | null;
   unitPrice:     number;
   originalPrice: number;
   qty:           number;
   lineTotal:     number;
+  // Removed: variantId, color, sku
 }
 
 export interface Order {
@@ -83,6 +76,7 @@ export interface Order {
   paymentStatus: PaymentStatus;
   status:        OrderStatus;
   discountCode:  string | null;
+  discountAmount: number; 
   totalAmount:   number;
   shippingCost:  number;
   items:         OrderItem[];
