@@ -93,3 +93,67 @@ export interface PaginatedOrdersResponse {
     totalPages: number;
   };
 }
+
+export interface Customer {
+  email:       string;
+  name:        string;
+  totalOrders: number;
+  totalSpent:  number;
+  joined:      string;
+}
+
+export interface PaginatedCustomersResponse {
+  data: Customer[];
+  meta: { total: number; page: number; limit: number; totalPages: number };
+}
+
+export interface CustomerQueryParams {
+  search?: string;
+  page?:   number;
+  limit?:  number;
+  sort?:   'spent-desc' | 'spent-asc' | 'orders-desc' | 'name-asc';
+}
+// ─── Analytics ────────────────────────────────────────────────────────────────
+
+export type AnalyticsPeriod = 'today' | 'week' | 'month' | 'year';
+
+export interface MetricWithChange {
+  value:         number;
+  previousValue: number;
+  changePct:     number | null; 
+  direction:     'up' | 'down' | 'neutral';
+}
+
+export interface PaymentBreakdownRow {
+  status: 'Paid' | 'Unpaid' | 'Failed';
+  value:  number; 
+  pct:    number;  
+}
+
+export interface OrderStatusBreakdownRow {
+  status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+  count:  number;
+}
+
+export interface ChartPoint {
+  label:   string; 
+  orders:  number;
+  revenue: number;
+}
+
+export interface AnalyticsResponse {
+  period:      AnalyticsPeriod;
+  periodStart: string;
+  periodEnd:   string;
+  revenue:      MetricWithChange;
+  orders:       MetricWithChange;
+  newCustomers: MetricWithChange;
+  aov:          MetricWithChange;
+  paymentBreakdown: PaymentBreakdownRow[];
+  statusBreakdown:  OrderStatusBreakdownRow[];
+  chart:            ChartPoint[];
+}
+
+export interface AnalyticsQueryParams {
+  period?: AnalyticsPeriod;
+}
