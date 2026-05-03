@@ -6,6 +6,10 @@ import type {
   OrderQueryParams,
   Order,
   PaginatedOrdersResponse,
+  CustomerQueryParams,
+  PaginatedCustomersResponse,
+  AnalyticsQueryParams,
+  AnalyticsResponse,
 } from "./types";
 
 const useOrderService = () => {
@@ -60,19 +64,33 @@ const useOrderService = () => {
     });
   };
 
-  return {
-    // Public
-    createOrder,
-    // Authenticated user
-    getMyOrders,
-    // Admin
-    getOrders,
-    getOrder,
-    updateOrder,
-    // State
-    loading,
-    error,
+  const getAnalytics = async (params?: AnalyticsQueryParams) => {
+    return await callApi<AnalyticsResponse>({
+      method: "get",
+      url: OrderEndpointsV1.analytics,
+      params,
+    });
   };
+
+  const getCustomers = async (params?: CustomerQueryParams) => {
+    return await callApi<PaginatedCustomersResponse>({
+      method: "get",
+      url: OrderEndpointsV1.customers,
+      params,
+    });
+  };
+
+return {
+  createOrder,
+  getMyOrders,
+  getOrders,
+  getOrder,
+  updateOrder,
+  getCustomers,
+  getAnalytics,   
+  loading,
+  error,
+};
 };
 
 export default useOrderService;
