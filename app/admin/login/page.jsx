@@ -21,6 +21,7 @@ export default function AdminLoginPage() {
       const data = await adminLogin({ email: form.email, password: form.password });
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
+      localStorage.setItem("adminUser", JSON.stringify({ email: form.email }));
       router.push("/admin");
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || "Invalid credentials.");

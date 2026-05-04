@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import Navbar from "./components/Header";
-// import { products } from "./lib/products";
 import ProductModal from "./components/ProductModal";
 import Footer from "./components/Footer";
 import ProductCard from "./components/ProductCard";
+import AuthModal from "./components/AuthModal"; // ← standalone component
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   addToCart,
@@ -15,208 +15,12 @@ import {
   logout,
 } from "./store/index";
 import useAuthService from "./services/auth/index";
-import { setAccessToken, setRefreshToken } from "./utils/token";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useProductService from "./services/product/index";
 import CartSidebar from "./components/CartSidebar";
-import WishlistSidebar from './components/WishlistSidebar' 
-
-function AuthModal({
-  onClose,
-  onLogin,
-  onLogout,
-  user,
-  onSubmitLogin,
-  onSubmitRegister,
-  onError,
-}) {
-  const [mode, setMode] = useState("login");
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-  });
-  const [error, setError] = useState("");
-
-  async function handleSubmit() {
-    if (!form.email || !form.password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-    if (mode === "signup" && !form.name) {
-      setError("Please enter your name.");
-      return;
-    }
-
-    try {
-      if (mode === "login") {
-        await onSubmitLogin(form.email, form.password);
-        onLogin({
-          name: form.name || form.email.split("@")[0],
-          email: form.email,
-        });
-      } else {
-        await onSubmitRegister(
-          form.name,
-          form.email,
-          form.password,
-          form.phoneNumber,
-        );
-        onLogin({ name: form.name, email: form.email });
-      }
-      onClose();
-    } catch (err) {
-      const message =
-        err?.response?.data?.message || err?.message || "Something went wrong.";
-      onError(message); // this calls toast.error in the parent
-    }
-  }
-
-  const userInitials = user
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "";
-
-  return (
-    <div
-      className="fixed inset-0 z-[200] flex items-start justify-end"
-      style={{ backgroundColor: "rgba(0,0,0,0.25)", paddingTop: "73px" }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-white w-full max-w-xs mr-6 md:mr-12 shadow-sm"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {user ? (
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-6 pb-5 border-b border-stone-100">
-              <div className="w-10 h-10 rounded-full bg-stone-900 text-white text-[12px] flex items-center justify-center font-medium flex-shrink-0">
-                {userInitials}
-              </div>
-              <div className="overflow-hidden">
-                <p className="text-[12px] font-medium text-stone-800 truncate">
-                  {user.name}
-                </p>
-                <p className="text-[11px] text-stone-400 truncate">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-            {["My Orders", "My Wishlist", "Account Settings"].map((item) => (
-              <button
-                key={item}
-                className="block w-full text-left py-3 text-[11px] tracking-[0.15em] uppercase text-stone-600 border-b border-stone-100 hover:text-stone-900 transition-colors"
-              >
-                {item}
-              </button>
-            ))}
-            <button
-              onClick={() => {
-                onLogout();
-                onClose();
-              }}
-              className="block w-full text-left py-3 text-[11px] tracking-[0.15em] uppercase text-red-400 hover:text-red-600 transition-colors mt-1"
-            >
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <div className="p-8">
-            <div className="flex gap-0 mb-7 border-b border-stone-100">
-              {[
-                { key: "login", label: "Sign In" },
-                { key: "signup", label: "Register" },
-              ].map((m) => (
-                <button
-                  key={m.key}
-                  onClick={() => {
-                    setMode(m.key);
-                    setError("");
-                  }}
-                  className={`flex-1 pb-3 text-[10px] tracking-[0.25em] uppercase transition-colors ${mode === m.key ? "text-stone-900 border-b-2 border-stone-900 -mb-px" : "text-stone-400 hover:text-stone-600"}`}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-            {mode === "signup" && (
-              <>
-                <label className="block text-[10px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Sara Noor"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-stone-200 px-3 py-2.5 text-[12px] text-stone-700 mb-4 outline-none focus:border-stone-500 transition-colors"
-                />
-                <label className="block text-[10px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+92 300 0000000"
-                  value={form.phoneNumber}
-                  onChange={(e) =>
-                    setForm({ ...form, phoneNumber: e.target.value })
-                  }
-                  className="w-full border border-stone-200 px-3 py-2.5 text-[12px] text-stone-700 mb-4 outline-none focus:border-stone-500 transition-colors"
-                />
-              </>
-            )}
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="hello@example.com"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-stone-200 px-3 py-2.5 text-[12px] text-stone-700 mb-4 outline-none focus:border-stone-500 transition-colors"
-            />
-
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-stone-400 mb-1.5">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full border border-stone-200 px-3 py-2.5 text-[12px] text-stone-700 mb-5 outline-none focus:border-stone-500 transition-colors"
-            />
-            {error && (
-              <p className="text-[10px] text-red-400 tracking-wide mb-3">
-                {error}
-              </p>
-            )}
-            <button
-              onClick={handleSubmit}
-              className="w-full py-3.5 bg-stone-900 text-white text-[11px] tracking-[0.3em] uppercase hover:bg-stone-700 transition-colors"
-            >
-              {mode === "login" ? "Sign In" : "Create Account"}
-            </button>
-            {mode === "login" && (
-              <p className="text-[10px] text-stone-400 text-center mt-4 tracking-wide">
-                Forgot password?{" "}
-                <span className="underline cursor-pointer hover:text-stone-700 transition-colors">
-                  Reset
-                </span>
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+import WishlistSidebar from "./components/WishlistSidebar";
+import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "./utils/token";
 
 function Hero() {
   return (
@@ -382,21 +186,30 @@ function EditorialStrip() {
 export default function TwinklePage() {
   const dispatch = useAppDispatch();
 
-  const {
-    customerLogin,
-    customerRegister,
-    loading: loginLoading,
-    error: loginError,
-  } = useAuthService();
+  const { customerLogin, customerRegister, customerLogout } = useAuthService();
 
   const { getProducts } = useProductService();
   const [products, setProducts] = useState([]);
 
+const handleLogout = async () => {
+  const refreshToken = getRefreshToken();
+  try {
+    await customerLogout(refreshToken);
+  } finally {
+    clearTokens();
+    dispatch(logout());
+  }
+};
+
   useEffect(() => {
-   getProducts({ status: "Active", limit: 999 })
-  .then((res) => {
-    if (res) setProducts(res.data.filter(p => p.location === "Home" || p.location === "Both"));
-  });
+    getProducts({ status: "Active", limit: 999 }).then((res) => {
+      if (res)
+        setProducts(
+          res.data.filter(
+            (p) => p.location === "Home" || p.location === "Both",
+          ),
+        );
+    });
   }, []);
 
   const cart = useAppSelector((s) => s.cart);
@@ -409,57 +222,25 @@ export default function TwinklePage() {
   const [wishlistOpen, setWishlistOpen] = useState(false);
 
   const handleLogin = async (email, password) => {
-    try {
-      const data = await customerLogin({ email, password });
-      setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      toast.success("Welcome back!");
-    } catch (err) {
-      throw err;
-    }
+    const data = await customerLogin({ email, password });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Welcome back!");
   };
 
   const handleRegister = async (name, email, password, phoneNumber) => {
-    try {
-      const data = await customerRegister({
-        name,
-        email,
-        password,
-        phone: phoneNumber,
-      });
-      setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      toast.success("Account created successfully!");
-    } catch (err) {
-      throw err;
-    }
+    const data = await customerRegister({
+      name,
+      email,
+      password,
+      phone: phoneNumber,
+    });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Account created successfully!");
   };
 
-  function handleAddToCart(item) {
-    dispatch(addToCart(item));
-  }
-
-  function handleRemoveFromCart(idx) {
-    dispatch(removeFromCart(idx));
-  }
-
-  function handleWishlistToggle(product) {
-    dispatch(toggleWishlist(product));
-  }
-
-  function handleRemoveFromWishlist(idx) {
-    dispatch(removeFromWishlist(idx));
-  }
-
-function handleMoveToCart(item, idx) {
-  dispatch(addToCart({ ...item, qty: item.qty ?? 1 }));
-  dispatch(removeFromWishlist(idx));
-  setWishlistOpen(false);
-  setCartOpen(true);
-}
-
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-  const wishlistCount = wishlist.length;
 
   return (
     <div className="min-h-screen bg-white">
@@ -471,7 +252,7 @@ function handleMoveToCart(item, idx) {
       <Navbar
         cartCount={cartCount}
         onCartOpen={() => setCartOpen(true)}
-        wishlistCount={wishlistCount}
+        wishlistCount={wishlist.length}
         onWishlistOpen={() => setWishlistOpen(true)}
         user={user}
         onUserClick={() => setAuthOpen(true)}
@@ -484,7 +265,7 @@ function handleMoveToCart(item, idx) {
         products={products}
         onProductClick={setActiveProduct}
         wishlist={wishlist}
-        onWishlistToggle={handleWishlistToggle}
+        onWishlistToggle={(product) => dispatch(toggleWishlist(product))}
       />
       <CollectionBanner />
       <EditorialStrip />
@@ -495,11 +276,11 @@ function handleMoveToCart(item, idx) {
           product={activeProduct}
           onClose={() => setActiveProduct(null)}
           onAddToCart={(item) => {
-            handleAddToCart(item);
+            dispatch(addToCart(item));
             setActiveProduct(null);
             setCartOpen(true);
           }}
-          onWishlistToggle={handleWishlistToggle}
+          onWishlistToggle={(p) => dispatch(toggleWishlist(p))}
           wishlisted={wishlist.some((w) => w.id === activeProduct.id)}
         />
       )}
@@ -508,7 +289,7 @@ function handleMoveToCart(item, idx) {
         <CartSidebar
           cart={cart}
           onClose={() => setCartOpen(false)}
-          onRemove={handleRemoveFromCart}
+          onRemove={(idx) => dispatch(removeFromCart(idx))}
         />
       )}
 
@@ -517,10 +298,11 @@ function handleMoveToCart(item, idx) {
           user={user}
           onClose={() => setAuthOpen(false)}
           onLogin={(userData) => dispatch(login(userData))}
-          onLogout={() => dispatch(logout())}
+          // onLogout={() => dispatch(logout())}
           onSubmitLogin={handleLogin}
           onSubmitRegister={handleRegister}
           onError={(msg) => toast.error(msg)}
+           onSubmitLogout={handleLogout}    
         />
       )}
 
@@ -528,8 +310,13 @@ function handleMoveToCart(item, idx) {
         <WishlistSidebar
           wishlist={wishlist}
           onClose={() => setWishlistOpen(false)}
-          onRemove={handleRemoveFromWishlist}
-          onMoveToCart={handleMoveToCart}
+          onRemove={(idx) => dispatch(removeFromWishlist(idx))}
+          onMoveToCart={(item, idx) => {
+            dispatch(addToCart({ ...item, qty: item.qty ?? 1 }));
+            dispatch(removeFromWishlist(idx));
+            setWishlistOpen(false);
+            setCartOpen(true);
+          }}
         />
       )}
 

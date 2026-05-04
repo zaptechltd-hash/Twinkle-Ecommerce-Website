@@ -2,7 +2,7 @@
 
 export type OrderStatus    = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
 export type PaymentMethod  = "card" | "cod";
-export type PaymentStatus  = "Paid" | "Unpaid" | "Failed";
+export type PaymentStatus  = "Paid" | "Unpaid" | "Failed" | "Cancelled";
 
 // ─── Request bodies ───────────────────────────────────────────────────────────
 
@@ -125,7 +125,7 @@ export interface MetricWithChange {
 }
 
 export interface PaymentBreakdownRow {
-  status: 'Paid' | 'Unpaid' | 'Failed';
+  status: 'Paid' | 'Unpaid' | 'Failed'| "Cancelled";
   value:  number; 
   pct:    number;  
 }

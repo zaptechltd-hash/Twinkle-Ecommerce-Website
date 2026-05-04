@@ -94,7 +94,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "twinkle-root",
   storage,
-  whitelist: ["cart", "wishlist"], // auth won't persist (resets on refresh)
+  whitelist: ["cart", "wishlist", "auth"], 
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
