@@ -6,7 +6,7 @@ export default function Footer() {
 
         <div className="md:w-[40%] shrink-0 flex flex-col justify-between">
           <div>
-            <p className="text-3xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
+            <p className="text-2xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
               TwinkleOfficial
             </p>
             <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-8">

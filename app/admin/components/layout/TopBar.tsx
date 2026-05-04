@@ -7,9 +7,10 @@ type TopBarProps = {
   active: string;
   unread: number;
   onNotifClick: () => void;
+  adminUser: { email: string } | null;
 };
 
-export function TopBar({ active, unread, onNotifClick }: TopBarProps) {
+export function TopBar({ active, unread, onNotifClick, adminUser }: TopBarProps) {
   return (
     <>
       <style>{`
@@ -42,20 +43,17 @@ export function TopBar({ active, unread, onNotifClick }: TopBarProps) {
             )}
           </button>
 
-          {/* Avatar */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#1a1916] text-[#f5f2ed] text-[10px] font-medium flex items-center justify-center flex-shrink-0">
-              AU
-            </div>
-            <div className="hidden md:block">
-              <p className="text-[11px] font-medium text-[#1a1916] tracking-wide leading-tight">
-                Admin User
-              </p>
-              <p className="text-[9px] text-[#b4b2a9] tracking-[0.12em] uppercase leading-tight mt-0.5">
-                Super Admin
-              </p>
-            </div>
-          </div>
+         <div className="w-8 h-8 rounded-lg bg-[#1a1916] text-[#f5f2ed] text-[10px] font-medium flex items-center justify-center flex-shrink-0">
+  {adminUser?.email?.[0]?.toUpperCase() ?? "A"}  {/* ← dynamic initial */}
+</div>
+<div className="hidden md:block">
+  <p className="text-[11px] font-medium text-[#1a1916] tracking-wide leading-tight">
+    {adminUser?.email ?? "Admin"}  {/* ← dynamic email */}
+  </p>
+  <p className="text-[9px] text-[#b4b2a9] tracking-[0.12em] uppercase leading-tight mt-0.5">
+    Super Admin
+  </p>
+</div>
         </div>
       </header>
     </>

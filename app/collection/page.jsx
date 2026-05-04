@@ -4,10 +4,23 @@ import Navbar from "../components/Header";
 import ProductModal from "../components/ProductModal";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
+import AuthModal from "../components/AuthModal";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { addToCart, removeFromCart, toggleWishlist } from "../store/index";
+import {
+  addToCart,
+  removeFromCart,
+  toggleWishlist,
+  removeFromWishlist,
+  login,
+  logout,
+} from "../store/index";
 import useProductService from "../services/product/index";
+import useAuthService from "../services/auth/index";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CartSidebar from "../components/CartSidebar";
+import WishlistSidebar from "../components/WishlistSidebar";
+import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "../utils/token";
 
 const SORT_OPTIONS = [
   { label: "Featured", value: "featured" },
@@ -30,7 +43,6 @@ const PRICE_RANGES = [
   { label: "PKR 8,000+", min: 8000, max: Infinity },
 ];
 
-// ── Filter Components (unchanged) ──────────────────────
 function FilterAccordion({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -216,14 +228,7 @@ function FilterPanel({ filters, onChange, onClear }) {
   );
 }
 
-function MobileFilterDrawer({
-  open,
-  onClose,
-  filters,
-  onChange,
-  onClear,
-  totalResults,
-}) {
+function MobileFilterDrawer({ open, onClose, filters, onChange, onClear, totalResults }) {
   if (!open) return null;
   return (
     <div
@@ -247,11 +252,7 @@ function MobileFilterDrawer({
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-2">
-          <FilterPanel
-            filters={filters}
-            onChange={onChange}
-            onClear={onClear}
-          />
+          <FilterPanel filters={filters} onChange={onChange} onClear={onClear} />
         </div>
         <div className="border-t border-stone-100 px-6 py-5">
           <button
@@ -271,25 +272,19 @@ function ActiveFilters({ filters, onChange, onClear }) {
   filters.fabrics.forEach((f) =>
     pills.push({
       label: f,
-      clear: () =>
-        onChange({
-          ...filters,
-          fabrics: filters.fabrics.filter((x) => x !== f),
-        }),
+      clear: () => onChange({ ...filters, fabrics: filters.fabrics.filter((x) => x !== f) }),
     }),
   );
   filters.colors.forEach((c) =>
     pills.push({
       label: c,
-      clear: () =>
-        onChange({ ...filters, colors: filters.colors.filter((x) => x !== c) }),
+      clear: () => onChange({ ...filters, colors: filters.colors.filter((x) => x !== c) }),
     }),
   );
   filters.sizes.forEach((s) =>
     pills.push({
       label: s,
-      clear: () =>
-        onChange({ ...filters, sizes: filters.sizes.filter((x) => x !== s) }),
+      clear: () => onChange({ ...filters, sizes: filters.sizes.filter((x) => x !== s) }),
     }),
   );
   if (filters.priceRange !== null)
@@ -307,9 +302,7 @@ function ActiveFilters({ filters, onChange, onClear }) {
           className="flex items-center gap-1.5 border border-stone-200 px-3 py-1.5 text-[10px] tracking-[0.15em] text-stone-600 uppercase hover:border-stone-400 transition-colors group"
         >
           {pill.label}
-          <span className="text-stone-300 group-hover:text-stone-600 transition-colors">
-            ✕
-          </span>
+          <span className="text-stone-300 group-hover:text-stone-600 transition-colors">✕</span>
         </button>
       ))}
       <button
@@ -322,19 +315,15 @@ function ActiveFilters({ filters, onChange, onClear }) {
   );
 }
 
-
-
-// ── Main Page ──────────────────────────────────────────
 export default function CollectionPage() {
   const dispatch = useAppDispatch();
 
-  // Redux state
   const cart = useAppSelector((s) => s.cart);
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [wishlistOpen, setWishlistOpen] = useState(false);
-  // Local UI state
+
+  const { customerLogin, customerRegister, customerLogout } = useAuthService();
+
   const [filters, setFilters] = useState({
     fabrics: [],
     colors: [],
@@ -346,19 +335,52 @@ export default function CollectionPage() {
   const [sortDropdown, setSortDropdown] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
 
   const { getProducts } = useProductService();
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
-    getProducts({ status: "Active", limit: 999 })
-  .then((res) => {
-    if (res) setProducts(res.data.filter(p => p.location === "Collection" || p.location === "Both"));
-    setProductsLoading(false);
-  });
+    getProducts({ status: "Active", limit: 999 }).then((res) => {
+      if (res)
+        setProducts(
+          res.data.filter(
+            (p) => p.location === "Collection" || p.location === "Both",
+          ),
+        );
+      setProductsLoading(false);
+    });
   }, []);
 
+  const handleLogin = async (email, password) => {
+    const data = await customerLogin({ email, password });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Welcome back!");
+  };
+
+  const handleRegister = async (name, email, password, phoneNumber) => {
+    const data = await customerRegister({
+      name,
+      email,
+      password,
+      phone: phoneNumber,
+    });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Account created successfully!");
+  };
+const handleLogout = async () => {
+  const refreshToken = getRefreshToken();
+  try {
+    await customerLogout(refreshToken);
+  } finally {
+    clearTokens();
+    dispatch(logout());
+  }
+};
   const filtered = useMemo(() => {
     let list = [...products];
     if (filters.fabrics.length)
@@ -381,14 +403,14 @@ export default function CollectionPage() {
   }
 
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-  console.log("cartCount", cartCount);
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar
         cartCount={cartCount}
         onCartOpen={() => setCartOpen(true)}
         wishlistCount={wishlist.length}
-        onWishlistOpen={() => setWishlistOpen(true)} // add wishlist open state too
+        onWishlistOpen={() => setWishlistOpen(true)}
         user={user}
         onUserClick={() => setAuthOpen(true)}
         currentPage="collection"
@@ -416,14 +438,7 @@ export default function CollectionPage() {
           onClick={() => setMobileFiltersOpen(true)}
           className="md:hidden flex items-center gap-2 text-[10px] tracking-[0.25em] text-stone-600 uppercase"
         >
-          <svg
-            width="14"
-            height="10"
-            viewBox="0 0 14 10"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          >
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" strokeWidth="1.2">
             <line x1="0" y1="1" x2="14" y2="1" />
             <line x1="3" y1="5" x2="14" y2="5" />
             <line x1="6" y1="9" x2="14" y2="9" />
@@ -437,31 +452,18 @@ export default function CollectionPage() {
             className="flex items-center gap-2 text-[10px] tracking-[0.22em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
           >
             Sort: {SORT_OPTIONS.find((s) => s.value === sort)?.label}
-            <svg
-              width="8"
-              height="5"
-              viewBox="0 0 8 5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.2"
-            >
+            <svg width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" strokeWidth="1.2">
               <polyline points="1,1 4,4 7,1" />
             </svg>
           </button>
           {sortDropdown && (
             <>
-              <div
-                className="fixed inset-0 z-10"
-                onClick={() => setSortDropdown(false)}
-              />
+              <div className="fixed inset-0 z-10" onClick={() => setSortDropdown(false)} />
               <div className="absolute right-0 top-8 z-20 bg-white border border-stone-100 shadow-sm w-48 py-2">
                 {SORT_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
-                    onClick={() => {
-                      setSort(opt.value);
-                      setSortDropdown(false);
-                    }}
+                    onClick={() => { setSort(opt.value); setSortDropdown(false); }}
                     className={`block w-full text-left px-4 py-2.5 text-[11px] tracking-wide transition-colors ${sort === opt.value ? "text-stone-900 bg-stone-50" : "text-stone-400 hover:text-stone-700"}`}
                   >
                     {opt.label}
@@ -476,18 +478,10 @@ export default function CollectionPage() {
       {/* Main layout */}
       <div className="px-6 md:px-12 pt-8 pb-24 flex gap-12">
         <aside className="hidden md:block w-52 flex-shrink-0 pt-1">
-          <FilterPanel
-            filters={filters}
-            onChange={setFilters}
-            onClear={clearFilters}
-          />
+          <FilterPanel filters={filters} onChange={setFilters} onClear={clearFilters} />
         </aside>
         <main className="flex-1 min-w-0">
-          <ActiveFilters
-            filters={filters}
-            onChange={setFilters}
-            onClear={clearFilters}
-          />
+          <ActiveFilters filters={filters} onChange={setFilters} onClear={clearFilters} />
           {productsLoading ? (
             <div className="col-span-2 lg:col-span-3 py-32 text-center">
               <p className="text-[11px] tracking-[0.25em] text-stone-300 uppercase animate-pulse">
@@ -561,6 +555,42 @@ export default function CollectionPage() {
           wishlisted={wishlist.some((w) => w.id === activeProduct.id)}
         />
       )}
+
+      {authOpen && (
+        <AuthModal
+          user={user}
+          onClose={() => setAuthOpen(false)}
+          onLogin={(userData) => dispatch(login(userData))}
+          // onLogout={() => dispatch(logout())}
+          onSubmitLogin={handleLogin}
+          onSubmitRegister={handleRegister}
+          onError={(msg) => toast.error(msg)}
+          onSubmitLogout={handleLogout}  
+        />
+      )}
+
+      {wishlistOpen && (
+        <WishlistSidebar
+          wishlist={wishlist}
+          onClose={() => setWishlistOpen(false)}
+          onRemove={(idx) => dispatch(removeFromWishlist(idx))}
+          onMoveToCart={(item, idx) => {
+            dispatch(addToCart({ ...item, qty: item.qty ?? 1 }));
+            dispatch(removeFromWishlist(idx));
+            setWishlistOpen(false);
+            setCartOpen(true);
+          }}
+        />
+      )}
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover={false}
+        toastClassName="text-[11px] tracking-[0.15em] uppercase"
+      />
     </div>
   );
 }

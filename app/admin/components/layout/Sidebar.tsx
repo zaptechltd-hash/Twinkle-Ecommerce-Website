@@ -8,9 +8,10 @@ type SidebarProps = {
   unread: number;
   onNavigate: (id: string) => void;
   onToggle: () => void;
+  onSignOut: () => void; 
 };
 
-export function Sidebar({ active, sidebarOpen, unread, onNavigate, onToggle }: SidebarProps) {
+export function Sidebar({ active, sidebarOpen, unread, onNavigate, onToggle, onSignOut }: SidebarProps) {
   return (
     <aside
       // ① Width: always w-14 on mobile; respects sidebarOpen from sm upward
@@ -90,8 +91,19 @@ export function Sidebar({ active, sidebarOpen, unread, onNavigate, onToggle }: S
           );
         })}
       </nav>
-
+      
+  <button
+        onClick={onSignOut}
+        className={`border-t border-[#e8e5df] py-4 text-[#b4b2a9] hover:text-red-400 hover:bg-white/60 transition-colors
+          text-center ${sidebarOpen ? "sm:px-5 sm:text-left" : ""}`}
+      >
+        <span className="text-[11px] tracking-[0.1em] uppercase">
+          <span className={sidebarOpen ? "hidden sm:inline" : "hidden"}>Sign Out</span>
+          <span className={sidebarOpen ? "sm:hidden" : ""}>→</span>
+        </span>
+      </button>
       {/* ④ Collapse toggle: always arrow-only on mobile */}
+      
       <button
         onClick={onToggle}
         className={`border-t border-[#e8e5df] py-4 text-[#b4b2a9] hover:text-[#1a1916] hover:bg-white/60 transition-colors

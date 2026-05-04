@@ -48,6 +48,188 @@ function revenueStr(n: number) {
     : `PKR ${n.toLocaleString()}`;
 }
 
+// ─── PDF Download ─────────────────────────────────────────────────────────────
+
+async function downloadDeliveryPDF(order: Order) {
+  // Dynamically import jsPDF so it doesn't bloat the initial bundle
+  const { jsPDF } = await import("jspdf");
+
+  const doc = new jsPDF({ unit: "mm", format: "a5" });
+  const name = fullName(order);
+  const W = doc.internal.pageSize.getWidth();
+  const margin = 14;
+  let y = 14;
+
+  const lineH = 6;
+  const col2 = 70; // x for right column values
+
+  // ── helpers ──
+  const text = (str: string, x: number, yy: number, opts?: Parameters<typeof doc.text>[3]) =>
+    doc.text(str, x, yy, opts);
+
+  const hRule = (yy: number) => {
+    doc.setDrawColor(220, 218, 213);
+    doc.setLineWidth(0.3);
+    doc.line(margin, yy, W - margin, yy);
+  };
+
+  // ── Header band ──
+  doc.setFillColor(26, 25, 22); // #1a1916
+  doc.rect(0, 0, W, 22, "F");
+
+  doc.setTextColor(245, 242, 237); // #f5f2ed
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  text("DELIVERY SLIP", margin, 10);
+
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  text(`Order #${order.id.slice(0, 8).toUpperCase()}`, margin, 16);
+  text(formatDate(order.createdAt), W - margin, 16, { align: "right" });
+
+  y = 30;
+  doc.setTextColor(26, 25, 22);
+
+  // ── Customer & Delivery ──
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(180, 178, 169); // muted label
+  text("SHIP TO", margin, y);
+  y += 5;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(26, 25, 22);
+  text(name, margin, y);
+  y += lineH;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(95, 94, 90);
+
+  const addressLine = `${order.address}${order.apartment ? `, ${order.apartment}` : ""}`;
+  const cityLine    = `${order.city}${order.postalCode ? ` ${order.postalCode}` : ""}, ${order.country}`;
+  text(addressLine, margin, y);
+  y += lineH;
+  text(cityLine, margin, y);
+  y += lineH;
+  text(`Phone: ${order.phone}`, margin, y);
+  y += lineH;
+  text(`Email: ${order.email}`, margin, y);
+  y += lineH + 2;
+
+  hRule(y);
+  y += 5;
+
+  // ── Order meta ──
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(180, 178, 169);
+  text("ORDER DETAILS", margin, y);
+  y += 5;
+
+  const metaRows: [string, string][] = [
+    ["Payment Method", order.paymentMethod.toUpperCase()],
+    ["Payment Status", order.paymentStatus],
+    ["Order Status",   order.status],
+  ];
+
+  doc.setFontSize(9);
+  for (const [label, value] of metaRows) {
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(95, 94, 90);
+    text(label, margin, y);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(26, 25, 22);
+    text(value, col2, y);
+    y += lineH;
+  }
+
+  y += 2;
+  hRule(y);
+  y += 5;
+
+  // ── Items table ──
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(180, 178, 169);
+  text("ITEMS", margin, y);
+  y += 5;
+
+  // Table header
+  doc.setFillColor(245, 242, 237);
+  doc.rect(margin, y - 4, W - margin * 2, 6, "F");
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(95, 94, 90);
+  text("Product", margin + 1, y);
+  text("Size", col2, y);
+  text("Qty", col2 + 22, y);
+  text("Amount", W - margin - 1, y, { align: "right" });
+  y += 5;
+
+  // Table rows
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  for (const item of order.items) {
+    doc.setTextColor(26, 25, 22);
+    // Truncate long product names
+    const productName = doc.splitTextToSize(item.productName, col2 - margin - 2)[0];
+    text(productName, margin + 1, y);
+    doc.setTextColor(95, 94, 90);
+    text(item.size, col2, y);
+    text(String(item.qty), col2 + 22, y);
+    doc.setTextColor(26, 25, 22);
+    text(`PKR ${item.lineTotal.toLocaleString()}`, W - margin - 1, y, { align: "right" });
+    y += lineH;
+  }
+
+  y += 1;
+  hRule(y);
+  y += 5;
+
+  // ── Totals ──
+  const totalsX = W - margin - 60;
+
+  if ((order.discountAmount ?? 0) > 0) {
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(95, 94, 90);
+    text("Subtotal", totalsX, y);
+    text(`PKR ${(order.totalAmount + (order.discountAmount ?? 0)).toLocaleString()}`, W - margin - 1, y, { align: "right" });
+    y += lineH;
+
+    doc.setTextColor(59, 109, 17); // green
+    text(
+      `Discount${order.discountCode ? ` (${order.discountCode})` : ""}`,
+      totalsX, y
+    );
+    text(`- PKR ${(order.discountAmount ?? 0).toLocaleString()}`, W - margin - 1, y, { align: "right" });
+    y += lineH;
+  }
+
+  // Total box
+  doc.setFillColor(26, 25, 22);
+  doc.roundedRect(totalsX - 2, y - 4, W - margin - totalsX + 4, 10, 1.5, 1.5, "F");
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(245, 242, 237);
+  text("TOTAL", totalsX + 1, y + 2);
+  text(`PKR ${order.totalAmount.toLocaleString()}`, W - margin - 2, y + 2, { align: "right" });
+
+  y += 14;
+  hRule(y);
+  y += 6;
+
+  // ── Footer note ──
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(180, 178, 169);
+  text("Thank you for your order. Please keep this slip for your records.", W / 2, y, { align: "center" });
+
+  doc.save(`order-${order.id.slice(0, 8).toUpperCase()}.pdf`);
+}
+
 // ─── Primitives ───────────────────────────────────────────────────────────────
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -107,9 +289,7 @@ function OrderItemRow({ item }: { item: Order["items"][number] }) {
 
       <div className="flex-1 min-w-0">
         <p className="text-[13px] font-medium text-[#1a1916] truncate">{item.productName}</p>
-        <p className="text-[11px] text-[#b4b2a9]">
-          Size: {item.size}
-        </p>
+        <p className="text-[11px] text-[#b4b2a9]">Size: {item.size}</p>
       </div>
 
       <div className="flex flex-col items-end gap-1 flex-shrink-0">
@@ -135,18 +315,30 @@ function OrderModal({
   order,
   onClose,
   onStatusChange,
+  onPaymentStatusChange,
   updating,
   initialEditing = false,
 }: {
   order: Order;
   onClose: () => void;
   onStatusChange: (id: string, status: OrderStatus) => void;
+  onPaymentStatusChange: (id: string, paymentStatus: string) => void;
   updating: boolean;
   initialEditing?: boolean;
 }) {
   const [editing, setEditing] = useState(initialEditing);
+  const [downloading, setDownloading] = useState(false);
   const name = fullName(order);
   const totalItems = order.items.reduce((s, i) => s + i.qty, 0);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadDeliveryPDF(order);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div
@@ -167,6 +359,29 @@ function OrderModal({
               </h2>
             </div>
             <div className="flex items-center gap-2">
+              {/* ── Download PDF button (view mode only) ── */}
+              {!editing && (
+                <button
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  className="text-[11px] font-medium px-3 py-1.5 rounded-lg border border-[#e8e5df] text-[#888780] hover:bg-[#1a1916] hover:text-[#f5f2ed] hover:border-[#1a1916] transition-all disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {downloading ? (
+                    <>
+                      <span className="inline-block w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      {/* Download icon */}
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 1v6M3.5 5L6 7.5 8.5 5M2 9.5h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Delivery PDF
+                    </>
+                  )}
+                </button>
+              )}
               {!editing && (
                 <button
                   onClick={() => setEditing(true)}
@@ -220,37 +435,35 @@ function OrderModal({
                 <OrderItemRow key={item.id} item={item} />
               ))}
             </div>
-           <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#e8e5df]">
-  <div className="flex items-center justify-between">
-    <p className="text-[11px] text-[#5f5e5a]">Subtotal</p>
-    <p className="text-[12px] text-[#1a1916]">
-      PKR {(order.totalAmount + (order.discountAmount ?? 0)).toLocaleString()}
-    </p>
-  </div>
-
-  {(order.discountAmount ?? 0) > 0 && (
-    <div className="flex items-center justify-between">
-      <p className="text-[11px] text-green-700">
-        Discount{' '}
-        {order.discountCode && (
-          <span className="font-mono bg-[#eaf3de] px-1.5 py-0.5 rounded text-[10px]">
-            {order.discountCode}
-          </span>
-        )}
-      </p>
-      <p className="text-[12px] font-medium text-green-700">
-        − PKR {(order.discountAmount ?? 0).toLocaleString()}
-      </p>
-    </div>
-  )}
-
-  <div className="flex items-center justify-between">
-    <p className="text-[11px] font-medium text-[#1a1916]">Order Total</p>
-    <p className="text-[13px] font-medium text-[#1a1916]">
-      PKR {order.totalAmount.toLocaleString()}
-    </p>
-  </div>
-</div>
+            <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#e8e5df]">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] text-[#5f5e5a]">Subtotal</p>
+                <p className="text-[12px] text-[#1a1916]">
+                  PKR {(order.totalAmount + (order.discountAmount ?? 0)).toLocaleString()}
+                </p>
+              </div>
+              {(order.discountAmount ?? 0) > 0 && (
+                <div className="flex items-center justify-between">
+                  <p className="text-[11px] text-green-700">
+                    Discount{' '}
+                    {order.discountCode && (
+                      <span className="font-mono bg-[#eaf3de] px-1.5 py-0.5 rounded text-[10px]">
+                        {order.discountCode}
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[12px] font-medium text-green-700">
+                    − PKR {(order.discountAmount ?? 0).toLocaleString()}
+                  </p>
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-medium text-[#1a1916]">Order Total</p>
+                <p className="text-[13px] font-medium text-[#1a1916]">
+                  PKR {order.totalAmount.toLocaleString()}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Discount code */}
@@ -263,7 +476,7 @@ function OrderModal({
             </div>
           )}
 
-          {/* Status */}
+          {/* ── Status ── */}
           <div className="border-t border-[#f1efe8] pt-4">
             <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] mb-2">Order Status</p>
             <div className="mb-3"><StatusPill status={order.status} /></div>
@@ -286,6 +499,30 @@ function OrderModal({
               </div>
             )}
           </div>
+
+          {/* ── Payment Status (edit mode only) ── */}
+          {editing && (
+            <div className="border-t border-[#f1efe8] pt-4 mt-4">
+              <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] mb-2">Payment Status</p>
+              <div className="mb-3"><PaymentBadge status={order.paymentStatus} /></div>
+              <div className="flex flex-wrap gap-2">
+                {(["Paid", "Unpaid", "Failed"] as const).map((ps) => (
+                  <button
+                    key={ps}
+                    disabled={updating}
+                    onClick={() => onPaymentStatusChange(order.id, ps)}
+                    className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all disabled:opacity-50 ${
+                      ps === order.paymentStatus
+                        ? "bg-[#1a1916] text-[#f5f2ed] border-[#1a1916]"
+                        : "border-[#e8e5df] text-[#5f5e5a] hover:bg-[#1a1916] hover:text-[#f5f2ed] hover:border-[#1a1916]"
+                    }`}
+                  >
+                    {updating && ps === order.paymentStatus ? "Saving…" : ps}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>
@@ -367,7 +604,7 @@ export default function OrderManagement() {
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ── Stats (derived from current page — ideally a separate stats endpoint) ──
+  // ── Stats ──
   const stats = {
     total:     meta.total,
     pending:   orders.filter((o) => o.status === "Pending").length,
@@ -390,7 +627,6 @@ export default function OrderManagement() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Re-fetch whenever filters change
   useEffect(() => {
     const params: OrderQueryParams = {
       page,
@@ -433,7 +669,7 @@ export default function OrderManagement() {
     setModalEditing(false);
   };
 
-  // ── Single status update ───────────────────────────────────────────────────
+  // ── Single order status update ─────────────────────────────────────────────
 
   const handleStatusChange = async (id: string, status: OrderStatus) => {
     setUpdating(true);
@@ -442,8 +678,24 @@ export default function OrderManagement() {
       if (updated) {
         setOrders((prev) => prev.map((o) => o.id === id ? updated : o));
         if (modalOrder?.id === id) setModalOrder(updated);
-        showToast(`Order updated → ${status}`);
+        showToast(`Order status → ${status}`);
         closeModal();
+      }
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  // ── Payment status update ──────────────────────────────────────────────────
+
+  const handlePaymentStatusChange = async (id: string, paymentStatus: string) => {
+    setUpdating(true);
+    try {
+      const updated = await updateOrder(id, { paymentStatus } as any);
+      if (updated) {
+        setOrders((prev) => prev.map((o) => o.id === id ? updated : o));
+        if (modalOrder?.id === id) setModalOrder(updated);
+        showToast(`Payment status → ${paymentStatus}`);
       }
     } finally {
       setUpdating(false);
@@ -514,9 +766,9 @@ export default function OrderManagement() {
               ))
             ) : (
               [
-                { label: "Total Orders", value: meta.total,               color: "text-[#1a1916]" },
-                { label: "Pending",      value: stats.pending,            color: "text-[#854f0b]" },
-                { label: "Delivered",    value: stats.delivered,          color: "text-[#3b6d11]" },
+                { label: "Total Orders", value: meta.total,                color: "text-[#1a1916]" },
+                { label: "Pending",      value: stats.pending,             color: "text-[#854f0b]" },
+                { label: "Delivered",    value: stats.delivered,           color: "text-[#3b6d11]" },
                 { label: "Revenue",      value: revenueStr(stats.revenue), color: "text-[#1a1916]" },
               ].map((s) => (
                 <div key={s.label} className="bg-white border border-[#e8e5df] rounded-xl p-4">
@@ -749,6 +1001,7 @@ export default function OrderManagement() {
           order={modalOrder}
           onClose={closeModal}
           onStatusChange={handleStatusChange}
+          onPaymentStatusChange={handlePaymentStatusChange}
           updating={updating}
           initialEditing={modalEditing}
         />

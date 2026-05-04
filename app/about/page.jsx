@@ -2,11 +2,16 @@
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import Navbar from "../components/Header";
 import { useState } from "react";
-import { removeFromCart } from "../store/index";
+import { removeFromCart, login, logout } from "../store/index";
 import Footer from "../components/Footer";
 import CartSidebar from "../components/CartSidebar";
-
-
+import WishlistSidebar from "../components/WishlistSidebar";
+import AuthModal from "../components/AuthModal"; 
+import { removeFromWishlist, addToCart } from "../store/index";
+import useAuthService from "../services/auth/index";
+import { toast, ToastContainer } from "react-toastify";
+import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "../utils/token";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AboutPage() {
   const dispatch = useAppDispatch();
@@ -14,9 +19,41 @@ export default function AboutPage() {
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+
+ const { customerLogin, customerRegister, customerLogout } = useAuthService();
+
   const [cartOpen, setCartOpen] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+
+  const handleLogin = async (email, password) => {
+    const data = await customerLogin({ email, password });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Welcome back!");
+  };
+
+  const handleRegister = async (name, email, password, phoneNumber) => {
+    const data = await customerRegister({
+      name,
+      email,
+      password,
+      phone: phoneNumber,
+    });
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    toast.success("Account created successfully!");
+  };
+
+  const handleLogout = async () => {
+  const refreshToken = getRefreshToken();
+  try {
+    await customerLogout(refreshToken);
+  } finally {
+    clearTokens();
+    dispatch(logout());
+  }
+};
 
   return (
     <div style={{ backgroundColor: "#EFEBE2" }} className="min-h-screen">
@@ -91,19 +128,24 @@ export default function AboutPage() {
 
       {/* ── HERO ──────────────────────────────────────────── */}
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
-        <p className="f1 uppercase mb-6" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p
+          className="f1 uppercase mb-6"
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+        >
           The Brand · SS 2026
         </p>
         <h1
           className="serif f2 font-light leading-none mb-8"
           style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#2c2520", letterSpacing: "-0.02em" }}
         >
-          About<br />Twinkle.
+          About
+          <br />
+          Twinkle.
         </h1>
         <div className="f3" style={{ display: "flex", alignItems: "flex-start", gap: "1.5rem" }}>
           <p style={{ fontSize: "14px", color: "#6b5c50", lineHeight: "1.9", maxWidth: "340px" }}>
-            We help women across Pakistan feel effortlessly beautiful through premium nightwear
-            crafted for rest and quiet confidence.
+            We help women across Pakistan feel effortlessly beautiful through
+            premium nightwear crafted for rest and quiet confidence.
           </p>
         </div>
       </section>
@@ -111,11 +153,7 @@ export default function AboutPage() {
       {/* ── FULL-WIDTH IMAGE ───────────────────────────────── */}
       <section className="px-8 md:px-24 pb-20 max-w-5xl mx-auto">
         <div className="img-zoom w-full" style={{ height: "62vh" }}>
-          <img
-            src="/background.jpg"
-            alt="Night Elegance Campaign"
-            className="w-full h-full object-cover object-center"
-          />
+          <img src="/background.jpg" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
         </div>
         <div className="flex justify-between items-center mt-4">
           <div className="rule" style={{ maxWidth: "60px" }} />
@@ -139,20 +177,24 @@ export default function AboutPage() {
               className="serif font-light leading-snug mb-8"
               style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
             >
-              From a restless search,<br />
+              From a restless search,
+              <br />
               <em>a brand was born.</em>
             </h2>
             <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
             <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              I started this brand because I saw too many women settling for uncomfortable,
-              uninspired sleepwear and knew there had to be a better way.
+              I started this brand because I saw too many women settling for
+              uncomfortable, uninspired sleepwear and knew there had to be a
+              better way.
             </p>
             <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              After years of searching for nightwear that felt both luxurious and true to our
-              culture, I decided to create something that truly helps women rest well and feel seen.
+              After years of searching for nightwear that felt both luxurious
+              and true to our culture, I decided to create something that truly
+              helps women rest well and feel seen.
             </p>
             <p style={{ fontSize: "13px", lineHeight: "1.9", fontStyle: "italic", color: "#9e8e82" }}>
-              This journey is personal to me, and everything we do today is shaped by that original &ldquo;why.&rdquo;
+              This journey is personal to me, and everything we do today is
+              shaped by that original &ldquo;why.&rdquo;
             </p>
           </div>
         </div>
@@ -169,7 +211,8 @@ export default function AboutPage() {
               className="serif font-light leading-snug"
               style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#f0e8de", letterSpacing: "-0.015em" }}
             >
-              Three things we will<br />
+              Three things we will
+              <br />
               <em>never compromise on.</em>
             </h2>
           </div>
@@ -218,7 +261,8 @@ export default function AboutPage() {
               className="serif font-light leading-snug mb-10"
               style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
             >
-              Made for the woman<br />
+              Made for the woman
+              <br />
               <em>who knows what she wants.</em>
             </h2>
             <div className="flex flex-col" style={{ gap: "0" }}>
@@ -228,10 +272,7 @@ export default function AboutPage() {
                 "Anyone who values comfort, craftsmanship, and a touch of quiet luxury.",
               ].map((item, i) => (
                 <div key={i} className="who-item">
-                  <span
-                    className="serif font-light flex-shrink-0"
-                    style={{ fontSize: "20px", color: "rgba(180,165,145,0.5)", marginTop: "2px" }}
-                  >
+                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "20px", color: "rgba(180,165,145,0.5)", marginTop: "2px" }}>
                     0{i + 1}
                   </span>
                   <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>{item}</p>
@@ -250,45 +291,39 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-14 items-start">
           <div>
             <div className="img-zoom w-full mb-4" style={{ height: "500px" }}>
-              <img
-                src="/bharti.jpg"
-                alt="Bharti Manghwani — Founder"
-                className="w-full h-full object-cover object-top"
-              />
+              <img src="/bharti.jpg" alt="Bharti Manghwani — Founder" className="w-full h-full object-cover object-top" />
             </div>
             <p style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#7a6a5e" }} className="uppercase">
               Bharti Manghwani · Founder
             </p>
           </div>
-
           <div className="md:pt-6">
             <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a6a4a" }}>
               Meet the Founder
             </p>
-            {/* FIX: Changed heading color from #f0e8de (invisible on beige) to #2c2520 (dark) */}
             <h2
               className="serif font-light leading-snug mb-8"
               style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
             >
-              Hi, I&apos;m<br />
+              Hi, I&apos;m
+              <br />
               <em>Bharti Manghwani</em>
             </h2>
             <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)", marginBottom: "2rem" }} />
-            {/* FIX: Changed body text from #c8b8a8 (invisible on beige) to #4a3f35 (readable dark) */}
             <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              Founder of Twinkle. With a background in fashion and textile design, I&apos;m passionate
-              about helping women feel more at home in their own skin especially during the quiet
-              hours of the night.
+              Founder of Twinkle. With a background in fashion and textile
+              design, I&apos;m passionate about helping women feel more at home
+              in their own skin especially during the quiet hours of the night.
             </p>
             <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              Twinkle was born from my own restless search for sleepwear that felt both beautiful
-              and deeply comfortable. I couldn&apos;t find it so I made it.
+              Twinkle was born from my own restless search for sleepwear that
+              felt both beautiful and deeply comfortable. I couldn&apos;t find
+              it so I made it.
             </p>
             <p style={{ fontSize: "13px", lineHeight: "1.9", fontStyle: "italic", color: "#6b5c50" }}>
-              This journey is personal, and every piece we create carries that original intention forward.
+              This journey is personal, and every piece we create carries that
+              original intention forward.
             </p>
-            
-           
           </div>
         </div>
       </section>
@@ -303,22 +338,15 @@ export default function AboutPage() {
         </p>
         <h2
           className="serif font-light leading-tight mb-8 mx-auto"
-          style={{
-            fontSize: "clamp(44px, 9vw, 88px)",
-            color: "#f0e8de",
-            letterSpacing: "-0.025em",
-            maxWidth: "640px",
-          }}
+          style={{ fontSize: "clamp(44px, 9vw, 88px)", color: "#f0e8de", letterSpacing: "-0.025em", maxWidth: "640px" }}
         >
-          Explore the<br />
+          Explore the
+          <br />
           <em>Collection.</em>
         </h2>
-        <p
-          className="mx-auto mb-14"
-          style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "340px" }}
-        >
-          Discover nightwear crafted for the rhythm of your everyday life from late-night chai
-          to slow, peaceful mornings.
+        <p className="mx-auto mb-14" style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "340px" }}>
+          Discover nightwear crafted for the rhythm of your everyday life from
+          late-night chai to slow, peaceful mornings.
         </p>
         <div className="flex items-center justify-center gap-12 flex-wrap pb-10">
           <a
@@ -334,8 +362,14 @@ export default function AboutPage() {
               letterSpacing: "0.24em",
               transition: "background-color 0.2s, border-color 0.2s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#3d352c"; e.currentTarget.style.borderColor = "rgba(180,165,145,0.5)"; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "#2c2520"; e.currentTarget.style.borderColor = "rgba(180,165,145,0.3)"; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#3d352c";
+              e.currentTarget.style.borderColor = "rgba(180,165,145,0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#2c2520";
+              e.currentTarget.style.borderColor = "rgba(180,165,145,0.3)";
+            }}
           >
             SHOP NOW
           </a>
@@ -343,9 +377,8 @@ export default function AboutPage() {
             GET IN TOUCH
           </a>
         </div>
-        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)"}} />
+        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
       </section>
-
 
       {cartOpen && (
         <CartSidebar
@@ -354,6 +387,41 @@ export default function AboutPage() {
           onRemove={(idx) => dispatch(removeFromCart(idx))}
         />
       )}
+
+      {wishlistOpen && (
+        <WishlistSidebar
+          wishlist={wishlist}
+          onClose={() => setWishlistOpen(false)}
+          onRemove={(idx) => dispatch(removeFromWishlist(idx))}
+          onMoveToCart={(item, idx) => {
+            dispatch(addToCart({ ...item, qty: item.qty ?? 1 }));
+            dispatch(removeFromWishlist(idx));
+            setWishlistOpen(false);
+          }}
+        />
+      )}
+
+      {authOpen && (
+        <AuthModal
+          user={user}
+          onClose={() => setAuthOpen(false)}
+          onLogin={(userData) => dispatch(login(userData))}
+          // onLogout={() => dispatch(logout())}
+          onSubmitLogin={handleLogin}
+          onSubmitRegister={handleRegister}
+          onError={(msg) => toast.error(msg)}
+          onSubmitLogout={handleLogout} 
+        />
+      )}
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover={false}
+        toastClassName="text-[11px] tracking-[0.15em] uppercase"
+      />
 
       <Footer />
     </div>
