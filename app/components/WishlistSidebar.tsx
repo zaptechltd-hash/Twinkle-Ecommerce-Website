@@ -1,7 +1,29 @@
 "use client";
 import { useState } from "react";
 
-function QuickAddModal({ item, onClose, onConfirm }) {
+interface WishlistItem {
+  id: string | number;
+  name: string;
+  price: number;
+  discountPrice?: number | null;
+  images: { url: string }[];
+  sizes: { id: string; size: string; stock: number }[];
+  qty?: number;
+  selectedSize?: string;
+}
+
+interface WishlistSidebarProps {
+  wishlist: WishlistItem[];
+  onClose: () => void;
+  onRemove: (idx: number) => void;
+  onMoveToCart: (item: WishlistItem, idx: number) => void;
+}
+
+function QuickAddModal({ item, onClose, onConfirm }: {
+  item: WishlistItem;
+  onClose: () => void;
+  onConfirm: (size: string) => void;
+}) {
   // Flat backend: sizes = [{ id, size, stock }, ...]
   const sizes = item.sizes ?? [];
   const [selectedSize, setSelectedSize] = useState("");
@@ -111,20 +133,21 @@ export default function WishlistSidebar({
   onClose,
   onRemove,
   onMoveToCart,
-}) {
-  const [quickAddItem, setQuickAddItem] = useState(null);
-  const [quickAddIndex, setQuickAddIndex] = useState(null);
+}: WishlistSidebarProps) {
+ const [quickAddItem, setQuickAddItem] = useState<WishlistItem | null>(null);
+const [quickAddIndex, setQuickAddIndex] = useState<number | null>(null);
 
-  function handleMoveToCartClick(item, i) {
+function handleMoveToCartClick(item: WishlistItem, i: number) {
     setQuickAddItem(item);
     setQuickAddIndex(i);
   }
 
-  function handleQuickAddConfirm(selectedSize) {
-    onMoveToCart({ ...quickAddItem, selectedSize, qty: 1 }, quickAddIndex);
-    setQuickAddItem(null);
-    setQuickAddIndex(null);
-  }
+function handleQuickAddConfirm(selectedSize: string) {
+  if (!quickAddItem || quickAddIndex === null) return;
+  onMoveToCart({ ...quickAddItem, selectedSize, qty: 1 }, quickAddIndex);
+  setQuickAddItem(null);
+  setQuickAddIndex(null);
+}
 
   return (
     <>
