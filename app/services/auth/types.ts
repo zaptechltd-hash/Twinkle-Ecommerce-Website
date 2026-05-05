@@ -7,6 +7,10 @@ export interface CustomerLoginPayload {
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;
+   user: {
+    id: string;
+    email: string;
+  };
 }
 
 // --- Customer ---

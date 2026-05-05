@@ -4,7 +4,7 @@ import Navbar from "./components/Header";
 import ProductModal from "./components/ProductModal";
 import Footer from "./components/Footer";
 import ProductCard from "./components/ProductCard";
-import AuthModal from "./components/AuthModal"; // ← standalone component
+import AuthModal from "./components/AuthModal";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
   addToCart,
@@ -222,25 +222,22 @@ const handleLogout = async () => {
   const [wishlistOpen, setWishlistOpen] = useState(false);
 
   const handleLogin = async (email, password) => {
-    const data = await customerLogin({ email, password });
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    toast.success("Welcome back!");
-  };
+  const data = await customerLogin({ email, password });
+  setAccessToken(data.accessToken);
+  setRefreshToken(data.refreshToken);
+  toast.success("Welcome back!");
+  return { id: data.user.id, email: data.user.email, name: email.split("@")[0] };
+};
 
-  const handleRegister = async (name, email, password, phoneNumber) => {
-    const data = await customerRegister({
-      name,
-      email,
-      password,
-      phone: phoneNumber,
-    });
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    toast.success("Account created successfully!");
-  };
+const handleRegister = async (name, email, password, phoneNumber) => {
+  const data = await customerRegister({ name, email, password, phone: phoneNumber });
+  setAccessToken(data.accessToken);
+  setRefreshToken(data.refreshToken);
+  toast.success("Account created successfully!");
+  return { id: data.user.id, email: data.user.email, name };
+};
 
-  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
   return (
     <div className="min-h-screen bg-white">

@@ -27,23 +27,20 @@ export default function AboutPage() {
   const [authOpen, setAuthOpen] = useState(false);
 
   const handleLogin = async (email, password) => {
-    const data = await customerLogin({ email, password });
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    toast.success("Welcome back!");
-  };
+  const data = await customerLogin({ email, password });
+  setAccessToken(data.accessToken);
+  setRefreshToken(data.refreshToken);
+  toast.success("Welcome back!");
+  return { id: data.user.id, email: data.user.email, name: email.split("@")[0] };
+};
 
-  const handleRegister = async (name, email, password, phoneNumber) => {
-    const data = await customerRegister({
-      name,
-      email,
-      password,
-      phone: phoneNumber,
-    });
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    toast.success("Account created successfully!");
-  };
+const handleRegister = async (name, email, password, phoneNumber) => {
+  const data = await customerRegister({ name, email, password, phone: phoneNumber });
+  setAccessToken(data.accessToken);
+  setRefreshToken(data.refreshToken);
+  toast.success("Account created successfully!");
+  return { id: data.user.id, email: data.user.email, name };
+};
 
   const handleLogout = async () => {
   const refreshToken = getRefreshToken();

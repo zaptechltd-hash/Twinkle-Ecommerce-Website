@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function AuthModal({
   onClose,
   onLogin,
-  onLogout,
+  // onLogout,
   user,
   onSubmitLogin,
   onSubmitRegister,
@@ -32,19 +32,24 @@ export default function AuthModal({
 
     try {
       if (mode === "login") {
-        await onSubmitLogin(form.email, form.password);
+        const userData = await onSubmitLogin(form.email, form.password);
         onLogin({
-          name: form.name || form.email.split("@")[0],
-          email: form.email,
+          id: userData.id,
+          name: userData.name,
+          email: userData.email,
         });
       } else {
-        await onSubmitRegister(
+        const userData = await onSubmitRegister(
           form.name,
           form.email,
           form.password,
           form.phoneNumber,
         );
-        onLogin({ name: form.name, email: form.email });
+        onLogin({
+          id: userData.id,
+          name: userData.name,
+          email: userData.email,
+        });
       }
       onClose();
     } catch (err) {
@@ -88,20 +93,22 @@ export default function AuthModal({
                 </p>
               </div>
             </div>
-            {["My Orders", "My Wishlist", "Account Settings"].map((item) => (
-              <button
-                key={item}
-                className="block w-full text-left py-3 text-[11px] tracking-[0.15em] uppercase text-stone-600 border-b border-stone-100 hover:text-stone-900 transition-colors"
-              >
-                {item}
-              </button>
-            ))}
+
+            <button
+              onClick={() => {
+                onClose();
+                window.location.href = "/myorder";
+              }}
+              className="block w-full text-left py-3 text-[11px] tracking-[0.15em] uppercase text-stone-600 border-b border-stone-100 hover:text-stone-900 transition-colors"
+            >
+              My Orders
+            </button>
+
             <button
               onClick={async () => {
                 try {
                   await onSubmitLogout();
                 } catch (err) {}
-                // onLogout();
                 onClose();
               }}
               className="block w-full text-left py-3 text-[11px] tracking-[0.15em] uppercase text-red-400 hover:text-red-600 transition-colors mt-1"
