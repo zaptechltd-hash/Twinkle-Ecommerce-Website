@@ -1,3 +1,5 @@
+
+
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import Navbar from "../components/Header";
@@ -22,20 +24,17 @@ import CartSidebar from "../components/CartSidebar";
 import WishlistSidebar from "../components/WishlistSidebar";
 import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "../utils/token";
 
+const PAGE_SIZE = 12;
+
 const SORT_OPTIONS = [
   { label: "Featured", value: "featured" },
   { label: "Price: Low to High", value: "price-asc" },
   { label: "Price: High to Low", value: "price-desc" },
-  { label: "Newest", value: "newest" },
+  // { label: "Newest", value: "newest" },
 ];
-const FABRICS = ["Silk", "Velvet", "Modal", "Satin", "Cotton", "Cashmere"];
-const COLORS = [
-  { name: "Blush", hex: "#e8c4b8" },
-  { name: "Noir", hex: "#2a2a2a" },
-  { name: "Ivory", hex: "#f5f0e8" },
-  { name: "Stone", hex: "#b5a99a" },
-];
-const SIZES_ALL = ["XS", "S", "M", "L", "XL"];
+
+const SIZES_ALL = ["S", "M", "L", "XL"];
+
 const PRICE_RANGES = [
   { label: "Under PKR 4,500", min: 0, max: 4500 },
   { label: "PKR 4,500 – 6,000", min: 4500, max: 6000 },
@@ -65,10 +64,7 @@ function FilterAccordion({ title, children, defaultOpen = false }) {
 
 function FilterPanel({ filters, onChange, onClear }) {
   const activeCount =
-    filters.fabrics.length +
-    filters.colors.length +
-    filters.sizes.length +
-    (filters.priceRange !== null ? 1 : 0);
+    filters.sizes.length + (filters.priceRange !== null ? 1 : 0);
 
   return (
     <aside className="w-full">
@@ -120,81 +116,6 @@ function FilterPanel({ filters, onChange, onClear }) {
                   )}
                 </span>
                 {range.label}
-              </button>
-            );
-          })}
-        </div>
-      </FilterAccordion>
-
-      <FilterAccordion title="Fabric">
-        <div className="flex flex-col gap-1">
-          {FABRICS.map((fab) => {
-            const active = filters.fabrics.includes(fab);
-            return (
-              <button
-                key={fab}
-                onClick={() =>
-                  onChange({
-                    ...filters,
-                    fabrics: active
-                      ? filters.fabrics.filter((f) => f !== fab)
-                      : [...filters.fabrics, fab],
-                  })
-                }
-                className={`text-left text-[11px] tracking-wide py-1.5 flex items-center gap-2 transition-colors ${active ? "text-stone-900" : "text-stone-400 hover:text-stone-700"}`}
-              >
-                <span
-                  className={`w-3.5 h-3.5 border flex-shrink-0 flex items-center justify-center transition-all ${active ? "border-stone-800 bg-stone-800" : "border-stone-200"}`}
-                >
-                  {active && (
-                    <svg width="7" height="7" viewBox="0 0 10 10">
-                      <polyline
-                        points="1,5 4,8 9,2"
-                        stroke="white"
-                        strokeWidth="1.5"
-                        fill="none"
-                      />
-                    </svg>
-                  )}
-                </span>
-                {fab}
-              </button>
-            );
-          })}
-        </div>
-      </FilterAccordion>
-
-      <FilterAccordion title="Colour">
-        <div className="flex flex-col gap-2.5">
-          {COLORS.map((col) => {
-            const active = filters.colors.includes(col.name);
-            return (
-              <button
-                key={col.name}
-                onClick={() =>
-                  onChange({
-                    ...filters,
-                    colors: active
-                      ? filters.colors.filter((c) => c !== col.name)
-                      : [...filters.colors, col.name],
-                  })
-                }
-                className="flex items-center gap-3 group"
-              >
-                <span
-                  className={`w-5 h-5 rounded-full border-2 transition-all flex-shrink-0 ${active ? "border-stone-700 scale-110" : "border-transparent"}`}
-                  style={{
-                    backgroundColor: col.hex,
-                    boxShadow: active
-                      ? "0 0 0 1px #79716b"
-                      : "0 0 0 1px #e7e5e4",
-                  }}
-                />
-                <span
-                  className={`text-[11px] tracking-wide transition-colors ${active ? "text-stone-900" : "text-stone-400 group-hover:text-stone-700"}`}
-                >
-                  {col.name}
-                </span>
               </button>
             );
           })}
@@ -269,30 +190,23 @@ function MobileFilterDrawer({ open, onClose, filters, onChange, onClear, totalRe
 
 function ActiveFilters({ filters, onChange, onClear }) {
   const pills = [];
-  filters.fabrics.forEach((f) =>
-    pills.push({
-      label: f,
-      clear: () => onChange({ ...filters, fabrics: filters.fabrics.filter((x) => x !== f) }),
-    }),
-  );
-  filters.colors.forEach((c) =>
-    pills.push({
-      label: c,
-      clear: () => onChange({ ...filters, colors: filters.colors.filter((x) => x !== c) }),
-    }),
-  );
+
   filters.sizes.forEach((s) =>
     pills.push({
       label: s,
-      clear: () => onChange({ ...filters, sizes: filters.sizes.filter((x) => x !== s) }),
+      clear: () =>
+        onChange({ ...filters, sizes: filters.sizes.filter((x) => x !== s) }),
     }),
   );
+
   if (filters.priceRange !== null)
     pills.push({
       label: PRICE_RANGES[filters.priceRange].label,
       clear: () => onChange({ ...filters, priceRange: null }),
     });
+
   if (pills.length === 0) return null;
+
   return (
     <div className="flex flex-wrap gap-2 mb-8">
       {pills.map((pill, i) => (
@@ -302,7 +216,9 @@ function ActiveFilters({ filters, onChange, onClear }) {
           className="flex items-center gap-1.5 border border-stone-200 px-3 py-1.5 text-[10px] tracking-[0.15em] text-stone-600 uppercase hover:border-stone-400 transition-colors group"
         >
           {pill.label}
-          <span className="text-stone-300 group-hover:text-stone-600 transition-colors">✕</span>
+          <span className="text-stone-300 group-hover:text-stone-600 transition-colors">
+            ✕
+          </span>
         </button>
       ))}
       <button
@@ -325,8 +241,6 @@ export default function CollectionPage() {
   const { customerLogin, customerRegister, customerLogout } = useAuthService();
 
   const [filters, setFilters] = useState({
-    fabrics: [],
-    colors: [],
     sizes: [],
     priceRange: null,
   });
@@ -337,6 +251,7 @@ export default function CollectionPage() {
   const [cartOpen, setCartOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const { getProducts } = useProductService();
   const [products, setProducts] = useState([]);
@@ -354,55 +269,70 @@ export default function CollectionPage() {
     });
   }, []);
 
+  // Reset visible count whenever filters or sort change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [filters, sort]);
+
   const handleLogin = async (email, password) => {
     const data = await customerLogin({ email, password });
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Welcome back!");
+    return { id: data.user.id, email: data.user.email, name: email.split("@")[0] };
   };
 
   const handleRegister = async (name, email, password, phoneNumber) => {
-    const data = await customerRegister({
-      name,
-      email,
-      password,
-      phone: phoneNumber,
-    });
+    const data = await customerRegister({ name, email, password, phone: phoneNumber });
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Account created successfully!");
+    return { id: data.user.id, email: data.user.email, name };
   };
-const handleLogout = async () => {
-  const refreshToken = getRefreshToken();
-  try {
-    await customerLogout(refreshToken);
-  } finally {
-    clearTokens();
-    dispatch(logout());
-  }
-};
+
+  const handleLogout = async () => {
+    const refreshToken = getRefreshToken();
+    try {
+      await customerLogout(refreshToken);
+    } finally {
+      clearTokens();
+      dispatch(logout());
+    }
+  };
+
   const filtered = useMemo(() => {
     let list = [...products];
-    if (filters.fabrics.length)
-      list = list.filter((p) => filters.fabrics.includes(p.fabric));
-    if (filters.colors.length)
-      list = list.filter((p) => filters.colors.includes(p.color));
+
+    // Filter by size — product must have the selected size in its sizes array
     if (filters.sizes.length)
-      list = list.filter((p) => filters.sizes.some((s) => p.sizes.includes(s)));
+      list = list.filter((p) =>
+        filters.sizes.some((s) => p.sizes.some((ps) => ps.size === s)),
+      );
+
+    // Filter by discountPrice
     if (filters.priceRange !== null) {
       const range = PRICE_RANGES[filters.priceRange];
-      list = list.filter((p) => p.price >= range.min && p.price < range.max);
+      list = list.filter(
+        (p) => p.discountPrice >= range.min && p.discountPrice < range.max,
+      );
     }
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
+
+    // Sort also uses discountPrice
+    if (sort === "price-asc")
+      list.sort((a, b) => a.discountPrice - b.discountPrice);
+    else if (sort === "price-desc")
+      list.sort((a, b) => b.discountPrice - a.discountPrice);
+
     return list;
   }, [filters, sort, products]);
 
   function clearFilters() {
-    setFilters({ fabrics: [], colors: [], sizes: [], priceRange: null });
+    setFilters({ sizes: [], priceRange: null });
   }
 
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+  const visibleProducts = filtered.slice(0, visibleCount);
+  const hasMore = filtered.length > visibleCount;
 
   return (
     <div className="min-h-screen bg-white">
@@ -438,7 +368,14 @@ const handleLogout = async () => {
           onClick={() => setMobileFiltersOpen(true)}
           className="md:hidden flex items-center gap-2 text-[10px] tracking-[0.25em] text-stone-600 uppercase"
         >
-          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" strokeWidth="1.2">
+          <svg
+            width="14"
+            height="10"
+            viewBox="0 0 14 10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          >
             <line x1="0" y1="1" x2="14" y2="1" />
             <line x1="3" y1="5" x2="14" y2="5" />
             <line x1="6" y1="9" x2="14" y2="9" />
@@ -452,18 +389,31 @@ const handleLogout = async () => {
             className="flex items-center gap-2 text-[10px] tracking-[0.22em] text-stone-500 uppercase hover:text-stone-800 transition-colors"
           >
             Sort: {SORT_OPTIONS.find((s) => s.value === sort)?.label}
-            <svg width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" strokeWidth="1.2">
+            <svg
+              width="8"
+              height="5"
+              viewBox="0 0 8 5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+            >
               <polyline points="1,1 4,4 7,1" />
             </svg>
           </button>
           {sortDropdown && (
             <>
-              <div className="fixed inset-0 z-10" onClick={() => setSortDropdown(false)} />
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setSortDropdown(false)}
+              />
               <div className="absolute right-0 top-8 z-20 bg-white border border-stone-100 shadow-sm w-48 py-2">
                 {SORT_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
-                    onClick={() => { setSort(opt.value); setSortDropdown(false); }}
+                    onClick={() => {
+                      setSort(opt.value);
+                      setSortDropdown(false);
+                    }}
                     className={`block w-full text-left px-4 py-2.5 text-[11px] tracking-wide transition-colors ${sort === opt.value ? "text-stone-900 bg-stone-50" : "text-stone-400 hover:text-stone-700"}`}
                   >
                     {opt.label}
@@ -478,10 +428,18 @@ const handleLogout = async () => {
       {/* Main layout */}
       <div className="px-6 md:px-12 pt-8 pb-24 flex gap-12">
         <aside className="hidden md:block w-52 flex-shrink-0 pt-1">
-          <FilterPanel filters={filters} onChange={setFilters} onClear={clearFilters} />
+          <FilterPanel
+            filters={filters}
+            onChange={setFilters}
+            onClear={clearFilters}
+          />
         </aside>
         <main className="flex-1 min-w-0">
-          <ActiveFilters filters={filters} onChange={setFilters} onClear={clearFilters} />
+          <ActiveFilters
+            filters={filters}
+            onChange={setFilters}
+            onClear={clearFilters}
+          />
           {productsLoading ? (
             <div className="col-span-2 lg:col-span-3 py-32 text-center">
               <p className="text-[11px] tracking-[0.25em] text-stone-300 uppercase animate-pulse">
@@ -502,7 +460,7 @@ const handleLogout = async () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-12">
-              {filtered.map((product) => (
+              {visibleProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -513,9 +471,14 @@ const handleLogout = async () => {
               ))}
             </div>
           )}
-          {filtered.length > 0 && (
+
+          {/* Load More — only shown when there are more products to display */}
+          {hasMore && (
             <div className="mt-16 text-center">
-              <button className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border border-stone-200 px-10 py-3.5 hover:border-stone-500 hover:text-stone-800 transition-all">
+              <button
+                onClick={() => setVisibleCount((v) => v + PAGE_SIZE)}
+                className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border border-stone-200 px-10 py-3.5 hover:border-stone-500 hover:text-stone-800 transition-all"
+              >
                 Load More
               </button>
             </div>
@@ -561,11 +524,10 @@ const handleLogout = async () => {
           user={user}
           onClose={() => setAuthOpen(false)}
           onLogin={(userData) => dispatch(login(userData))}
-          // onLogout={() => dispatch(logout())}
           onSubmitLogin={handleLogin}
           onSubmitRegister={handleRegister}
           onError={(msg) => toast.error(msg)}
-          onSubmitLogout={handleLogout}  
+          onSubmitLogout={handleLogout}
         />
       )}
 

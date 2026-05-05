@@ -51,23 +51,10 @@ export default function Footer() {
 
       </div>
 
-      {/* Newsletter */}
-      <div className="mb-10">
-        <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-3">Stay in the edit</p>
-        <div className="flex max-w-sm">
-          <input
-            type="email"
-            placeholder="your@email.com"
-            className="flex-1 bg-stone-800 border border-stone-700 text-stone-300 text-[11px] px-4 py-2.5 outline-none placeholder:text-stone-600 focus:border-stone-500 transition-colors"
-          />
-          <button className="bg-stone-100 text-stone-900 text-[9px] tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white transition-colors">
-            Subscribe
-          </button>
-        </div>
-      </div>
+  
 
       {/* Bottom bar */}
-      <div className="border-t border-stone-800 pt-6 flex flex-col md:flex-row justify-between gap-3">
+      <div className=" border-stone-800 pt-6 flex flex-col md:flex-row justify-between gap-3">
         <p className="text-[10px] text-stone-700 tracking-wide">© 2025 TwinkleOfficial. All rights reserved.</p>
         <div className="flex gap-5">
           {["Privacy Policy", "Terms", "Cookies"].map((l) => (
