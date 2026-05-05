@@ -8,17 +8,28 @@ interface CartItem {
   id: string | number;
   name: string;
   price: number;
+  discountPrice?: number | null;
   qty: number;
   selectedSize: string;
-  images: string[];
+  images: { url: string }[];
 }
 
+// interface WishlistItem {
+//   id: string | number;
+//   name: string;
+//   price: number;
+//   images: string[];
+//   sizes: string[];
+// }
 interface WishlistItem {
   id: string | number;
   name: string;
   price: number;
-  images: string[];
-  sizes: string[];
+  discountPrice?: number | null;
+  images: { url: string }[];
+  sizes: { id: string; size: string; stock: number }[];
+  qty?: number;
+  selectedSize?: string;
 }
 
 interface AuthUser {

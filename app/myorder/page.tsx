@@ -27,8 +27,8 @@ import WishlistSidebar from "../components/WishlistSidebar";
 import AuthModal from "../components/AuthModal";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import type { RootState } from "../store/index";
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
 const STATUS_STEPS = ["Pending", "Processing", "Shipped", "Delivered"] as const;
 
 function formatDate(iso: string) {
@@ -249,7 +249,7 @@ export default function MyOrdersPage() {
   }, [user]);
 
   const handleLogout = async () => {
-    const refreshToken = getRefreshToken();
+    const refreshToken = getRefreshToken() ?? '';
     try {
       await customerLogout(refreshToken);
     } finally {
@@ -362,8 +362,8 @@ export default function MyOrdersPage() {
           wishlist={wishlist}
           onClose={() => setWishlistOpen(false)}
           onRemove={(idx: number) => dispatch(removeFromWishlist(idx))}
-          onMoveToCart={(item, idx: number) => {
-            dispatch(addToCart({ ...item, qty: item.qty ?? 1 }));
+          onMoveToCart={(item: RootState['wishlist'][number], idx: number) => {
+            dispatch(addToCart({ ...item, qty: item.qty ?? 1, selectedSize: item.selectedSize ?? '' }));
             dispatch(removeFromWishlist(idx));
             setWishlistOpen(false);
             setCartOpen(true);
