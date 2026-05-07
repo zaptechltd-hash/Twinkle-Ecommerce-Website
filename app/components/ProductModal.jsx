@@ -1,6 +1,236 @@
 // "use client";
-// import { useState } from "react";
+// import { useState, useRef, useCallback } from "react";
 
+// // ── Chevron icons (inline, no extra deps) ──────────────────────────────────
+// function ChevronLeft() {
+//   return (
+//     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+//       <polyline points="15 18 9 12 15 6" />
+//     </svg>
+//   );
+// }
+// function ChevronRight() {
+//   return (
+//     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+//       <polyline points="9 18 15 12 9 6" />
+//     </svg>
+//   );
+// }
+
+// // ── Image Gallery ──────────────────────────────────────────────────────────
+// function ImageGallery({ images, productName }) {
+//   const [activeIndex, setActiveIndex] = useState(0);
+//   const [direction, setDirection] = useState(null); // "left" | "right"
+//   const [animating, setAnimating] = useState(false);
+
+//   // Touch state
+//   const touchStartX = useRef(null);
+//   const touchStartY = useRef(null);
+//   const isDragging = useRef(false);
+//   const SWIPE_THRESHOLD = 42;
+//   const VERTICAL_TOLERANCE = 60;
+
+//   const total = images.length;
+
+//   const navigate = useCallback(
+//     (dir) => {
+//       if (animating || total <= 1) return;
+//       setDirection(dir);
+//       setAnimating(true);
+//       setTimeout(() => {
+//         setActiveIndex((prev) =>
+//           dir === "right" ? (prev + 1) % total : (prev - 1 + total) % total
+//         );
+//         setAnimating(false);
+//         setDirection(null);
+//       }, 310);
+//     },
+//     [animating, total]
+//   );
+
+//   // Touch handlers
+//   const onTouchStart = (e) => {
+//     touchStartX.current = e.touches[0].clientX;
+//     touchStartY.current = e.touches[0].clientY;
+//     isDragging.current = false;
+//   };
+//   const onTouchMove = (e) => {
+//     if (!touchStartX.current) return;
+//     const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+//     const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+//     if (dx > 8 && dx > dy) {
+//       isDragging.current = true;
+//       e.preventDefault(); // stop page scroll while swiping
+//     }
+//   };
+//   const onTouchEnd = (e) => {
+//     if (!touchStartX.current) return;
+//     const dx = e.changedTouches[0].clientX - touchStartX.current;
+//     const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+//     if (isDragging.current && Math.abs(dx) > SWIPE_THRESHOLD && dy < VERTICAL_TOLERANCE) {
+//       navigate(dx < 0 ? "right" : "left");
+//     }
+//     touchStartX.current = null;
+//     touchStartY.current = null;
+//     isDragging.current = false;
+//   };
+
+//   const activeImage = images[activeIndex]?.url ?? "/placeholder.jpg";
+
+//   // CSS animation direction classes
+//   // enter = slide in, exit = slide out (handled via inline keyframe styles)
+//   const slideStyle = animating
+//     ? {
+//         animation: `gallerySlide${direction === "right" ? "OutLeft" : "OutRight"} 0.31s cubic-bezier(0.4,0,0.2,1) forwards`,
+//       }
+//     : {};
+
+//   return (
+//     <div className="w-full md:w-1/2 relative flex-shrink-0 overflow-hidden select-none bg-stone-50"
+//       style={{ minHeight: 340 }}
+//     >
+//       <style>{`
+//         @keyframes gallerySlideOutLeft {
+//           from { transform: translateX(0); opacity: 1; }
+//           to   { transform: translateX(-6%); opacity: 0; }
+//         }
+//         @keyframes gallerySlideOutRight {
+//           from { transform: translateX(0); opacity: 1; }
+//           to   { transform: translateX(6%); opacity: 0; }
+//         }
+//         @keyframes gallerySlideInRight {
+//           from { transform: translateX(6%); opacity: 0; }
+//           to   { transform: translateX(0); opacity: 1; }
+//         }
+//         @keyframes gallerySlideInLeft {
+//           from { transform: translateX(-6%); opacity: 0; }
+//           to   { transform: translateX(0); opacity: 1; }
+//         }
+//         .gallery-enter-right {
+//           animation: gallerySlideInRight 0.31s cubic-bezier(0.4,0,0.2,1) forwards;
+//         }
+//         .gallery-enter-left {
+//           animation: gallerySlideInLeft 0.31s cubic-bezier(0.4,0,0.2,1) forwards;
+//         }
+//         .gallery-arrow {
+//           opacity: 0;
+//           transition: opacity 0.2s ease, background 0.2s ease;
+//         }
+//         .gallery-root:hover .gallery-arrow {
+//           opacity: 1;
+//         }
+//         .gallery-arrow:hover {
+//           background: rgba(255,255,255,0.95) !important;
+//         }
+//       `}</style>
+
+//       {/* Image wrapper with touch events */}
+//       <div
+//         className="gallery-root w-full h-[340px] md:h-full relative"
+//         onTouchStart={onTouchStart}
+//         onTouchMove={onTouchMove}
+//         onTouchEnd={onTouchEnd}
+//         style={{ touchAction: "pan-y" }}
+//       >
+//         {/* Current image */}
+//         <img
+//           key={activeIndex}
+//           src={activeImage}
+//           alt={`${productName} — ${activeIndex + 1}`}
+//           className={`absolute inset-0 w-full h-full object-cover ${
+//             !animating
+//               ? direction === "right"
+//                 ? "gallery-enter-right"
+//                 : direction === "left"
+//                 ? "gallery-enter-left"
+//                 : ""
+//               : ""
+//           }`}
+//           style={animating ? slideStyle : {}}
+//           draggable={false}
+//         />
+
+//         {/* ── Desktop arrows (visible on hover) ── */}
+//         {total > 1 && (
+//           <>
+//             <button
+//               onClick={() => navigate("left")}
+//               aria-label="Previous image"
+//               className="gallery-arrow hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-10
+//                          w-9 h-9 items-center justify-center
+//                          bg-white/80 backdrop-blur-sm text-stone-700
+//                          border border-stone-100 shadow-sm
+//                          transition-all hover:scale-105 active:scale-95"
+//             >
+//               <ChevronLeft />
+//             </button>
+//             <button
+//               onClick={() => navigate("right")}
+//               aria-label="Next image"
+//               className="gallery-arrow hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-10
+//                          w-9 h-9 items-center justify-center
+//                          bg-white/80 backdrop-blur-sm text-stone-700
+//                          border border-stone-100 shadow-sm
+//                          transition-all hover:scale-105 active:scale-95"
+//             >
+//               <ChevronRight />
+//             </button>
+//           </>
+//         )}
+
+//         {/* ── Image counter (top-right) ── */}
+//         {total > 1 && (
+//           <div className="absolute top-3 right-3 z-10
+//                           bg-stone-900/40 backdrop-blur-sm
+//                           px-2.5 py-1 text-white"
+//             style={{ fontSize: "9px", letterSpacing: "0.2em" }}
+//           >
+//             {activeIndex + 1} / {total}
+//           </div>
+//         )}
+
+//         {/* ── Dot indicators (bottom, both platforms) ── */}
+//         {total > 1 && (
+//           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+//             {images.map((_, i) => (
+//               <button
+//                 key={i}
+//                 onClick={() => {
+//                   if (i === activeIndex || animating) return;
+//                   navigate(i > activeIndex ? "right" : "left");
+//                 }}
+//                 aria-label={`Go to image ${i + 1}`}
+//                 className="transition-all duration-300"
+//                 style={{
+//                   width: i === activeIndex ? "20px" : "6px",
+//                   height: "6px",
+//                   borderRadius: i === activeIndex ? "3px" : "50%",
+//                   background: i === activeIndex ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.4)",
+//                   border: "none",
+//                   padding: 0,
+//                   cursor: "pointer",
+//                 }}
+//               />
+//             ))}
+//           </div>
+//         )}
+
+//         {/* ── Mobile swipe hint (only shown when there are multiple images) ── */}
+//         {total > 1 && (
+//           <div className="md:hidden absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 pointer-events-none"
+//             style={{ fontSize: "8px", letterSpacing: "0.2em", color: "rgba(255,255,255,0.55)" }}
+//           >
+//             <span>←</span>
+//             <span className="uppercase tracking-[0.2em]">Swipe</span>
+//             <span>→</span>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// // ── Main Modal ─────────────────────────────────────────────────────────────
 // export default function ProductModal({
 //   product,
 //   onClose,
@@ -8,16 +238,14 @@
 //   onWishlistToggle,
 //   wishlisted,
 // }) {
-//   const [activeIndex, setActiveIndex] = useState(0);
 //   const [selectedSize, setSelectedSize] = useState("");
 //   const [qty, setQty] = useState(1);
 //   const [added, setAdded] = useState(false);
 
 //   if (!product) return null;
 
-//   // Backend: images is [{id, url, order}, ...] already sorted by order
-//   const images = product.images ?? [];
-//   const activeImage = images[activeIndex]?.url ?? "/placeholder.jpg";
+//   // Backend: images is [{id, url, order}, ...] sorted by order
+//   const images = [...(product.images ?? [])].sort((a, b) => a.order - b.order);
 
 //   // Backend: sizes is [{id, size, stock}, ...]
 //   const sizes = product.sizes ?? [];
@@ -46,28 +274,8 @@
 //         className="bg-white w-full md:max-w-3xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
 //         onClick={(e) => e.stopPropagation()}
 //       >
-//         {/* ── Image pane ── */}
-//         <div className="w-full md:w-1/2 relative flex-shrink-0">
-//           <img
-//             src={activeImage}
-//             alt={product.name}
-//             className="w-full h-[340px] md:h-full object-cover"
-//             style={{ minHeight: 340 }}
-//           />
-//           {images.length > 1 && (
-//             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-//               {images.map((_, i) => (
-//                 <button
-//                   key={i}
-//                   onClick={() => setActiveIndex(i)}
-//                   className={`w-1.5 h-1.5 rounded-full transition-all ${
-//                     activeIndex === i ? "bg-white scale-125" : "bg-white/40"
-//                   }`}
-//                 />
-//               ))}
-//             </div>
-//           )}
-//         </div>
+//         {/* ── Image Gallery ── */}
+//         <ImageGallery images={images} productName={product.name} />
 
 //         {/* ── Info pane ── */}
 //         <div className="w-full md:w-1/2 p-8 flex flex-col gap-5">
@@ -126,9 +334,7 @@
 //                     key={s.size}
 //                     onClick={() => !out && setSelectedSize(s.size)}
 //                     disabled={out}
-//                     title={
-//                       out ? "Out of stock" : low ? `Only ${s.stock} left` : ""
-//                     }
+//                     title={out ? "Out of stock" : low ? `Only ${s.stock} left` : ""}
 //                     className={`w-10 h-10 text-[11px] tracking-wide border transition-all relative ${
 //                       selectedSize === s.size
 //                         ? "border-stone-800 bg-stone-800 text-white"
@@ -147,20 +353,10 @@
 //             </div>
 
 //             {selectedSize ? (
-//               <p
-//                 className={`text-[10px] mt-1.5 tracking-wide ${
-//                   isOut
-//                     ? "text-red-400"
-//                     : isLow
-//                     ? "text-amber-500"
-//                     : "text-green-600"
-//                 }`}
-//               >
-//                 {isOut
-//                   ? "Out of stock"
-//                   : isLow
-//                   ? `Only ${stockCount} left`
-//                   : "In stock"}
+//               <p className={`text-[10px] mt-1.5 tracking-wide ${
+//                 isOut ? "text-red-400" : isLow ? "text-amber-500" : "text-green-600"
+//               }`}>
+//                 {isOut ? "Out of stock" : isLow ? `Only ${stockCount} left` : "In stock"}
 //               </p>
 //             ) : (
 //               <p className="text-[10px] text-stone-300 mt-1.5 tracking-wide">
@@ -171,9 +367,7 @@
 
 //           {/* Qty */}
 //           <div className="flex items-center gap-3">
-//             <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">
-//               Qty
-//             </p>
+//             <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">Qty</p>
 //             <div className="flex items-center border border-stone-200">
 //               <button
 //                 onClick={() => setQty(Math.max(1, qty - 1))}
@@ -181,9 +375,7 @@
 //               >
 //                 −
 //               </button>
-//               <span className="w-8 text-center text-[12px] text-stone-700">
-//                 {qty}
-//               </span>
+//               <span className="w-8 text-center text-[12px] text-stone-700">{qty}</span>
 //               <button
 //                 onClick={() => setQty(qty + 1)}
 //                 className="w-8 h-8 text-stone-500 hover:bg-stone-50 transition-colors text-sm"
@@ -218,12 +410,9 @@
 //             }`}
 //           >
 //             <svg
-//               width="13"
-//               height="13"
-//               viewBox="0 0 24 24"
+//               width="13" height="13" viewBox="0 0 24 24"
 //               fill={wishlisted ? "#1c1917" : "none"}
-//               stroke="#1c1917"
-//               strokeWidth="1.6"
+//               stroke="#1c1917" strokeWidth="1.6"
 //             >
 //               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
 //             </svg>
@@ -234,11 +423,9 @@
 //     </div>
 //   );
 // }
-
 "use client";
 import { useState, useRef, useCallback } from "react";
 
-// ── Chevron icons (inline, no extra deps) ──────────────────────────────────
 function ChevronLeft() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -254,13 +441,11 @@ function ChevronRight() {
   );
 }
 
-// ── Image Gallery ──────────────────────────────────────────────────────────
 function ImageGallery({ images, productName }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(null); // "left" | "right"
+  const [direction, setDirection] = useState(null);
   const [animating, setAnimating] = useState(false);
 
-  // Touch state
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
   const isDragging = useRef(false);
@@ -285,7 +470,6 @@ function ImageGallery({ images, productName }) {
     [animating, total]
   );
 
-  // Touch handlers
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
@@ -297,7 +481,7 @@ function ImageGallery({ images, productName }) {
     const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
     if (dx > 8 && dx > dy) {
       isDragging.current = true;
-      e.preventDefault(); // stop page scroll while swiping
+      e.preventDefault();
     }
   };
   const onTouchEnd = (e) => {
@@ -314,8 +498,6 @@ function ImageGallery({ images, productName }) {
 
   const activeImage = images[activeIndex]?.url ?? "/placeholder.jpg";
 
-  // CSS animation direction classes
-  // enter = slide in, exit = slide out (handled via inline keyframe styles)
   const slideStyle = animating
     ? {
         animation: `gallerySlide${direction === "right" ? "OutLeft" : "OutRight"} 0.31s cubic-bezier(0.4,0,0.2,1) forwards`,
@@ -323,9 +505,7 @@ function ImageGallery({ images, productName }) {
     : {};
 
   return (
-    <div className="w-full md:w-1/2 relative flex-shrink-0 overflow-hidden select-none bg-stone-50"
-      style={{ minHeight: 340 }}
-    >
+    <div className="w-full md:w-1/2 relative flex-shrink-0 overflow-hidden select-none bg-stone-50">
       <style>{`
         @keyframes gallerySlideOutLeft {
           from { transform: translateX(0); opacity: 1; }
@@ -361,15 +541,13 @@ function ImageGallery({ images, productName }) {
         }
       `}</style>
 
-      {/* Image wrapper with touch events */}
       <div
-        className="gallery-root w-full h-[340px] md:h-full relative"
+        className="gallery-root w-full relative"
+        style={{ aspectRatio: "2/3", touchAction: "pan-y" }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
-        style={{ touchAction: "pan-y" }}
       >
-        {/* Current image */}
         <img
           key={activeIndex}
           src={activeImage}
@@ -387,7 +565,6 @@ function ImageGallery({ images, productName }) {
           draggable={false}
         />
 
-        {/* ── Desktop arrows (visible on hover) ── */}
         {total > 1 && (
           <>
             <button
@@ -415,18 +592,15 @@ function ImageGallery({ images, productName }) {
           </>
         )}
 
-        {/* ── Image counter (top-right) ── */}
         {total > 1 && (
-          <div className="absolute top-3 right-3 z-10
-                          bg-stone-900/40 backdrop-blur-sm
-                          px-2.5 py-1 text-white"
+          <div
+            className="absolute top-3 right-3 z-10 bg-stone-900/40 backdrop-blur-sm px-2.5 py-1 text-white"
             style={{ fontSize: "9px", letterSpacing: "0.2em" }}
           >
             {activeIndex + 1} / {total}
           </div>
         )}
 
-        {/* ── Dot indicators (bottom, both platforms) ── */}
         {total > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {images.map((_, i) => (
@@ -452,9 +626,9 @@ function ImageGallery({ images, productName }) {
           </div>
         )}
 
-        {/* ── Mobile swipe hint (only shown when there are multiple images) ── */}
         {total > 1 && (
-          <div className="md:hidden absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 pointer-events-none"
+          <div
+            className="md:hidden absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 pointer-events-none"
             style={{ fontSize: "8px", letterSpacing: "0.2em", color: "rgba(255,255,255,0.55)" }}
           >
             <span>←</span>
@@ -467,7 +641,6 @@ function ImageGallery({ images, productName }) {
   );
 }
 
-// ── Main Modal ─────────────────────────────────────────────────────────────
 export default function ProductModal({
   product,
   onClose,
@@ -481,10 +654,7 @@ export default function ProductModal({
 
   if (!product) return null;
 
-  // Backend: images is [{id, url, order}, ...] sorted by order
   const images = [...(product.images ?? [])].sort((a, b) => a.order - b.order);
-
-  // Backend: sizes is [{id, size, stock}, ...]
   const sizes = product.sizes ?? [];
 
   const selectedEntry = sizes.find((s) => s.size === selectedSize);
@@ -511,10 +681,8 @@ export default function ProductModal({
         className="bg-white w-full md:max-w-3xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Image Gallery ── */}
         <ImageGallery images={images} productName={product.name} />
 
-        {/* ── Info pane ── */}
         <div className="w-full md:w-1/2 p-8 flex flex-col gap-5">
           <button
             onClick={onClose}
@@ -523,7 +691,6 @@ export default function ProductModal({
             Close
           </button>
 
-          {/* Name + tag + price */}
           <div>
             <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">
               TwinkleOfficial
@@ -550,14 +717,12 @@ export default function ProductModal({
             </div>
           </div>
 
-          {/* Description */}
           {product.description && (
             <p className="text-[12px] text-stone-500 leading-relaxed">
               {product.description}
             </p>
           )}
 
-          {/* Size selection */}
           <div>
             <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">
               Select Size
@@ -602,7 +767,6 @@ export default function ProductModal({
             )}
           </div>
 
-          {/* Qty */}
           <div className="flex items-center gap-3">
             <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase">Qty</p>
             <div className="flex items-center border border-stone-200">
@@ -622,7 +786,6 @@ export default function ProductModal({
             </div>
           </div>
 
-          {/* Add to bag */}
           <button
             onClick={handleAdd}
             disabled={!selectedSize || isOut}
@@ -637,7 +800,6 @@ export default function ProductModal({
             {added ? "Added to Bag ✓" : "Add to Bag"}
           </button>
 
-          {/* Wishlist */}
           <button
             onClick={() => onWishlistToggle(product)}
             className={`w-full py-3.5 text-[11px] tracking-[0.3em] uppercase border transition-all flex items-center justify-center gap-2 ${

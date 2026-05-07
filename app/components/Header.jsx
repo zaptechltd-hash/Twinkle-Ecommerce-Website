@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useAppSelector } from "../store/hooks";
 
 export default function Navbar({
   cartCount,
@@ -12,6 +13,7 @@ export default function Navbar({
   currentPage,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const settings = useAppSelector((s) => s.settings);
   const allLinks = [
     { label: "Home", href: "/" },
     { label: "Collection", href: "/collection" },
@@ -89,14 +91,14 @@ export default function Navbar({
 
         {/* Logo */}
         <Image
-  src="/logo.png"
-  alt="TwinkleOfficial"
-  width={80}
-  height={40}
-  style={{ width: "80px", height: "auto" }}
-  loading="eager"
-  priority
-/>
+          src="/logo.png"
+          alt="TwinkleOfficial"
+          width={80}
+          height={40}
+          style={{ width: "80px", height: "auto" }}
+          loading="eager"
+          priority
+        />
 
         {/* Right icons */}
         <div className="flex items-center gap-5">
@@ -240,7 +242,18 @@ export default function Navbar({
             {/* Bottom strip */}
             <div className="border-t border-stone-100 px-6 md:px-12 py-3 flex items-center justify-between">
               <div className="flex gap-6">
-                {["Free shipping over PKR 5,000", "Easy returns"].map(
+                {[
+                  `Free shipping over PKR ${settings?.freeThreshold?.toLocaleString() ?? "5,000"}`,
+                  "Easy returns",
+                ].map((note) => (
+                  <span
+                    key={note}
+                    className="text-[10px] tracking-wide text-stone-400"
+                  >
+                    {note}
+                  </span>
+                ))}
+                {/* {["Free shipping over PKR 5,000", "Easy returns"].map(
                   (note) => (
                     <span
                       key={note}
@@ -249,7 +262,7 @@ export default function Navbar({
                       {note}
                     </span>
                   ),
-                )}
+                )} */}
               </div>
               <button
                 onClick={() => setMenuOpen(false)}
