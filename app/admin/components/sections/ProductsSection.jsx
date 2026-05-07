@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-// ⚠️  Adjust this import path to match your project structure
 import useProductService from "../../../services/product/index";
+// import { getAccessToken } from "../../../utils/token";
+import useUploadService from "../../../services/upload/index";
 
-// ─── Constants ──────────────────────────────────────────────────────────────
 const CATEGORIES_OPTS = ["Nightwear", "Robes", "Loungewear", "Sets"];
 const SIZE_OPTS       = ["S", "M", "L", "XL"];
 const TAG_OPTS        = ["New In", "Best Seller", "Limited", "Sale"];
 const LOCATION_OPTS   = ["Home", "Collection", "Both"];
 const PER_PAGE        = 7;
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
 const getTotalStock = (sizes) =>
   (sizes ?? []).reduce((sum, s) => sum + s.stock, 0);
 
@@ -28,15 +27,41 @@ const LOCATION_STYLES = {
   Both:       "bg-[#e1f5ee] text-[#0f6e56]",
 };
 
-// ─── Image helpers ───────────────────────────────────────────────────────────
-const STATIC_IMAGE_URL =
-  "https://images.unsplash.com/photo-1770294759243-664b21a8ac38?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+// // ─── S3 Upload Helper ─────────────────────────────────────────────────────────
+// async function uploadFileToS3(file) {
+//   const token = getAccessToken();
+//   if (!token) throw new Error("Not authenticated");
 
-function readFileAsBase64(file) {
-  return Promise.resolve(STATIC_IMAGE_URL);
-}
+//   // Step 1: get presigned URL from your NestJS backend
+//   const presignRes = await fetch("/api/upload/presign", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//     body: JSON.stringify({
+//       filename:    file.name,
+//       contentType: file.type,
+//     }),
+//   });
 
-// ─── Shared UI Primitives ────────────────────────────────────────────────────
+//   if (!presignRes.ok) throw new Error("Failed to get upload URL");
+
+//   const { uploadUrl, publicUrl } = await presignRes.json();
+
+//   // Step 2: PUT file bytes directly to S3 — server never touches the bytes
+//   const s3Res = await fetch(uploadUrl, {
+//     method:  "PUT",
+//     headers: { "Content-Type": file.type },
+//     body:    file,
+//   });
+
+//   if (!s3Res.ok) throw new Error("S3 upload failed");
+
+//   return publicUrl; // the permanent S3 URL saved to DB
+// }
+
+// ─── Shared UI Primitives ─────────────────────────────────────────────────────
 function StatusPill({ status }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.Draft;
   return (
@@ -75,7 +100,7 @@ function IndeterminateCheckbox({ checked, indeterminate, onChange, className }) 
   );
 }
 
-// ─── Bulk Action Bar ─────────────────────────────────────────────────────────
+// ─── Bulk Action Bar ──────────────────────────────────────────────────────────
 function BulkBar({ count, onAction, onClear }) {
   return (
     <div className="bg-[#1a1916] rounded-xl px-4 py-3 flex items-center gap-2 flex-wrap mb-3">
@@ -108,24 +133,107 @@ function BulkBar({ count, onAction, onClear }) {
   );
 }
 
-// ─── Multi-Image Upload Panel ────────────────────────────────────────────────
-function ImageGalleryUpload({ images, onChange }) {
-  const fileRef = useRef(null);
+// ─── Image Compression ────────────────────────────────────────────────────────
+// Resizes + compresses image in the browser before S3 upload
+// Targets ~800KB max, resizes to max 1400px on longest side
+async function compressImage(file, { maxWidth = 1400, maxHeight = 1400, quality = 0.82 } = {}) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
 
- const handleFiles = async (e) => {
-  const files = Array.from(e.target.files || []);
-  if (!files.length) return;
-  const next = [
-    ...images,
-    ...files.map((_, i) => ({ url: STATIC_IMAGE_URL, order: images.length + i })),
-  ];
-  onChange(next);
-  e.target.value = "";
+    img.onload = () => {
+      URL.revokeObjectURL(url); // free memory
+
+      // ── Calculate new dimensions keeping aspect ratio ──
+      let { width, height } = img;
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width  = Math.round(width  * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      // ── Draw onto canvas at new size ──
+      const canvas = document.createElement("canvas");
+      canvas.width  = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // ── Export as JPEG (much smaller than PNG for photos) ──
+      canvas.toBlob(
+        (blob) => {
+          // Keep original filename but signal it's now a jpeg
+          const compressed = new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), {
+            type: "image/jpeg",
+            lastModified: Date.now(),
+          });
+          console.log(
+            `Compressed: ${(file.size / 1024 / 1024).toFixed(1)}MB → ${(compressed.size / 1024 / 1024).toFixed(1)}MB`
+          );
+          resolve(compressed);
+        },
+        "image/jpeg",
+        quality,
+      );
+    };
+
+    img.src = url;
+  });
+}
+
+// ─── ImageGalleryUpload — receives getPresignedUrl as a prop ─────────────────
+function ImageGalleryUpload({ images, onChange, getPresignedUrl }) {
+  const fileRef = useRef(null);
+  const [uploading, setUploading]     = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const uploadFileToS3 = async (file) => {
+  // ── Compress before upload ──
+  const fileToUpload = file.type.startsWith("image/")
+    ? await compressImage(file)
+    : file;
+
+  const { uploadUrl, publicUrl } = await getPresignedUrl({
+    filename:    fileToUpload.name,
+    contentType: fileToUpload.type,
+  });
+
+  const s3Res = await fetch(uploadUrl, {
+    method:  "PUT",
+    headers: { "Content-Type": fileToUpload.type },
+    body:    fileToUpload,
+  });
+
+  if (!s3Res.ok) throw new Error("S3 upload failed");
+
+  return publicUrl;
 };
 
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    setUploading(true);
+    setUploadError("");
+
+    try {
+      const urls = await Promise.all(files.map((file) => uploadFileToS3(file)));
+      const next = [
+        ...images,
+        ...urls.map((url, i) => ({ url, order: images.length + i })),
+      ];
+      onChange(next);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadError("Upload failed. Check your connection and try again.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const remove = (i) => {
-    const next = images.filter((_, idx) => idx !== i).map((img, idx) => ({ ...img, order: idx }));
-    onChange(next);
+    onChange(images.filter((_, idx) => idx !== i).map((img, idx) => ({ ...img, order: idx })));
   };
 
   const moveLeft = (i) => {
@@ -148,69 +256,58 @@ function ImageGalleryUpload({ images, onChange }) {
         {images.map((img, i) => (
           <div key={i} className="relative group w-20 h-20 rounded-xl overflow-hidden border border-[#e8e5df] flex-shrink-0">
             <img src={img.url} alt={`img-${i}`} className="w-full h-full object-cover" />
-            {/* Overlay controls */}
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-              <button
-                type="button"
-                onClick={() => moveLeft(i)}
-                disabled={i === 0}
-                className="w-5 h-5 rounded bg-white/80 text-[#1a1916] text-[10px] flex items-center justify-center disabled:opacity-30"
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                className="w-5 h-5 rounded bg-[#e24b4a] text-white text-[10px] flex items-center justify-center"
-              >
-                ×
-              </button>
-              <button
-                type="button"
-                onClick={() => moveRight(i)}
-                disabled={i === images.length - 1}
-                className="w-5 h-5 rounded bg-white/80 text-[#1a1916] text-[10px] flex items-center justify-center disabled:opacity-30"
-              >
-                →
-              </button>
+              <button type="button" onClick={() => moveLeft(i)} disabled={i === 0}
+                className="w-5 h-5 rounded bg-white/80 text-[#1a1916] text-[10px] flex items-center justify-center disabled:opacity-30">←</button>
+              <button type="button" onClick={() => remove(i)}
+                className="w-5 h-5 rounded bg-[#e24b4a] text-white text-[10px] flex items-center justify-center">×</button>
+              <button type="button" onClick={() => moveRight(i)} disabled={i === images.length - 1}
+                className="w-5 h-5 rounded bg-white/80 text-[#1a1916] text-[10px] flex items-center justify-center disabled:opacity-30">→</button>
             </div>
             {i === 0 && (
-              <span className="absolute top-1 left-1 text-[8px] font-semibold bg-[#1a1916] text-white px-1 rounded">
-                MAIN
-              </span>
+              <span className="absolute top-1 left-1 text-[8px] font-semibold bg-[#1a1916] text-white px-1 rounded">MAIN</span>
             )}
           </div>
         ))}
 
-        {/* Upload slot */}
         <div
-          onClick={() => fileRef.current?.click()}
-          className="w-20 h-20 rounded-xl border-2 border-dashed border-[#c8c5be] flex flex-col items-center justify-center cursor-pointer hover:border-[#1a1916] transition-colors gap-1"
+          onClick={() => !uploading && fileRef.current?.click()}
+          className={`w-20 h-20 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 transition-colors ${
+            uploading
+              ? "border-[#1a1916] bg-[#f5f2ed] cursor-wait"
+              : "border-[#c8c5be] cursor-pointer hover:border-[#1a1916]"
+          }`}
         >
-          <span className="text-[#b4b2a9] text-2xl leading-none">+</span>
-          <span className="text-[9px] text-[#b4b2a9]">Add</span>
+          {uploading ? (
+            <>
+              <svg className="animate-spin text-[#b4b2a9]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              <span className="text-[9px] text-[#b4b2a9]">Uploading…</span>
+            </>
+          ) : (
+            <>
+              <span className="text-[#b4b2a9] text-2xl leading-none">+</span>
+              <span className="text-[9px] text-[#b4b2a9]">Add</span>
+            </>
+          )}
         </div>
       </div>
 
-      <p className="text-[10px] text-[#b4b2a9]">
+      {uploadError && (
+        <p className="text-[11px] text-[#a32d2d] mt-1">{uploadError}</p>
+      )}
+
+      <p className="text-[10px] text-[#b4b2a9] mt-1">
         First image is the main display image. Hover to reorder or remove.
       </p>
 
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        multiple
-        className="hidden"
-        onChange={handleFiles}
-      />
+      <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} />
     </div>
   );
 }
 
-// ─── Size Stock Row ──────────────────────────────────────────────────────────
-// sizes is an array like [{ size: "S", stock: 10 }, ...]
-// We render all four sizes always; user sets stock for each
+// ─── Size Stock Editor ────────────────────────────────────────────────────────
 function SizeStockEditor({ sizes, onChange }) {
   const getStock = (sz) => sizes.find((s) => s.size === sz)?.stock ?? 0;
 
@@ -224,9 +321,8 @@ function SizeStockEditor({ sizes, onChange }) {
     }
   };
 
-  // Toggle whether a size is "active" (included in the payload)
   const isActive = (sz) => sizes.some((s) => s.size === sz);
-  const toggle = (sz) => {
+  const toggle   = (sz) => {
     if (isActive(sz)) {
       onChange(sizes.filter((s) => s.size !== sz));
     } else {
@@ -234,15 +330,17 @@ function SizeStockEditor({ sizes, onChange }) {
     }
   };
 
-  const ic =
-    "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
+  const ic = "text-[11px] px-2 py-1.5 border border-[#e8e5df] rounded-lg bg-white text-[#1a1916] outline-none focus:border-[#1a1916] transition-colors w-full";
 
   return (
     <div className="grid grid-cols-4 gap-2">
       {SIZE_OPTS.map((sz) => {
         const active = isActive(sz);
         return (
-          <div key={sz} className={`rounded-xl border p-2.5 transition-all ${active ? "border-[#1a1916] bg-white" : "border-[#e8e5df] bg-[#fafaf8]"}`}>
+          <div
+            key={sz}
+            className={`rounded-xl border p-2.5 transition-all ${active ? "border-[#1a1916] bg-white" : "border-[#e8e5df] bg-[#fafaf8]"}`}
+          >
             <div className="flex items-center justify-between mb-1.5">
               <span className={`text-[11px] font-semibold ${active ? "text-[#1a1916]" : "text-[#b4b2a9]"}`}>
                 {sz}
@@ -250,7 +348,9 @@ function SizeStockEditor({ sizes, onChange }) {
               <button
                 type="button"
                 onClick={() => toggle(sz)}
-                className={`w-4 h-4 rounded border transition-all ${active ? "bg-[#1a1916] border-[#1a1916]" : "border-[#c8c5be] bg-white"} flex items-center justify-center`}
+                className={`w-4 h-4 rounded border transition-all flex items-center justify-center ${
+                  active ? "bg-[#1a1916] border-[#1a1916]" : "border-[#c8c5be] bg-white"
+                }`}
               >
                 {active && <span className="text-white text-[8px] font-bold leading-none">✓</span>}
               </button>
@@ -273,6 +373,7 @@ function SizeStockEditor({ sizes, onChange }) {
 
 // ─── Product Modal ────────────────────────────────────────────────────────────
 function ProductModal({ product, onClose, onSave, saving }) {
+   const { getPresignedUrl } = useUploadService(); 
   const isNew = !product.id;
 
   const [form, setForm] = useState({
@@ -286,12 +387,12 @@ function ProductModal({ product, onClose, onSave, saving }) {
     discountPrice: product.discountPrice ?? null,
   });
 
-  // images: array of { url, order }
   const [images, setImages] = useState(
-    (product.images ?? []).map((img) => ({ url: img.url, order: img.order ?? 0 })).sort((a, b) => a.order - b.order)
+    (product.images ?? [])
+      .map((img) => ({ url: img.url, order: img.order ?? 0 }))
+      .sort((a, b) => a.order - b.order)
   );
 
-  // sizes: array of { size, stock } — only selected sizes
   const [sizes, setSizes] = useState(
     (product.sizes ?? []).map((s) => ({ size: s.size, stock: s.stock }))
   );
@@ -300,13 +401,21 @@ function ProductModal({ product, onClose, onSave, saving }) {
   const set = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
   const handleSave = () => {
-    if (!form.name.trim())               { setError("Product name is required.");                           return; }
-    if (form.price <= 0)                 { setError("Please set a valid price.");                           return; }
-    if (form.discountPrice !== null && form.discountPrice >= form.price) {
-      setError("Discount price must be less than the original price.");                                      return;
+    if (!form.name.trim()) {
+      setError("Product name is required."); return;
     }
-    if (images.length === 0)             { setError("Add at least one product image.");                     return; }
-    if (sizes.length === 0)              { setError("Select at least one size.");                            return; }
+    if (form.price <= 0) {
+      setError("Please set a valid price."); return;
+    }
+    if (form.discountPrice !== null && form.discountPrice >= form.price) {
+      setError("Discount price must be less than the original price."); return;
+    }
+    if (images.length === 0) {
+      setError("Add at least one product image."); return;
+    }
+    if (sizes.length === 0) {
+      setError("Select at least one size."); return;
+    }
     setError("");
 
     onSave({
@@ -331,6 +440,7 @@ function ProductModal({ product, onClose, onSave, saving }) {
     >
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl my-8">
         <div className="p-6">
+
           {/* Header */}
           <div className="flex items-start justify-between mb-5">
             <div>
@@ -344,15 +454,14 @@ function ProductModal({ product, onClose, onSave, saving }) {
             <button
               onClick={onClose}
               className="w-8 h-8 rounded-lg bg-[#f1efe8] flex items-center justify-center text-[#5f5e5a] hover:bg-[#e8e5df] transition-colors text-lg leading-none flex-shrink-0"
-            >
-              ×
-            </button>
+            >×</button>
           </div>
 
           {/* ── Product Info ── */}
           <div className="mb-5 pb-5 border-b border-[#f1efe8]">
             <p className="text-[10px] tracking-[0.1em] uppercase text-[#b4b2a9] font-medium mb-3">Product Info</p>
             <div className="grid grid-cols-2 gap-3">
+
               <div className="col-span-2">
                 <label className={fieldLabel}>Product Name *</label>
                 <input
@@ -399,7 +508,8 @@ function ProductModal({ product, onClose, onSave, saving }) {
                 <label className={fieldLabel}>Price (PKR) *</label>
                 <input
                   type="number" min={0} className={fieldInput}
-                  value={form.price} onChange={(e) => set("price", +e.target.value)}
+                  value={form.price}
+                  onChange={(e) => set("price", +e.target.value)}
                   placeholder="e.g. 4900"
                 />
               </div>
@@ -423,6 +533,7 @@ function ProductModal({ product, onClose, onSave, saving }) {
                   {["Active", "Draft", "Archived"].map((s) => <option key={s}>{s}</option>)}
                 </select>
               </div>
+
             </div>
           </div>
 
@@ -439,8 +550,12 @@ function ProductModal({ product, onClose, onSave, saving }) {
                                         "bg-[#e1f5ee] text-[#0f6e56] border-[#5dcaa5]";
                 return (
                   <button
-                    key={loc} type="button" onClick={() => set("location", loc)}
-                    className={`text-[12px] font-medium px-4 py-2 rounded-xl border transition-all ${isActive ? activeStyle : "border-[#e8e5df] text-[#888780] bg-white hover:border-[#1a1916] hover:text-[#1a1916]"}`}
+                    key={loc}
+                    type="button"
+                    onClick={() => set("location", loc)}
+                    className={`text-[12px] font-medium px-4 py-2 rounded-xl border transition-all ${
+                      isActive ? activeStyle : "border-[#e8e5df] text-[#888780] bg-white hover:border-[#1a1916] hover:text-[#1a1916]"
+                    }`}
                   >
                     {loc}
                   </button>
@@ -455,7 +570,8 @@ function ProductModal({ product, onClose, onSave, saving }) {
             <p className="text-[11px] text-[#888780] mb-3">
               Upload multiple images. The first image is the main display image.
             </p>
-            <ImageGalleryUpload images={images} onChange={setImages} />
+            {/* ✅ No authToken prop — reads from localStorage internally */}
+            <ImageGalleryUpload images={images} onChange={setImages} getPresignedUrl={getPresignedUrl} />
           </div>
 
           {/* ── Sizes & Stock ── */}
@@ -477,11 +593,13 @@ function ProductModal({ product, onClose, onSave, saving }) {
 
           {/* CTA */}
           <button
-            onClick={handleSave} disabled={saving}
+            onClick={handleSave}
+            disabled={saving}
             className="w-full py-3 bg-[#1a1916] text-[#f5f2ed] text-[12px] font-medium tracking-[0.15em] uppercase rounded-xl hover:bg-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? "Saving…" : isNew ? "Add Product" : "Save Changes"}
           </button>
+
         </div>
       </div>
     </div>
@@ -494,7 +612,8 @@ function ProductThumb({ product }) {
   if (src) {
     return (
       <img
-        src={src} alt={product.name}
+        src={src}
+        alt={product.name}
         className="w-10 h-10 rounded-xl object-cover border border-[#e8e5df] flex-shrink-0"
       />
     );
@@ -529,38 +648,38 @@ export default function ProductsPage() {
   } = useProductService();
 
   // ── Table data ──
-  const [products, setProducts]       = useState([]);
-  const [meta, setMeta]               = useState({ total: 0, page: 1, limit: PER_PAGE, totalPages: 1 });
+  const [products, setProducts]         = useState([]);
+  const [meta, setMeta]                 = useState({ total: 0, page: 1, limit: PER_PAGE, totalPages: 1 });
   const [tableLoading, setTableLoading] = useState(false);
 
   // ── Stats ──
-  const [stats, setStats]             = useState({ total: 0, active: 0, draft: 0, lowStock: 0, outOfStock: 0 });
+  const [stats, setStats]               = useState({ total: 0, active: 0, draft: 0, lowStock: 0, outOfStock: 0 });
   const [statusCounts, setStatusCounts] = useState({ All: 0, Active: 0, Draft: 0, Archived: 0 });
 
   // ── Refresh triggers ──
-  const [tableTick, setTableTick]     = useState(0);
-  const [statsTick, setStatsTick]     = useState(0);
+  const [tableTick, setTableTick]       = useState(0);
+  const [statsTick, setStatsTick]       = useState(0);
 
   // ── Filters ──
-  const [search, setSearch]           = useState("");
+  const [search, setSearch]             = useState("");
   const [debouncedSearch, setDebounced] = useState("");
-  const [catFilter, setCat]           = useState("All");
-  const [locFilter, setLoc]           = useState("All");
-  const [statusFilter, setStat]       = useState("All");
-  const [sortBy, setSort]             = useState("sales");
-  const [page, setPage]               = useState(1);
+  const [catFilter, setCat]             = useState("All");
+  const [locFilter, setLoc]             = useState("All");
+  const [statusFilter, setStat]         = useState("All");
+  const [sortBy, setSort]               = useState("sales");
+  const [page, setPage]                 = useState(1);
 
   // ── UI ──
-  const [selected, setSelected]       = useState(new Set());
-  const [modal, setModal]             = useState(null);
-  const [saving, setSaving]           = useState(false);
-  const [toast, setToast]             = useState("");
+  const [selected, setSelected]         = useState(new Set());
+  const [modal, setModal]               = useState(null);
+  const [saving, setSaving]             = useState(false);
+  const [toast, setToast]               = useState("");
 
-  const showToast  = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
-  const resetPage  = () => setPage(1);
-  const refreshTable = () => setTableTick((t) => t + 1);
-  const refreshStats = () => setStatsTick((t) => t + 1);
-  const refreshAll   = () => { refreshTable(); refreshStats(); };
+  const showToast    = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
+  const resetPage    = ()    => setPage(1);
+  const refreshTable = ()    => setTableTick((t) => t + 1);
+  const refreshStats = ()    => setStatsTick((t) => t + 1);
+  const refreshAll   = ()    => { refreshTable(); refreshStats(); };
 
   // ── Debounce search ──
   useEffect(() => {
@@ -574,10 +693,10 @@ export default function ProductsPage() {
     const fetchTable = async () => {
       setTableLoading(true);
       const params = { page, limit: PER_PAGE, sortBy };
-      if (debouncedSearch) params.search = debouncedSearch;
-      if (catFilter !== "All") params.category = catFilter;
-      if (locFilter !== "All") params.location = locFilter;
-      if (statusFilter !== "All") params.status = statusFilter;
+      if (debouncedSearch)       params.search   = debouncedSearch;
+      if (catFilter    !== "All") params.category = catFilter;
+      if (locFilter    !== "All") params.location = locFilter;
+      if (statusFilter !== "All") params.status   = statusFilter;
       const res = await getProducts(params);
       if (!cancelled && res) { setProducts(res.data); setMeta(res.meta); }
       if (!cancelled) setTableLoading(false);
@@ -693,6 +812,7 @@ export default function ProductsPage() {
       `}</style>
 
       <div className="bg-[#f5f2ed] min-h-screen p-6 md:p-8 text-[#1a1916]">
+
         {/* ── Top bar ── */}
         <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
           <div>
@@ -714,11 +834,11 @@ export default function ProductsPage() {
           <p className="text-[10px] font-medium tracking-[0.1em] uppercase text-[#b4b2a9] mb-3">Overview · All Products</p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {[
-              { label: "Total Products", value: stats.total,      color: "text-[#1a1916]"  },
-              { label: "Active",         value: stats.active,     color: "text-[#3b6d11]"  },
-              { label: "Draft",          value: stats.draft,      color: "text-[#854f0b]"  },
-              { label: "Low Stock",      value: stats.lowStock,   color: "text-[#854f0b]"  },
-              { label: "Out of Stock",   value: stats.outOfStock, color: "text-[#a32d2d]"  },
+              { label: "Total Products", value: stats.total,      color: "text-[#1a1916]" },
+              { label: "Active",         value: stats.active,     color: "text-[#3b6d11]" },
+              { label: "Draft",          value: stats.draft,      color: "text-[#854f0b]" },
+              { label: "Low Stock",      value: stats.lowStock,   color: "text-[#854f0b]" },
+              { label: "Out of Stock",   value: stats.outOfStock, color: "text-[#a32d2d]" },
             ].map((s) => (
               <div key={s.label} className="bg-white border border-[#e8e5df] rounded-xl p-4">
                 <p className="text-[10px] font-medium tracking-[0.08em] uppercase text-[#b4b2a9] mb-2">{s.label}</p>
@@ -730,12 +850,15 @@ export default function ProductsPage() {
 
         {/* ── Table card ── */}
         <div className="bg-white border border-[#e8e5df] rounded-xl p-5">
+
           {/* Search & filter row */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b2a9] select-none">⌕</span>
               <input
-                type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name…"
                 className="w-full pl-8 pr-3 py-2 text-[12px] border border-[#e8e5df] rounded-xl bg-white text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#1a1916] transition-colors"
               />
@@ -762,8 +885,11 @@ export default function ProductsPage() {
           <div className="flex gap-1.5 flex-wrap mb-4">
             {["All", "Active", "Draft", "Archived"].map((s) => (
               <button
-                key={s} onClick={() => { setStat(s); resetPage(); }}
-                className={`text-[11px] font-medium px-3.5 py-1.5 rounded-lg transition-all ${statusFilter === s ? "bg-[#1a1916] text-[#f5f2ed]" : "bg-[#f5f2ed] text-[#888780] hover:text-[#1a1916]"}`}
+                key={s}
+                onClick={() => { setStat(s); resetPage(); }}
+                className={`text-[11px] font-medium px-3.5 py-1.5 rounded-lg transition-all ${
+                  statusFilter === s ? "bg-[#1a1916] text-[#f5f2ed]" : "bg-[#f5f2ed] text-[#888780] hover:text-[#1a1916]"
+                }`}
               >
                 {s}
                 <span className={`ml-1.5 text-[10px] ${statusFilter === s ? "opacity-60" : "opacity-50"}`}>
@@ -782,8 +908,10 @@ export default function ProductsPage() {
           <div className="flex items-center gap-2 mb-3">
             <label className="flex items-center gap-2 text-[11px] text-[#b4b2a9] cursor-pointer select-none">
               <IndeterminateCheckbox
-                checked={allChecked} indeterminate={someChecked && !allChecked}
-                onChange={(e) => toggleAll(e.target.checked)} className="accent-[#1a1916] w-3.5 h-3.5"
+                checked={allChecked}
+                indeterminate={someChecked && !allChecked}
+                onChange={(e) => toggleAll(e.target.checked)}
+                className="accent-[#1a1916] w-3.5 h-3.5"
               />
               Select all visible
             </label>
@@ -805,7 +933,10 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f5f2ed]">
-                {tableLoading && products.length === 0 && Array.from({ length: PER_PAGE }).map((_, i) => <SkeletonRow key={i} />)}
+
+                {tableLoading && products.length === 0 &&
+                  Array.from({ length: PER_PAGE }).map((_, i) => <SkeletonRow key={i} />)
+                }
 
                 {!tableLoading && products.length === 0 && (
                   <tr>
@@ -828,7 +959,12 @@ export default function ProductsPage() {
                     >
                       {/* Checkbox */}
                       <td className="py-3.5 pr-3 w-5">
-                        <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleRow(p.id)} className="accent-[#1a1916] w-3.5 h-3.5 cursor-pointer" />
+                        <input
+                          type="checkbox"
+                          checked={selected.has(p.id)}
+                          onChange={() => toggleRow(p.id)}
+                          className="accent-[#1a1916] w-3.5 h-3.5 cursor-pointer"
+                        />
                       </td>
 
                       {/* Product */}
@@ -863,7 +999,7 @@ export default function ProductsPage() {
                         </span>
                       </td>
 
-                      {/* Available sizes */}
+                      {/* Sizes */}
                       <td className="py-3.5 pr-4">
                         <div className="flex gap-1 flex-wrap">
                           {(p.sizes ?? []).map((s) => (
@@ -900,7 +1036,9 @@ export default function ProductsPage() {
                       </td>
 
                       {/* Location */}
-                      <td className="py-3.5 pr-4"><LocationBadge location={p.location} /></td>
+                      <td className="py-3.5 pr-4">
+                        <LocationBadge location={p.location} />
+                      </td>
 
                       {/* Sales */}
                       <td className="py-3.5 pr-4">
@@ -936,17 +1074,40 @@ export default function ProductsPage() {
               of {meta.total}
             </p>
             <div className="flex items-center gap-1">
-              <button disabled={safePage === 1} onClick={() => setPage((p) => p - 1)} className="text-[11px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] disabled:opacity-30 disabled:cursor-not-allowed transition-all enabled:hover:bg-[#1a1916] enabled:hover:text-[#f5f2ed] enabled:hover:border-[#1a1916]">←</button>
+              <button
+                disabled={safePage === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="text-[11px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] disabled:opacity-30 disabled:cursor-not-allowed transition-all enabled:hover:bg-[#1a1916] enabled:hover:text-[#f5f2ed] enabled:hover:border-[#1a1916]"
+              >←</button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                <button key={n} onClick={() => setPage(n)} className={`text-[11px] font-medium w-8 h-8 rounded-lg transition-all ${n === safePage ? "bg-[#1a1916] text-[#f5f2ed]" : "text-[#5f5e5a] hover:bg-[#f1efe8]"}`}>{n}</button>
+                <button
+                  key={n}
+                  onClick={() => setPage(n)}
+                  className={`text-[11px] font-medium w-8 h-8 rounded-lg transition-all ${
+                    n === safePage ? "bg-[#1a1916] text-[#f5f2ed]" : "text-[#5f5e5a] hover:bg-[#f1efe8]"
+                  }`}
+                >{n}</button>
               ))}
-              <button disabled={safePage === totalPages} onClick={() => setPage((p) => p + 1)} className="text-[11px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] disabled:opacity-30 disabled:cursor-not-allowed transition-all enabled:hover:bg-[#1a1916] enabled:hover:text-[#f5f2ed] enabled:hover:border-[#1a1916]">→</button>
+              <button
+                disabled={safePage === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="text-[11px] font-medium px-2.5 py-1.5 rounded-lg border border-[#e8e5df] text-[#5f5e5a] disabled:opacity-30 disabled:cursor-not-allowed transition-all enabled:hover:bg-[#1a1916] enabled:hover:text-[#f5f2ed] enabled:hover:border-[#1a1916]"
+              >→</button>
             </div>
           </div>
+
         </div>
       </div>
 
-      {modal && <ProductModal product={modal} onClose={() => setModal(null)} onSave={saveProduct} saving={saving} />}
+      {/* ✅ No authToken prop needed */}
+      {modal && (
+        <ProductModal
+          product={modal}
+          onClose={() => setModal(null)}
+          onSave={saveProduct}
+          saving={saving}
+        />
+      )}
       <Toast message={toast} />
     </>
   );

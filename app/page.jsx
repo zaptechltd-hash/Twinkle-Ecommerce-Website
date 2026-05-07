@@ -21,12 +21,15 @@ import useProductService from "./services/product/index";
 import CartSidebar from "./components/CartSidebar";
 import WishlistSidebar from "./components/WishlistSidebar";
 import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "./utils/token";
+import useSettingsService from "./services/settings/index";
+import { setSettings } from "./store/index";
 
 function Hero() {
+  
   return (
     <section className="relative w-full h-[92vh] overflow-hidden">
       <img
-        src="/background.jpg"
+        src="/background3.jpeg"
         alt="Night Elegance Campaign"
         className="absolute inset-0 w-full h-full object-cover object-top"
       />
@@ -83,7 +86,7 @@ function Marquee() {
 
 function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
   return (
-    <section id="collection" className="px-6 md:px-12 pt-20 pb-24">
+    <section id="collection" className="px-6 md:px-12 lg:px-24 xl:px-60 pt-20 pb-24">
       <div className="flex items-end justify-between mb-12">
         <div>
           <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-2">
@@ -100,7 +103,8 @@ function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
           View All
         </a>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-14">
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-14">
         {products.map((product) => (
           <ProductCard
             key={product.id}
@@ -111,6 +115,7 @@ function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
           />
         ))}
       </div>
+
       <div className="mt-14 text-center md:hidden">
         <a
           href="/collection"
@@ -122,6 +127,48 @@ function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
     </section>
   );
 }
+
+// function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
+//   return (
+//     <section id="collection" className="px-6 md:px-12 pt-20 pb-24 ">
+//       <div className="flex items-end justify-between mb-12">
+//         <div>
+//           <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-2">
+//             Shop
+//           </p>
+//           <h2 className="text-2xl md:text-3xl font-light tracking-widest text-stone-800 uppercase">
+//             The Collection
+//           </h2>
+//         </div>
+//         <a
+//           href="/collection"
+//           className="hidden md:block text-[10px] tracking-[0.25em] text-stone-400 uppercase border-b border-stone-300 pb-0.5 hover:text-stone-700 hover:border-stone-600 transition-colors"
+//         >
+//           View All
+//         </a>
+//       </div>
+//       <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-14">
+//         {products.map((product) => (
+//           <ProductCard
+//             key={product.id}
+//             product={product}
+//             wishlisted={wishlist.some((w) => w.id === product.id)}
+//             onWishlistToggle={onWishlistToggle}
+//             onClick={onProductClick}
+//           />
+//         ))}
+//       </div>
+//       <div className="mt-14 text-center md:hidden">
+//         <a
+//           href="/collection"
+//           className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border-b border-stone-300 pb-0.5"
+//         >
+//           View All
+//         </a>
+//       </div>
+//     </section>
+//   );
+// }
 
 function CollectionBanner() {
   return (
@@ -185,9 +232,8 @@ function EditorialStrip() {
 
 export default function TwinklePage() {
   const dispatch = useAppDispatch();
-
   const { customerLogin, customerRegister, customerLogout } = useAuthService();
-
+  const { getSettings } = useSettingsService(); 
   const { getProducts } = useProductService();
   const [products, setProducts] = useState([]);
 
@@ -201,16 +247,25 @@ const handleLogout = async () => {
   }
 };
 
+
+
   useEffect(() => {
-    getProducts({ status: "Active", limit: 999 }).then((res) => {
-      if (res)
-        setProducts(
-          res.data.filter(
-            (p) => p.location === "Home" || p.location === "Both",
-          ),
-        );
-    });
-  }, []);
+  getProducts({ status: "Active", limit: 999 }).then((res) => {
+    if (res)
+      setProducts(
+        res.data.filter(
+          (p) => p.location === "Home" || p.location === "Both",
+        ),
+      );
+  });
+
+  getSettings().then((res) => {
+    if (res) dispatch(setSettings(res));
+  });
+}, []);
+
+const settings = useAppSelector((s) => s.settings);
+console.log(settings)
 
   const cart = useAppSelector((s) => s.cart);
   const wishlist = useAppSelector((s) => s.wishlist);
