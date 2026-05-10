@@ -29,7 +29,7 @@ function Hero() {
   return (
     <section className="relative w-full h-[92vh] overflow-hidden">
       <img
-        src="/background3.jpeg"
+        src="/background4.jpeg"
         alt="Night Elegance Campaign"
         className="absolute inset-0 w-full h-full object-cover object-top"
       />
@@ -128,53 +128,12 @@ function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
   );
 }
 
-// function ProductGrid({ products, onProductClick, wishlist, onWishlistToggle }) {
-//   return (
-//     <section id="collection" className="px-6 md:px-12 pt-20 pb-24 ">
-//       <div className="flex items-end justify-between mb-12">
-//         <div>
-//           <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-2">
-//             Shop
-//           </p>
-//           <h2 className="text-2xl md:text-3xl font-light tracking-widest text-stone-800 uppercase">
-//             The Collection
-//           </h2>
-//         </div>
-//         <a
-//           href="/collection"
-//           className="hidden md:block text-[10px] tracking-[0.25em] text-stone-400 uppercase border-b border-stone-300 pb-0.5 hover:text-stone-700 hover:border-stone-600 transition-colors"
-//         >
-//           View All
-//         </a>
-//       </div>
-//       <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-14">
-//         {products.map((product) => (
-//           <ProductCard
-//             key={product.id}
-//             product={product}
-//             wishlisted={wishlist.some((w) => w.id === product.id)}
-//             onWishlistToggle={onWishlistToggle}
-//             onClick={onProductClick}
-//           />
-//         ))}
-//       </div>
-//       <div className="mt-14 text-center md:hidden">
-//         <a
-//           href="/collection"
-//           className="text-[10px] tracking-[0.3em] text-stone-500 uppercase border-b border-stone-300 pb-0.5"
-//         >
-//           View All
-//         </a>
-//       </div>
-//     </section>
-//   );
-// }
 
 function CollectionBanner() {
   return (
     <section className="relative w-full h-[80vh] overflow-hidden">
       <img
-        src="/bg1.jpg"
+        src="/bg3.jpeg"
         alt="Soft Nights Collection"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -187,7 +146,7 @@ function CollectionBanner() {
           Soft Nights
         </h2>
         <a
-          href="#"
+          href="/collection"
           className="text-[10px] tracking-[0.3em] text-stone-200 uppercase border-b border-stone-300 pb-0.5 hover:text-white transition-colors"
         >
           Explore Collection
@@ -199,9 +158,9 @@ function CollectionBanner() {
 
 function EditorialStrip() {
   return (
-    <section className="px-6 md:px-12 py-24 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <section className="px-6 md:px-12 lg:px-24 xl:px-60 py-24 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
       <img
-        src="/bg2.jpg"
+        src="/bg2.jpeg"
         alt="Editorial"
         className="h-[500px] md:h-[680px] w-full object-cover"
       />
@@ -220,7 +179,7 @@ function EditorialStrip() {
           luxury.
         </p>
         <a
-          href="#"
+          href="/about"
           className="inline-block mt-4 text-[10px] tracking-[0.3em] text-stone-600 uppercase border-b border-stone-400 pb-0.5 w-fit hover:text-stone-900 hover:border-stone-900 transition-colors"
         >
           Our Story
