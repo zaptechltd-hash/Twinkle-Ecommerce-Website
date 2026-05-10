@@ -149,8 +149,8 @@ const handleRegister = async (name, email, password, phoneNumber) => {
 
       {/* ── FULL-WIDTH IMAGE ───────────────────────────────── */}
       <section className="px-8 md:px-24 pb-20 max-w-5xl mx-auto">
-        <div className="img-zoom w-full" style={{ height: "62vh" }}>
-          <img src="/background.jpg" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
+        <div className="img-zoom w-full" style={{ height: "auto" }}>
+          <img src="/logo.png" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
         </div>
         <div className="flex justify-between items-center mt-4">
           <div className="rule" style={{ maxWidth: "60px" }} />
@@ -164,7 +164,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <section>
         <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
           <div className="img-zoom w-full" style={{ height: "540px" }}>
-            <img src="/product5.jpg" alt="Editorial" className="w-full h-full object-cover object-center" />
+            <img src="/bg4.jpeg" alt="Editorial" className="w-full h-full object-cover object-center" />
           </div>
           <div className="md:pt-6">
             <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
@@ -248,7 +248,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <section>
         <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
           <div className="img-zoom w-full" style={{ height: "500px" }}>
-            <img src="/bg2.jpg" alt="Editorial" className="w-full h-full object-cover object-center" />
+            <img src="/bg5.jpeg" alt="Editorial" className="w-full h-full object-cover object-center" />
           </div>
           <div className="md:pt-6">
             <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
@@ -284,7 +284,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       </section>
 
       {/* ── FOUNDER ───────────────────────────────────────── */}
-      <section className="px-8 md:px-24 py-20 bg-[#e2d1a9]">
+      {/* <section className="px-8 md:px-24 py-20 bg-[#e2d1a9]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-14 items-start">
           <div>
             <div className="img-zoom w-full mb-4" style={{ height: "500px" }}>
@@ -323,7 +323,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── CTA ───────────────────────────────────────────── */}
       <section
@@ -370,9 +370,9 @@ const handleRegister = async (name, email, password, phoneNumber) => {
           >
             SHOP NOW
           </a>
-          <a href="mailto:hello@twinkle.pk" className="cta-link">
+          {/* <a href="mailto:hello@twinkle.pk" className="cta-link">
             GET IN TOUCH
-          </a>
+          </a> */}
         </div>
         <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
       </section>

@@ -29,29 +29,21 @@ export default function Navbar({
     {
       title: "Shop",
       links: [
-        { label: "New In", href: "/collection" },
-        { label: "Nightwear", href: "/collection" },
-        { label: "Loungewear", href: "/collection" },
-        { label: "Sets", href: "/collection" },
-        { label: "Robes", href: "/collection" },
-      ],
-    },
-    {
-      title: "Discover",
-      links: [
-        { label: "The Edit", href: "#" },
-        { label: "Campaign", href: "#" },
-        { label: "About Us", href: "/about" },
-        { label: "Sustainability", href: "#" },
+        { label: "Home", href: "/" },     
+        { label: "Our Collections", href: "/collection" },
+        { label: "About us", href: "/about" },
+        // { label: "Loungewear", href: "/collection" },
+        // { label: "Sets", href: "/collection" },
+        // { label: "Robes", href: "/collection" },
       ],
     },
     {
       title: "Help",
       links: [
-        { label: "Size Guide", href: "#" },
-        { label: "Shipping", href: "#" },
-        { label: "Returns", href: "#" },
-        { label: "Contact", href: "#" },
+        { label: "Exchange Return Policy", href: "/exchange-return" },
+        { label: "Shipping Policy", href: "/shipping-policy" },
+        { label: "Terms Conditions", href: "/terms-conditions" },
+        { label: "Privacy Policy", href: "/privacy-policy" },
       ],
     },
   ];
@@ -218,12 +210,9 @@ export default function Navbar({
 
               {/* Featured column */}
               <div>
-                <p className="text-[9px] tracking-[0.35em] text-stone-400 uppercase mb-4">
-                  Featured
-                </p>
                 <div className="relative overflow-hidden group cursor-pointer">
                   <img
-                    src="/background.jpg"
+                    src="/background4.jpeg"
                     alt="New Collection"
                     className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
                   />

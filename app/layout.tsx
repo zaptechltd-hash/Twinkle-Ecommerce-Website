@@ -15,8 +15,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Twinkle Official",
-  description: "Twinkle Official is a premium nightwear brand designed for comfort, elegance, and quiet luxury. Crafted with soft, breathable fabrics, each piece is made to bring ease and beauty to your everyday moments at home.",
+  description:
+    "Twinkle Official is a premium nightwear brand designed for comfort, elegance, and quiet luxury.",
+  icons: {
+    icon: [
+      {
+        url: "/icon.png",
+        href: "/icon.png",
+      },
+    ],
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -34,25 +44,3 @@ export default function RootLayout({
     </html>
   );
 }
-// app/layout.tsx
-// app/layout.tsx
-// import type { Metadata } from "next";
-// import Providers from "./Providers";
-
-// export const metadata: Metadata = {
-//   title: "Twinkle Official",
-// };
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="en">
-//       <body>
-//         <Providers>{children}</Providers>
-//       </body>
-//     </html>
-//   );
-// }

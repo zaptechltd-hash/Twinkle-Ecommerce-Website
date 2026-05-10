@@ -25,10 +25,9 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
 
     const payload = decodeJwtPayload(token);
 
-    const isExpired = !payload?.exp || payload.exp * 1000 < Date.now();
-    const isAdmin   = payload?.role === "admin";
+    const isAdmin = payload?.role === "admin";
 
-    if (isExpired || !isAdmin) {
+    if (!isAdmin) {
       router.replace("/admin/login");
       return;
     }
@@ -36,6 +35,6 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     setAllowed(true);
   }, [router]);
 
-  if (!allowed) return null; // or a loading spinner
+  if (!allowed) return null;
   return <>{children}</>;
 }
