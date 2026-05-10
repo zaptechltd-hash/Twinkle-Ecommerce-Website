@@ -37,12 +37,7 @@ const SORT_OPTIONS = [
 
 const SIZES_ALL = ["S", "M", "L", "XL"];
 
-const PRICE_RANGES = [
-  { label: "Under PKR 4,500", min: 0, max: 4500 },
-  { label: "PKR 4,500 – 6,000", min: 4500, max: 6000 },
-  { label: "PKR 6,000 – 8,000", min: 6000, max: 8000 },
-  { label: "PKR 8,000+", min: 8000, max: Infinity },
-];
+
 
 function FilterAccordion({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -64,7 +59,7 @@ function FilterAccordion({ title, children, defaultOpen = false }) {
   );
 }
 
-function FilterPanel({ filters, onChange, onClear }) {
+function FilterPanel({ filters, onChange, onClear, priceRanges }) {
   const activeCount =
     filters.sizes.length + (filters.priceRange !== null ? 1 : 0);
 
@@ -93,7 +88,7 @@ function FilterPanel({ filters, onChange, onClear }) {
 
       <FilterAccordion title="Price" defaultOpen={true}>
         <div className="flex flex-col gap-1">
-          {PRICE_RANGES.map((range, i) => {
+          {priceRanges.map((range, i) => {
             const active = filters.priceRange === i;
             return (
               <button
@@ -170,6 +165,7 @@ function MobileFilterDrawer({
   onChange,
   onClear,
   totalResults,
+  priceRanges
 }) {
   if (!open) return null;
   return (
@@ -198,6 +194,7 @@ function MobileFilterDrawer({
             filters={filters}
             onChange={onChange}
             onClear={onClear}
+             priceRanges={priceRanges}
           />
         </div>
         <div className="border-t border-stone-100 px-6 py-5">
@@ -213,7 +210,7 @@ function MobileFilterDrawer({
   );
 }
 
-function ActiveFilters({ filters, onChange, onClear }) {
+function ActiveFilters({ filters, onChange, onClear, priceRanges }) {
   const pills = [];
 
   filters.sizes.forEach((s) =>
@@ -226,7 +223,7 @@ function ActiveFilters({ filters, onChange, onClear }) {
 
   if (filters.priceRange !== null)
     pills.push({
-      label: PRICE_RANGES[filters.priceRange].label,
+    label: priceRanges[filters.priceRange].label,
       clear: () => onChange({ ...filters, priceRange: null }),
     });
 
@@ -262,8 +259,24 @@ export default function CollectionPage() {
   const cart = useAppSelector((s) => s.cart);
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
-
+  const settings = useAppSelector((s) => s.settings);
   const { customerLogin, customerRegister, customerLogout } = useAuthService();
+
+  const PRICE_RANGES = useMemo(() => {
+  if (settings?.priceFilters?.length) {
+    return settings.priceFilters.map((f) => ({
+      label: f.label,
+      min:   f.min,
+      max:   f.max ?? Infinity, 
+    }));
+  }
+  return [
+    { label: "Under PKR 4,500",   min: 0,    max: 4500     },
+    { label: "PKR 4,500 – 6,000", min: 4500, max: 6000     },
+    { label: "PKR 6,000 – 8,000", min: 6000, max: 8000     },
+    { label: "PKR 8,000+",        min: 8000, max: Infinity  },
+  ];
+}, [settings?.priceFilters]);
 
   const [filters, setFilters] = useState({ sizes: [], priceRange: null });
   const [sort, setSort] = useState("featured");
@@ -463,6 +476,7 @@ export default function CollectionPage() {
             filters={filters}
             onChange={setFilters}
             onClear={clearFilters}
+            priceRanges={PRICE_RANGES} 
           />
         </aside>
 
@@ -472,6 +486,7 @@ export default function CollectionPage() {
             filters={filters}
             onChange={setFilters}
             onClear={clearFilters}
+           priceRanges={PRICE_RANGES} 
           />
 
           {productsLoading ? (
@@ -528,6 +543,7 @@ export default function CollectionPage() {
         onChange={setFilters}
         onClear={clearFilters}
         totalResults={filtered.length}
+         priceRanges={PRICE_RANGES} 
       />
 
       {cartOpen && (

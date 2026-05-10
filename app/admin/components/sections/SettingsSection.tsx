@@ -11,6 +11,15 @@ const DEFAULT_DYNAMIC = {
   deliveryLabel: "Same Day Delivery",
   minOrder: 500,
   guestCheckout: true,
+  // new
+  storeName: "My Store",
+  contactNumber: "",
+  priceFilters: [
+    { label: "Under PKR 4,500",   min: 0,    max: 4500 },
+    { label: "PKR 4,500 – 6,000", min: 4500, max: 6000 },
+    { label: "PKR 6,000 – 8,000", min: 6000, max: 8000 },
+    { label: "PKR 8,000+",        min: 8000, max: null  },
+  ],
 };
 
 type DynamicSettings = typeof DEFAULT_DYNAMIC;
@@ -281,17 +290,159 @@ function ShippingSettings({
 
 // ─── Section: General ─────────────────────────────────────────────────────────
 
-function GeneralSettings({
-  data,
-  onChange,
-  disabled,
-}: {
+// function GeneralSettings({
+//   data,
+//   onChange,
+//   disabled,
+// }: {
+//   data: DynamicSettings;
+//   onChange: (key: keyof DynamicSettings, val: DynamicSettings[keyof DynamicSettings]) => void;
+//   disabled: boolean;
+// }) {
+//   return (
+//     <div className="flex flex-col gap-4">
+//       <Card>
+//         <CardTitle>Order rules</CardTitle>
+//         <div className="max-w-xs">
+//           <Field label="Minimum order amount">
+//             <PkrInput value={data.minOrder} onChange={(v) => onChange("minOrder", v)} />
+//           </Field>
+//         </div>
+//         <p className="text-[11px] text-[#b4b2a9] mt-2">
+//           Set to 0 to disable the minimum order requirement.
+//         </p>
+//       </Card>
+
+//       <Card>
+//         <CardTitle>Checkout</CardTitle>
+//         <div className="divide-y divide-[#f1efe8]">
+//           <Toggle
+//             enabled={data.guestCheckout}
+//             onChange={(v) => onChange("guestCheckout", v)}
+//             label="Allow guest checkout"
+//             description="Customers can order without creating an account"
+//             disabled={disabled}
+//           />
+//         </div>
+//       </Card>
+//     </div>
+//   );
+// }
+
+function GeneralSettings({ data, onChange, disabled }: {
   data: DynamicSettings;
   onChange: (key: keyof DynamicSettings, val: DynamicSettings[keyof DynamicSettings]) => void;
   disabled: boolean;
 }) {
+  function updateFilter(index, field, value) {
+    const updated = data.priceFilters.map((f, i) =>
+      i === index ? { ...f, [field]: value } : f
+    );
+    onChange("priceFilters", updated);
+  }
+
+  function addFilter() {
+    onChange("priceFilters", [
+      ...data.priceFilters,
+      { label: "New Range", min: 0, max: null },
+    ]);
+  }
+
+  function removeFilter(index:any) {
+    onChange("priceFilters", data.priceFilters.filter((_, i) => i !== index));
+  }
+
   return (
     <div className="flex flex-col gap-4">
+
+      {/* ── Store info ── */}
+      <Card>
+        <CardTitle>Store information</CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="Store name">
+            <Input
+              value={data.storeName}
+              onChange={(v) => onChange("storeName", v)}
+              placeholder="e.g. TwinkleOfficial"
+              disabled={disabled}
+            />
+          </Field>
+          <Field label="Contact number">
+            <Input
+              value={data.contactNumber}
+              onChange={(v) => onChange("contactNumber", v)}
+              placeholder="e.g. +92 300 1234567"
+              disabled={disabled}
+            />
+          </Field>
+        </div>
+      </Card>
+
+      {/* ── Price filters ── */}
+      <Card>
+        <CardTitle>Collection price filters</CardTitle>
+        <p className="text-[11px] text-[#b4b2a9] mb-4 -mt-2">
+          These ranges appear in the filter panel on your collection page.
+          Leave "Max" empty for an open-ended range (e.g. PKR 8,000+).
+        </p>
+
+        <div className="flex flex-col gap-3">
+          {(data.priceFilters ?? []).map((filter, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 items-end"
+            >
+              <Field label={i === 0 ? "Label" : ""}>
+                <Input
+                  value={filter.label}
+                  onChange={(v) => updateFilter(i, "label", v)}
+                  placeholder="e.g. Under PKR 4,500"
+                  disabled={disabled}
+                />
+              </Field>
+              <Field label={i === 0 ? "Min (PKR)" : ""}>
+                <input
+                  type="number"
+                  value={filter.min}
+                  onChange={(e) => updateFilter(i, "min", Number(e.target.value))}
+                  disabled={disabled}
+                  className="w-full bg-[#f9f8f5] border border-[#e8e5df] rounded-lg px-3 py-2.5 text-[13px] text-[#1a1916] outline-none focus:border-[#1a1916] focus:bg-white transition-all"
+                />
+              </Field>
+              <Field label={i === 0 ? "Max (PKR, blank = ∞)" : ""}>
+                <input
+                  type="number"
+                  value={filter.max ?? ""}
+                  onChange={(e) =>
+                    updateFilter(i, "max", e.target.value === "" ? null : Number(e.target.value))
+                  }
+                  placeholder="∞"
+                  disabled={disabled}
+                  className="w-full bg-[#f9f8f5] border border-[#e8e5df] rounded-lg px-3 py-2.5 text-[13px] text-[#1a1916] outline-none focus:border-[#1a1916] focus:bg-white transition-all placeholder:text-[#c9c6be]"
+                />
+              </Field>
+              <button
+                onClick={() => removeFilter(i)}
+                disabled={disabled}
+                className="mb-0.5 w-8 h-9 flex items-center justify-center text-[#b4b2a9] hover:text-[#e05252] transition-colors disabled:opacity-40"
+                title="Remove"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={addFilter}
+          disabled={disabled}
+          className="mt-4 text-[11px] font-medium text-[#1a1916] border border-[#e8e5df] rounded-lg px-4 py-2 hover:bg-[#f5f2ed] transition-colors disabled:opacity-50"
+        >
+          + Add range
+        </button>
+      </Card>
+
+      {/* ── existing cards ── */}
       <Card>
         <CardTitle>Order rules</CardTitle>
         <div className="max-w-xs">
@@ -342,6 +493,9 @@ export default function SettingsSection() {
           deliveryLabel:  res.deliveryLabel,
           minOrder:       res.minOrder,
           guestCheckout:  res.guestCheckout,
+            storeName:      res.storeName      ?? "My Store",
+  contactNumber:  res.contactNumber  ?? "",
+  priceFilters:   res.priceFilters   ?? DEFAULT_DYNAMIC.priceFilters,
         });
       } else {
         setFetchError(true);
@@ -366,6 +520,9 @@ export default function SettingsSection() {
       deliveryLabel: dynamic.deliveryLabel,
       minOrder:      dynamic.minOrder,
       guestCheckout: dynamic.guestCheckout,
+      storeName:     dynamic.storeName,
+    contactNumber: dynamic.contactNumber,
+    priceFilters:  dynamic.priceFilters,
     };
 
     const res = await updateSettings(payload);
