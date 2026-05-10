@@ -334,7 +334,7 @@ function GeneralSettings({ data, onChange, disabled }: {
   onChange: (key: keyof DynamicSettings, val: DynamicSettings[keyof DynamicSettings]) => void;
   disabled: boolean;
 }) {
-  function updateFilter(index, field, value) {
+function updateFilter(index: number, field: string, value: string | number | null) {
     const updated = data.priceFilters.map((f, i) =>
       i === index ? { ...f, [field]: value } : f
     );
@@ -348,7 +348,7 @@ function GeneralSettings({ data, onChange, disabled }: {
     ]);
   }
 
-  function removeFilter(index:any) {
+function removeFilter(index: number) {
     onChange("priceFilters", data.priceFilters.filter((_, i) => i !== index));
   }
 
