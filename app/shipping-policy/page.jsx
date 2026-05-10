@@ -10,7 +10,12 @@ import AuthModal from "../components/AuthModal";
 import { removeFromWishlist, addToCart } from "../store/index";
 import useAuthService from "../services/auth/index";
 import { toast, ToastContainer } from "react-toastify";
-import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "../utils/token";
+import {
+  setAccessToken,
+  setRefreshToken,
+  getRefreshToken,
+  clearTokens,
+} from "../utils/token";
 import "react-toastify/dist/ReactToastify.css";
 
 const sections = [
@@ -55,10 +60,7 @@ const sections = [
     num: "04",
     title: "Shipping Charges",
     body: "Shipping charges (if applicable) will be clearly displayed at checkout before order confirmation.",
-    items: [
-      "Free shipping promotions",
-      "Discounted shipping campaigns",
-    ],
+    items: ["Free shipping promotions", "Discounted shipping campaigns"],
     itemsLabel: "TWINKLE may offer:",
     footer: "These offers may be limited-time and subject to conditions.",
   },
@@ -66,12 +68,7 @@ const sections = [
     num: "05",
     title: "Order Tracking",
     body: "Once your order is shipped, tracking details will be shared when your order is dispatched. You may receive updates via:",
-    items: [
-      "SMS",
-      "Email",
-      "WhatsApp",
-      "Courier tracking systems",
-    ],
+    items: ["SMS", "Email", "WhatsApp", "Courier tracking systems"],
   },
   {
     num: "06",
@@ -106,11 +103,7 @@ const sections = [
     num: "08",
     title: "Damaged or Missing Items",
     body: "If your order arrives damaged, defective, or incomplete, please contact us within 48 hours of delivery. TWINKLE will review and verify claims before offering replacement or resolution.",
-    items: [
-      "Order number",
-      "Photos or videos of the issue",
-      "Packaging proof",
-    ],
+    items: ["Order number", "Photos or videos of the issue", "Packaging proof"],
     itemsLabel: "You may be required to provide:",
   },
   {
@@ -130,6 +123,7 @@ export default function ShippingPolicyPage() {
   const cart = useAppSelector((s) => s.cart);
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
+  const settings = useAppSelector((s) => s.settings);
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
   const { customerLogin, customerRegister, customerLogout } = useAuthService();
@@ -143,11 +137,20 @@ export default function ShippingPolicyPage() {
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Welcome back!");
-    return { id: data.user.id, email: data.user.email, name: email.split("@")[0] };
+    return {
+      id: data.user.id,
+      email: data.user.email,
+      name: email.split("@")[0],
+    };
   };
 
   const handleRegister = async (name, email, password, phoneNumber) => {
-    const data = await customerRegister({ name, email, password, phone: phoneNumber });
+    const data = await customerRegister({
+      name,
+      email,
+      password,
+      phone: phoneNumber,
+    });
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Account created successfully!");
@@ -268,13 +271,21 @@ export default function ShippingPolicyPage() {
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
         >
           Shipping · Last Updated May 2026
         </p>
         <h1
           className="serif f2 font-light leading-none mb-8"
-          style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#2c2520", letterSpacing: "-0.02em" }}
+          style={{
+            fontSize: "clamp(56px, 10vw, 96px)",
+            color: "#2c2520",
+            letterSpacing: "-0.02em",
+          }}
         >
           Shipping
           <br />
@@ -285,7 +296,15 @@ export default function ShippingPolicyPage() {
             Thank you for shopping with TWINKLE. This policy explains how we
             process, ship, and deliver orders across Pakistan.
           </p>
-          <p style={{ marginTop: "1rem", fontSize: "13px", color: "#9e8e82", lineHeight: "1.9", fontStyle: "italic" }}>
+          <p
+            style={{
+              marginTop: "1rem",
+              fontSize: "13px",
+              color: "#9e8e82",
+              lineHeight: "1.9",
+              fontStyle: "italic",
+            }}
+          >
             By placing an order with TWINKLE, you agree to the terms outlined
             below.
           </p>
@@ -299,7 +318,14 @@ export default function ShippingPolicyPage() {
 
       {/* ── AT-A-GLANCE STATS ──────────────────────────────── */}
       <section className="px-8 md:px-24 pb-20 max-w-7xl mx-auto">
-        <p className="uppercase mb-10" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p
+          className="uppercase mb-10"
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
+        >
           At a Glance
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -312,11 +338,24 @@ export default function ShippingPolicyPage() {
             <div key={stat.label} className="stat-card">
               <p
                 className="serif font-light"
-                style={{ fontSize: "clamp(32px, 4vw, 44px)", color: "#2c2520", letterSpacing: "-0.02em", lineHeight: "1" }}
+                style={{
+                  fontSize: "clamp(32px, 4vw, 44px)",
+                  color: "#2c2520",
+                  letterSpacing: "-0.02em",
+                  lineHeight: "1",
+                }}
               >
                 {stat.value}
               </p>
-              <p style={{ fontSize: "10px", letterSpacing: "0.18em", color: "#b4a58f", textTransform: "uppercase", margin: "0.4rem 0 0.25rem" }}>
+              <p
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.18em",
+                  color: "#b4a58f",
+                  textTransform: "uppercase",
+                  margin: "0.4rem 0 0.25rem",
+                }}
+              >
                 {stat.unit}
               </p>
               <p style={{ fontSize: "11px", color: "#9e8e82" }}>{stat.label}</p>
@@ -331,12 +370,23 @@ export default function ShippingPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               Contents
             </p>
             <h2
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(28px, 3vw, 38px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+              style={{
+                fontSize: "clamp(28px, 3vw, 38px)",
+                color: "#2c2520",
+                letterSpacing: "-0.015em",
+              }}
             >
               Quick
               <br />
@@ -346,14 +396,29 @@ export default function ShippingPolicyPage() {
           <div>
             <div style={{ height: "0.5px", backgroundColor: "#e8e0d6" }} />
             {sections.map((s) => (
-              <a key={s.num} href={`#ship-section-${s.num}`} className="toc-item">
+              <a
+                key={s.num}
+                href={`#ship-section-${s.num}`}
+                className="toc-item"
+              >
                 <span
                   className="serif font-light flex-shrink-0"
-                  style={{ fontSize: "16px", color: "rgba(180,165,145,0.5)", minWidth: "28px" }}
+                  style={{
+                    fontSize: "16px",
+                    color: "rgba(180,165,145,0.5)",
+                    minWidth: "28px",
+                  }}
                 >
                   {s.num}
                 </span>
-                <span style={{ fontSize: "12px", letterSpacing: "0.12em", color: "#4a3f35", textTransform: "uppercase" }}>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    letterSpacing: "0.12em",
+                    color: "#4a3f35",
+                    textTransform: "uppercase",
+                  }}
+                >
                   {s.title}
                 </span>
               </a>
@@ -376,13 +441,22 @@ export default function ShippingPolicyPage() {
             <div className="md:sticky top-24">
               <span
                 className="serif font-light"
-                style={{ fontSize: "13px", color: "rgba(180,165,145,0.5)", display: "block", marginBottom: "0.5rem" }}
+                style={{
+                  fontSize: "13px",
+                  color: "rgba(180,165,145,0.5)",
+                  display: "block",
+                  marginBottom: "0.5rem",
+                }}
               >
                 {s.num}
               </span>
               <h3
                 className="serif font-light leading-snug"
-                style={{ fontSize: "clamp(22px, 2.5vw, 30px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+                style={{
+                  fontSize: "clamp(22px, 2.5vw, 30px)",
+                  color: "#2c2520",
+                  letterSpacing: "-0.01em",
+                }}
               >
                 {s.title}
               </h3>
@@ -391,7 +465,13 @@ export default function ShippingPolicyPage() {
             {/* Right content */}
             <div>
               {s.body && (
-                <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: "1.9",
+                    color: "#4a3f35",
+                  }}
+                >
                   {s.body}
                 </p>
               )}
@@ -399,17 +479,31 @@ export default function ShippingPolicyPage() {
               {/* Flat items */}
               {s.items && (
                 <>
-                  {s.itemsLabel && <p className="items-label">{s.itemsLabel}</p>}
+                  {s.itemsLabel && (
+                    <p className="items-label">{s.itemsLabel}</p>
+                  )}
                   <div>
                     {s.items.map((item, i) => (
                       <div key={i} className="policy-item">
                         <span
                           className="serif font-light flex-shrink-0"
-                          style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}
+                          style={{
+                            fontSize: "15px",
+                            color: "rgba(180,165,145,0.4)",
+                            marginTop: "1px",
+                          }}
                         >
                           —
                         </span>
-                        <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                        <p
+                          style={{
+                            fontSize: "13px",
+                            lineHeight: "1.8",
+                            color: "#4a3f35",
+                          }}
+                        >
+                          {item}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -418,30 +512,51 @@ export default function ShippingPolicyPage() {
 
               {/* Footer note */}
               {s.footer && (
-                <p style={{ fontSize: "12px", lineHeight: "1.9", color: "#9e8e82", fontStyle: "italic", marginTop: "1rem" }}>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    lineHeight: "1.9",
+                    color: "#9e8e82",
+                    fontStyle: "italic",
+                    marginTop: "1rem",
+                  }}
+                >
                   {s.footer}
                 </p>
               )}
 
               {/* Subsections */}
-              {s.subsections && s.subsections.map((sub) => (
-                <div key={sub.label}>
-                  <p className="items-label">{sub.label}</p>
-                  <div>
-                    {sub.items.map((item, i) => (
-                      <div key={i} className="policy-item">
-                        <span
-                          className="serif font-light flex-shrink-0"
-                          style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}
-                        >
-                          —
-                        </span>
-                        <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
-                      </div>
-                    ))}
+              {s.subsections &&
+                s.subsections.map((sub) => (
+                  <div key={sub.label}>
+                    <p className="items-label">{sub.label}</p>
+                    <div>
+                      {sub.items.map((item, i) => (
+                        <div key={i} className="policy-item">
+                          <span
+                            className="serif font-light flex-shrink-0"
+                            style={{
+                              fontSize: "15px",
+                              color: "rgba(180,165,145,0.4)",
+                              marginTop: "1px",
+                            }}
+                          >
+                            —
+                          </span>
+                          <p
+                            style={{
+                              fontSize: "13px",
+                              lineHeight: "1.8",
+                              color: "#4a3f35",
+                            }}
+                          >
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         ))}
@@ -453,12 +568,23 @@ export default function ShippingPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               10 / Contact
             </p>
             <h3
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(28px, 3vw, 38px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: "clamp(28px, 3vw, 38px)",
+                color: "#2c2520",
+                letterSpacing: "-0.01em",
+              }}
             >
               Get in
               <br />
@@ -466,24 +592,63 @@ export default function ShippingPolicyPage() {
             </h3>
           </div>
           <div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35", marginBottom: "1.5rem" }}>
+            <p
+              style={{
+                fontSize: "13px",
+                lineHeight: "1.9",
+                color: "#4a3f35",
+                marginBottom: "1.5rem",
+              }}
+            >
               For any shipping-related queries, our customer support team is
               ready to help.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#b4a58f", textTransform: "uppercase", minWidth: "50px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}
+            >
+              <div
+                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.22em",
+                    color: "#b4a58f",
+                    textTransform: "uppercase",
+                    minWidth: "50px",
+                  }}
+                >
                   Email
                 </span>
-                <a href="mailto:info@twinkleofficial.com" className="email-link" style={{ fontSize: "13px" }}>
+                <a
+                  href="mailto:info@twinkleofficial.com"
+                  className="email-link"
+                  style={{ fontSize: "13px" }}
+                >
                   info@twinkleofficial.com
                 </a>
               </div>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#b4a58f", textTransform: "uppercase", minWidth: "50px" }}>
+              <div
+                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.22em",
+                    color: "#b4a58f",
+                    textTransform: "uppercase",
+                    minWidth: "50px",
+                  }}
+                >
                   Phone
                 </span>
-                <span style={{ fontSize: "13px", color: "#4a3f35" }}>+92 XXX XXXXXXX</span>
+                <span style={{ fontSize: "13px", color: "#4a3f35" }}>
+                  {settings?.contactNumber || "+92 304 3369149"}
+                </span>
               </div>
             </div>
           </div>
@@ -493,20 +658,43 @@ export default function ShippingPolicyPage() {
       {/* ── DARK CTA ───────────────────────────────────────── */}
       <section
         className="px-8 md:px-24 py-24 text-center"
-        style={{ backgroundColor: "#161310", borderTop: "0.5px solid rgba(180,165,145,0.12)" }}
+        style={{
+          backgroundColor: "#161310",
+          borderTop: "0.5px solid rgba(180,165,145,0.12)",
+        }}
       >
-        <p className="uppercase mb-6" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p
+          className="uppercase mb-6"
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
+        >
           Ready to Order?
         </p>
         <h2
           className="serif font-light leading-tight mb-8 mx-auto"
-          style={{ fontSize: "clamp(40px, 8vw, 80px)", color: "#f0e8de", letterSpacing: "-0.025em", maxWidth: "580px" }}
+          style={{
+            fontSize: "clamp(40px, 8vw, 80px)",
+            color: "#f0e8de",
+            letterSpacing: "-0.025em",
+            maxWidth: "580px",
+          }}
         >
           Delivered with
           <br />
           <em>care, nationwide.</em>
         </h2>
-        <p className="mx-auto mb-14" style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "360px" }}>
+        <p
+          className="mx-auto mb-14"
+          style={{
+            fontSize: "13px",
+            lineHeight: "1.9",
+            color: "#7a6a5e",
+            maxWidth: "360px",
+          }}
+        >
           From Karachi to Lahore to the Northern Areas — your TWINKLE order
           travels carefully to reach you.
         </p>
@@ -539,7 +727,9 @@ export default function ShippingPolicyPage() {
             CONTACT US
           </a> */}
         </div>
-        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
+        <div
+          style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
+        />
       </section>
 
       {/* ── SIDEBARS & MODALS ──────────────────────────────── */}

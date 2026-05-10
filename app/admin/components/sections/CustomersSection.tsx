@@ -250,7 +250,7 @@ export default function CustomersSection() {
         {/* ── Toolbar ── */}
         <div className="flex items-center gap-3 flex-wrap mb-4">
           {/* Search */}
-          <div className="relative flex-1 min-w-[200px]">
+          {/* <div className="relative flex-1 min-w-[200px]">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b2a9]"
               width="13" height="13" viewBox="0 0 16 16" fill="none"
@@ -265,7 +265,7 @@ export default function CustomersSection() {
               onChange={(e) => setSearchInput(e.target.value)}
               className="w-full pl-8 pr-4 py-2 text-[12px] bg-white border border-[#e8e5df] rounded-xl text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#888780] transition-colors"
             />
-          </div>
+          </div> */}
 
           {/* Sort */}
           <select
@@ -342,11 +342,11 @@ export default function CustomersSection() {
                       </td>
 
                       {/* CTA */}
-                      <td className="px-3 py-3">
+                      {/* <td className="px-3 py-3">
                         <span className="text-[10px] tracking-wide text-[#b4b2a9] group-hover:text-[#1a1916] uppercase underline underline-offset-2 transition-colors whitespace-nowrap">
                           View →
                         </span>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 )}
