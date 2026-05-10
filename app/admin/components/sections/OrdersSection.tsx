@@ -785,7 +785,7 @@ export default function OrderManagement() {
 
           {/* Search + dropdowns */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <div className="relative flex-1 min-w-[180px]">
+            {/* <div className="relative flex-1 min-w-[180px]">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b2a9] text-sm select-none">⌕</span>
               <input
                 type="text"
@@ -794,7 +794,7 @@ export default function OrderManagement() {
                 placeholder="Search by name, email or order ID…"
                 className="w-full pl-8 pr-3 py-2 text-[12px] border border-[#e8e5df] rounded-xl bg-white text-[#1a1916] placeholder-[#b4b2a9] outline-none focus:border-[#1a1916] transition-colors"
               />
-            </div>
+            </div> */}
             <select
               value={payFilter}
               onChange={(e) => { setPayFilter(e.target.value); resetPage(); }}

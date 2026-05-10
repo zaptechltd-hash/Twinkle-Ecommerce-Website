@@ -10,7 +10,12 @@ import AuthModal from "../components/AuthModal";
 import { removeFromWishlist, addToCart } from "../store/index";
 import useAuthService from "../services/auth/index";
 import { toast, ToastContainer } from "react-toastify";
-import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "../utils/token";
+import {
+  setAccessToken,
+  setRefreshToken,
+  getRefreshToken,
+  clearTokens,
+} from "../utils/token";
 import "react-toastify/dist/ReactToastify.css";
 
 const exchangeEligibility = [
@@ -84,7 +89,7 @@ export default function ExchangeReturnPolicyPage() {
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-
+  const settings = useAppSelector((s) => s.settings);
   const { customerLogin, customerRegister, customerLogout } = useAuthService();
 
   const [cartOpen, setCartOpen] = useState(false);
@@ -96,11 +101,20 @@ export default function ExchangeReturnPolicyPage() {
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Welcome back!");
-    return { id: data.user.id, email: data.user.email, name: email.split("@")[0] };
+    return {
+      id: data.user.id,
+      email: data.user.email,
+      name: email.split("@")[0],
+    };
   };
 
   const handleRegister = async (name, email, password, phoneNumber) => {
-    const data = await customerRegister({ name, email, password, phone: phoneNumber });
+    const data = await customerRegister({
+      name,
+      email,
+      password,
+      phone: phoneNumber,
+    });
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
     toast.success("Account created successfully!");
@@ -216,13 +230,21 @@ export default function ExchangeReturnPolicyPage() {
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
         >
           Policies · Last Updated May 2026
         </p>
         <h1
           className="serif f2 font-light leading-none mb-8"
-          style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#2c2520", letterSpacing: "-0.02em" }}
+          style={{
+            fontSize: "clamp(56px, 10vw, 96px)",
+            color: "#2c2520",
+            letterSpacing: "-0.02em",
+          }}
         >
           Exchange &amp;
           <br />
@@ -230,10 +252,17 @@ export default function ExchangeReturnPolicyPage() {
         </h1>
         <div className="f3" style={{ maxWidth: "500px" }}>
           <p style={{ fontSize: "14px", color: "#6b5c50", lineHeight: "1.9" }}>
-            At TWINKLE, our customers are our top priority. We aim to provide
-            a smooth and hassle-free shopping experience.
+            At TWINKLE, our customers are our top priority. We aim to provide a
+            smooth and hassle-free shopping experience.
           </p>
-          <p style={{ marginTop: "1rem", fontSize: "13px", color: "#9e8e82", lineHeight: "1.9" }}>
+          <p
+            style={{
+              marginTop: "1rem",
+              fontSize: "13px",
+              color: "#9e8e82",
+              lineHeight: "1.9",
+            }}
+          >
             For any exchange or return requests, please contact us at{" "}
             <a href="mailto:info@twinkleofficial.com" className="email-link">
               info@twinkleofficial.com
@@ -249,24 +278,52 @@ export default function ExchangeReturnPolicyPage() {
 
       {/* ── AT-A-GLANCE ────────────────────────────────────── */}
       <section className="px-8 md:px-24 pb-20 max-w-7xl mx-auto">
-        <p className="uppercase mb-10" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p
+          className="uppercase mb-10"
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
+        >
           At a Glance
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
             { value: "28", unit: "days", label: "Exchange window" },
             { value: "28", unit: "days", label: "Return window" },
-            { value: "COD", unit: "refunds", label: "Via bank transfer or store credit" },
-            { value: "100%", unit: "unused", label: "Items must be unworn & tagged" },
+            {
+              value: "COD",
+              unit: "refunds",
+              label: "Via bank transfer or store credit",
+            },
+            {
+              value: "100%",
+              unit: "unused",
+              label: "Items must be unworn & tagged",
+            },
           ].map((stat) => (
             <div key={stat.label} className="stat-card">
               <p
                 className="serif font-light"
-                style={{ fontSize: "clamp(28px, 4vw, 44px)", color: "#2c2520", letterSpacing: "-0.02em", lineHeight: "1" }}
+                style={{
+                  fontSize: "clamp(28px, 4vw, 44px)",
+                  color: "#2c2520",
+                  letterSpacing: "-0.02em",
+                  lineHeight: "1",
+                }}
               >
                 {stat.value}
               </p>
-              <p style={{ fontSize: "10px", letterSpacing: "0.18em", color: "#b4a58f", textTransform: "uppercase", margin: "0.4rem 0 0.25rem" }}>
+              <p
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.18em",
+                  color: "#b4a58f",
+                  textTransform: "uppercase",
+                  margin: "0.4rem 0 0.25rem",
+                }}
+              >
                 {stat.unit}
               </p>
               <p style={{ fontSize: "11px", color: "#9e8e82" }}>{stat.label}</p>
@@ -281,12 +338,23 @@ export default function ExchangeReturnPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div className="md:sticky top-24">
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               01 / Policy
             </p>
             <h2
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(28px, 3.5vw, 42px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+              style={{
+                fontSize: "clamp(28px, 3.5vw, 42px)",
+                color: "#2c2520",
+                letterSpacing: "-0.015em",
+              }}
             >
               Exchange
               <br />
@@ -294,9 +362,13 @@ export default function ExchangeReturnPolicyPage() {
             </h2>
           </div>
           <div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+            <p
+              style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}
+            >
               Exchange requests must be made within{" "}
-              <strong style={{ fontWeight: "500", color: "#2c2520" }}>28 days</strong>{" "}
+              <strong style={{ fontWeight: "500", color: "#2c2520" }}>
+                28 days
+              </strong>{" "}
               of receiving your order. To qualify for an exchange, all of the
               following conditions must be met.
             </p>
@@ -305,8 +377,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {exchangeEligibility.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -315,8 +404,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {exchangeNotes.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -325,8 +431,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {exchangeProof.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -340,12 +463,23 @@ export default function ExchangeReturnPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div className="md:sticky top-24">
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               02 / Policy
             </p>
             <h2
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(28px, 3.5vw, 42px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+              style={{
+                fontSize: "clamp(28px, 3.5vw, 42px)",
+                color: "#2c2520",
+                letterSpacing: "-0.015em",
+              }}
             >
               Return
               <br />
@@ -353,9 +487,13 @@ export default function ExchangeReturnPolicyPage() {
             </h2>
           </div>
           <div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+            <p
+              style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}
+            >
               Return requests must be made within{" "}
-              <strong style={{ fontWeight: "500", color: "#2c2520" }}>28 days</strong>{" "}
+              <strong style={{ fontWeight: "500", color: "#2c2520" }}>
+                28 days
+              </strong>{" "}
               of receiving your order. Customers may be asked to provide photo
               or video proof for verification purposes.
             </p>
@@ -364,8 +502,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {returnEligibility.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -374,8 +529,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {returnAccepted.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -384,8 +556,25 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {returnNotes.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -398,22 +587,38 @@ export default function ExchangeReturnPolicyPage() {
       {/* ── NON-RETURNABLE + REFUND ────────────────────────── */}
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-
           {/* Non-returnable */}
           <div>
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               03 / Note
             </p>
             <h3
               className="serif font-light leading-snug mb-6"
-              style={{ fontSize: "clamp(24px, 3vw, 36px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: "clamp(24px, 3vw, 36px)",
+                color: "#2c2520",
+                letterSpacing: "-0.01em",
+              }}
             >
               Non-Returnable
               <br />
               <em>Items.</em>
             </h3>
             <div className="warning-strip">
-              <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+              <p
+                style={{
+                  fontSize: "13px",
+                  lineHeight: "1.9",
+                  color: "#4a3f35",
+                }}
+              >
                 For hygiene and safety reasons, certain personal wear items may
                 not be eligible for return or exchange unless they arrive
                 damaged or defective.
@@ -423,12 +628,23 @@ export default function ExchangeReturnPolicyPage() {
 
           {/* Refund process */}
           <div>
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               04 / Refunds
             </p>
             <h3
               className="serif font-light leading-snug mb-6"
-              style={{ fontSize: "clamp(24px, 3vw, 36px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: "clamp(24px, 3vw, 36px)",
+                color: "#2c2520",
+                letterSpacing: "-0.01em",
+              }}
             >
               Refund
               <br />
@@ -437,12 +653,37 @@ export default function ExchangeReturnPolicyPage() {
             <div>
               {refundItems.map((item, i) => (
                 <div key={i} className="policy-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                  <span
+                    className="serif font-light flex-shrink-0"
+                    style={{
+                      fontSize: "15px",
+                      color: "rgba(180,165,145,0.4)",
+                      marginTop: "1px",
+                    }}
+                  >
+                    —
+                  </span>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      lineHeight: "1.8",
+                      color: "#4a3f35",
+                    }}
+                  >
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: "12px", lineHeight: "1.9", color: "#9e8e82", fontStyle: "italic", marginTop: "1rem" }}>
+            <p
+              style={{
+                fontSize: "12px",
+                lineHeight: "1.9",
+                color: "#9e8e82",
+                fontStyle: "italic",
+                marginTop: "1rem",
+              }}
+            >
               For Cash on Delivery (COD) orders, refunds may be processed via
               bank transfer or store credit where applicable.
             </p>
@@ -453,23 +694,45 @@ export default function ExchangeReturnPolicyPage() {
       <div className="section-divider" />
 
       {/* ── HOW IT WORKS ───────────────────────────────────── */}
-      <section className="px-8 md:px-24 py-20" style={{ backgroundColor: "#1a1410" }}>
+      <section
+        className="px-8 md:px-24 py-20"
+        style={{ backgroundColor: "#1a1410" }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-10 items-start mb-14">
             <div>
-              <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+              <p
+                className="uppercase mb-3"
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.32em",
+                  color: "#b4a58f",
+                }}
+              >
                 05 / Process
               </p>
               <h2
                 className="serif font-light leading-snug"
-                style={{ fontSize: "clamp(28px, 3.5vw, 42px)", color: "#f0e8de", letterSpacing: "-0.015em" }}
+                style={{
+                  fontSize: "clamp(28px, 3.5vw, 42px)",
+                  color: "#f0e8de",
+                  letterSpacing: "-0.015em",
+                }}
               >
                 How it
                 <br />
                 <em>works.</em>
               </h2>
             </div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "420px", alignSelf: "flex-end" }}>
+            <p
+              style={{
+                fontSize: "13px",
+                lineHeight: "1.9",
+                color: "#7a6a5e",
+                maxWidth: "420px",
+                alignSelf: "flex-end",
+              }}
+            >
               TWINKLE reserves the right to approve or reject requests after
               inspection and verification.
             </p>
@@ -478,13 +741,31 @@ export default function ExchangeReturnPolicyPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12">
             {processSteps.map((s) => (
               <div key={s.step} className="process-step">
-                <p className="serif font-light mb-5" style={{ fontSize: "32px", color: "rgba(180,165,145,0.25)" }}>
+                <p
+                  className="serif font-light mb-5"
+                  style={{ fontSize: "32px", color: "rgba(180,165,145,0.25)" }}
+                >
                   {s.step}
                 </p>
-                <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.2em", color: "#e8dfd4" }}>
+                <p
+                  className="uppercase mb-3"
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.2em",
+                    color: "#e8dfd4",
+                  }}
+                >
                   {s.title}
                 </p>
-                <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e" }}>{s.desc}</p>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: "1.9",
+                    color: "#7a6a5e",
+                  }}
+                >
+                  {s.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -495,12 +776,23 @@ export default function ExchangeReturnPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div className="md:sticky top-24">
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               06 / Important
             </p>
             <h3
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(24px, 3vw, 36px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: "clamp(24px, 3vw, 36px)",
+                color: "#2c2520",
+                letterSpacing: "-0.01em",
+              }}
             >
               Important
               <br />
@@ -510,8 +802,25 @@ export default function ExchangeReturnPolicyPage() {
           <div>
             {importantNotes.map((item, i) => (
               <div key={i} className="policy-item">
-                <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(180,165,145,0.4)", marginTop: "1px" }}>—</span>
-                <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>{item}</p>
+                <span
+                  className="serif font-light flex-shrink-0"
+                  style={{
+                    fontSize: "15px",
+                    color: "rgba(180,165,145,0.4)",
+                    marginTop: "1px",
+                  }}
+                >
+                  —
+                </span>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: "1.8",
+                    color: "#4a3f35",
+                  }}
+                >
+                  {item}
+                </p>
               </div>
             ))}
           </div>
@@ -524,12 +833,23 @@ export default function ExchangeReturnPolicyPage() {
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
-            <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            <p
+              className="uppercase mb-3"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.32em",
+                color: "#b4a58f",
+              }}
+            >
               07 / Contact
             </p>
             <h3
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(28px, 3vw, 38px)", color: "#2c2520", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: "clamp(28px, 3vw, 38px)",
+                color: "#2c2520",
+                letterSpacing: "-0.01em",
+              }}
             >
               Get in
               <br />
@@ -537,20 +857,63 @@ export default function ExchangeReturnPolicyPage() {
             </h3>
           </div>
           <div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35", marginBottom: "1.5rem" }}>
+            <p
+              style={{
+                fontSize: "13px",
+                lineHeight: "1.9",
+                color: "#4a3f35",
+                marginBottom: "1.5rem",
+              }}
+            >
               For any questions regarding exchanges or returns, our customer
               support team is here to help every step of the way.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#b4a58f", textTransform: "uppercase", minWidth: "50px" }}>Email</span>
-                <a href="mailto:info@twinkleofficial.com" className="email-link" style={{ fontSize: "13px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}
+            >
+              <div
+                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.22em",
+                    color: "#b4a58f",
+                    textTransform: "uppercase",
+                    minWidth: "50px",
+                  }}
+                >
+                  Email
+                </span>
+                <a
+                  href="mailto:info@twinkleofficial.com"
+                  className="email-link"
+                  style={{ fontSize: "13px" }}
+                >
                   info@twinkleofficial.com
                 </a>
               </div>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#b4a58f", textTransform: "uppercase", minWidth: "50px" }}>Phone</span>
-                <span style={{ fontSize: "13px", color: "#4a3f35" }}>+92 XXX XXXXXXX</span>
+              <div
+                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.22em",
+                    color: "#b4a58f",
+                    textTransform: "uppercase",
+                    minWidth: "50px",
+                  }}
+                >
+                  Phone
+                </span>
+                <span style={{ fontSize: "13px", color: "#4a3f35" }}>
+                  {settings?.contactNumber || "+92 304 3369149"}
+                </span>
               </div>
             </div>
           </div>
@@ -560,20 +923,43 @@ export default function ExchangeReturnPolicyPage() {
       {/* ── DARK CTA ───────────────────────────────────────── */}
       <section
         className="px-8 md:px-24 py-24 text-center"
-        style={{ backgroundColor: "#161310", borderTop: "0.5px solid rgba(180,165,145,0.12)" }}
+        style={{
+          backgroundColor: "#161310",
+          borderTop: "0.5px solid rgba(180,165,145,0.12)",
+        }}
       >
-        <p className="uppercase mb-6" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p
+          className="uppercase mb-6"
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.32em",
+            color: "#b4a58f",
+          }}
+        >
           Shop with Confidence
         </p>
         <h2
           className="serif font-light leading-tight mb-8 mx-auto"
-          style={{ fontSize: "clamp(40px, 8vw, 80px)", color: "#f0e8de", letterSpacing: "-0.025em", maxWidth: "580px" }}
+          style={{
+            fontSize: "clamp(40px, 8vw, 80px)",
+            color: "#f0e8de",
+            letterSpacing: "-0.025em",
+            maxWidth: "580px",
+          }}
         >
           Every purchase,
           <br />
           <em>protected.</em>
         </h2>
-        <p className="mx-auto mb-14" style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "360px" }}>
+        <p
+          className="mx-auto mb-14"
+          style={{
+            fontSize: "13px",
+            lineHeight: "1.9",
+            color: "#7a6a5e",
+            maxWidth: "360px",
+          }}
+        >
           We stand behind every piece we make. If something isn&apos;t right,
           we&apos;re here to make it right.
         </p>
@@ -606,7 +992,9 @@ export default function ExchangeReturnPolicyPage() {
             CONTACT US
           </a> */}
         </div>
-        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
+        <div
+          style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
+        />
       </section>
 
       {/* ── SIDEBARS & MODALS ──────────────────────────────── */}
