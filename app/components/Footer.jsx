@@ -53,6 +53,7 @@ export default function Footer() {
           <div>
             <p className="text-[9px] tracking-[0.3em] text-stone-600 uppercase mb-4">Help</p>
             {[
+              { label: "Size Chart", href: "/size-chart" },
               { label: "Exchange & Return Policy", href: "/exchange-return" },
               { label: "Shipping Policy",          href: "/shipping-policy" },
               { label: "Terms & Conditions",       href: "/terms-conditions" },

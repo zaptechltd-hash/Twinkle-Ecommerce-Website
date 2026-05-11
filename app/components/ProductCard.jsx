@@ -4,11 +4,9 @@
 // export default function ProductCard({ product, onWishlistToggle, wishlisted, onClick }) {
 //   const [hovered, setHovered] = useState(false);
 
-//   // Backend returns images as [{id, url, order}, ...] sorted by order
 //   const firstImage = product.images?.[0]?.url ?? "/placeholder.jpg";
 //   const secondImage = product.images?.[1]?.url ?? firstImage;
 
-//   // Effective price for display (discountPrice takes precedence)
 //   const effectivePrice = product.discountPrice ?? product.price ?? 0;
 
 //   return (
@@ -18,23 +16,23 @@
 //       onMouseLeave={() => setHovered(false)}
 //       onClick={() => onClick(product)}
 //     >
-//       <div className="relative overflow-hidden bg-stone-50">
+//       <div className="relative overflow-hidden bg-stone-50 aspect-[2/3]">
 //         <img
 //           src={firstImage}
 //           alt={product.name}
-//           className={`w-full h-[400px] object-cover transition-opacity duration-500 absolute inset-0 ${
+//           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
 //             hovered ? "opacity-0" : "opacity-100"
 //           }`}
 //         />
 //         <img
 //           src={secondImage}
 //           alt={product.name + " alt"}
-//           className={`w-full h-[400px] object-cover transition-opacity duration-500 ${
+//           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
 //             hovered ? "opacity-100" : "opacity-0"
 //           }`}
 //         />
 //         {product.tag && (
-//           <span className="absolute top-3 left-3 text-[9px] tracking-[0.2em] uppercase bg-white text-stone-700 px-2.5 py-1">
+//           <span className="absolute top-3 left-3 text-[9px] tracking-[0.2em] uppercase bg-white text-stone-700 px-2.5 py-1 z-10">
 //             {product.tag}
 //           </span>
 //         )}
@@ -43,7 +41,7 @@
 //             e.stopPropagation();
 //             onWishlistToggle(product);
 //           }}
-//           className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white transition-all ${
+//           className={`absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white transition-all ${
 //             wishlisted ? "opacity-100" : "opacity-0 group-hover:opacity-100"
 //           }`}
 //         >
@@ -59,12 +57,13 @@
 //           </svg>
 //         </button>
 //         <div
-//           className={`absolute bottom-0 left-0 right-0 bg-white/95 py-3 px-4 flex items-center justify-center transition-all duration-300 ${
+//           className={`absolute bottom-0 left-0 right-0 z-10 bg-white/95 py-3 px-4 flex items-center justify-center transition-all duration-300 ${
 //             hovered ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
 //           }`}
-//           onClick={(e) => e.stopPropagation()}
+//           // onClick={(e) => e.stopPropagation()}
+//             //  onClick={() => onClick(product)}
 //         >
-//           <span className="text-[10px] tracking-[0.25em] text-stone-600 uppercase">
+//           <span className="text-[10px] tracking-[0.25em] text-stone-600 uppercase" >
 //             Quick View
 //           </span>
 //         </div>
@@ -88,7 +87,6 @@
 //     </div>
 //   );
 // }
-
 "use client";
 import { useState } from "react";
 
@@ -96,7 +94,6 @@ export default function ProductCard({ product, onWishlistToggle, wishlisted, onC
   const [hovered, setHovered] = useState(false);
 
   const firstImage = product.images?.[0]?.url ?? "/placeholder.jpg";
-  const secondImage = product.images?.[1]?.url ?? firstImage;
 
   const effectivePrice = product.discountPrice ?? product.price ?? 0;
 
@@ -111,17 +108,9 @@ export default function ProductCard({ product, onWishlistToggle, wishlisted, onC
         <img
           src={firstImage}
           alt={product.name}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            hovered ? "opacity-0" : "opacity-100"
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <img
-          src={secondImage}
-          alt={product.name + " alt"}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            hovered ? "opacity-100" : "opacity-0"
-          }`}
-        />
+
         {product.tag && (
           <span className="absolute top-3 left-3 text-[9px] tracking-[0.2em] uppercase bg-white text-stone-700 px-2.5 py-1 z-10">
             {product.tag}
@@ -151,7 +140,6 @@ export default function ProductCard({ product, onWishlistToggle, wishlisted, onC
           className={`absolute bottom-0 left-0 right-0 z-10 bg-white/95 py-3 px-4 flex items-center justify-center transition-all duration-300 ${
             hovered ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
           }`}
-          onClick={(e) => e.stopPropagation()}
         >
           <span className="text-[10px] tracking-[0.25em] text-stone-600 uppercase">
             Quick View

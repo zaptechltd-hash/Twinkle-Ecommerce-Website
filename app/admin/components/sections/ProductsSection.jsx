@@ -27,41 +27,6 @@ const LOCATION_STYLES = {
   Both:       "bg-[#e1f5ee] text-[#0f6e56]",
 };
 
-// // ─── S3 Upload Helper ─────────────────────────────────────────────────────────
-// async function uploadFileToS3(file) {
-//   const token = getAccessToken();
-//   if (!token) throw new Error("Not authenticated");
-
-//   // Step 1: get presigned URL from your NestJS backend
-//   const presignRes = await fetch("/api/upload/presign", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify({
-//       filename:    file.name,
-//       contentType: file.type,
-//     }),
-//   });
-
-//   if (!presignRes.ok) throw new Error("Failed to get upload URL");
-
-//   const { uploadUrl, publicUrl } = await presignRes.json();
-
-//   // Step 2: PUT file bytes directly to S3 — server never touches the bytes
-//   const s3Res = await fetch(uploadUrl, {
-//     method:  "PUT",
-//     headers: { "Content-Type": file.type },
-//     body:    file,
-//   });
-
-//   if (!s3Res.ok) throw new Error("S3 upload failed");
-
-//   return publicUrl; // the permanent S3 URL saved to DB
-// }
-
-// ─── Shared UI Primitives ─────────────────────────────────────────────────────
 function StatusPill({ status }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.Draft;
   return (
@@ -188,26 +153,25 @@ function ImageGalleryUpload({ images, onChange, getPresignedUrl }) {
   const [uploadError, setUploadError] = useState("");
 
   const uploadFileToS3 = async (file) => {
-  // ── Compress before upload ──
-  const fileToUpload = file.type.startsWith("image/")
-    ? await compressImage(file)
-    : file;
+    const fileToUpload = file.type.startsWith("image/")
+      ? await compressImage(file)
+      : file;
 
-  const { uploadUrl, publicUrl } = await getPresignedUrl({
-    filename:    fileToUpload.name,
-    contentType: fileToUpload.type,
-  });
+    const { uploadUrl, publicUrl } = await getPresignedUrl({
+      filename:    fileToUpload.name,
+      contentType: fileToUpload.type,
+    });
 
-  const s3Res = await fetch(uploadUrl, {
-    method:  "PUT",
-    headers: { "Content-Type": fileToUpload.type },
-    body:    fileToUpload,
-  });
+    const s3Res = await fetch(uploadUrl, {
+      method:  "PUT",
+      headers: { "Content-Type": fileToUpload.type },
+      body:    fileToUpload,
+    });
 
-  if (!s3Res.ok) throw new Error("S3 upload failed");
+    if (!s3Res.ok) throw new Error("S3 upload failed");
 
-  return publicUrl;
-};
+    return publicUrl;
+  };
 
   const handleFiles = async (e) => {
     const files = Array.from(e.target.files || []);
@@ -306,6 +270,7 @@ function ImageGalleryUpload({ images, onChange, getPresignedUrl }) {
     </div>
   );
 }
+
 
 // ─── Size Stock Editor ────────────────────────────────────────────────────────
 function SizeStockEditor({ sizes, onChange }) {
@@ -608,7 +573,8 @@ function ProductModal({ product, onClose, onSave, saving }) {
 
 // ─── Product Thumbnail ────────────────────────────────────────────────────────
 function ProductThumb({ product }) {
-  const src = product.images?.[0]?.url ?? null;
+    const sorted = [...(product.images ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const src = sorted[0]?.url ?? null;
   if (src) {
     return (
       <img

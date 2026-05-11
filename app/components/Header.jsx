@@ -32,7 +32,7 @@ export default function Navbar({
         { label: "Home", href: "/" },     
         { label: "Our Collections", href: "/collection" },
         { label: "About us", href: "/about" },
-        // { label: "Loungewear", href: "/collection" },
+      
         // { label: "Sets", href: "/collection" },
         // { label: "Robes", href: "/collection" },
       ],
@@ -40,6 +40,7 @@ export default function Navbar({
     {
       title: "Help",
       links: [
+        { label: "Size Chart", href: "/size-chart" },
         { label: "Exchange Return Policy", href: "/exchange-return" },
         { label: "Shipping Policy", href: "/shipping-policy" },
         { label: "Terms Conditions", href: "/terms-conditions" },

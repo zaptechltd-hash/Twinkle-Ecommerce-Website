@@ -124,6 +124,17 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       />
 
       {/* ── HERO ──────────────────────────────────────────── */}
+      {/* <section className="px-8 md:px-24 pb-20 max-w-5xl mx-auto pt-14 ">
+        <div className="img-zoom w-full" style={{ height: "auto" }}>
+          <img src="/logo.png" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <div className="rule" style={{ maxWidth: "60px" }} />
+          <p className="uppercase" style={{ fontSize: "10px", letterSpacing: "0.25em", color: "#b4a58f" }}>
+            Night Elegance · 2026
+          </p>
+        </div>
+      </section> */}
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
@@ -148,17 +159,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       </section>
 
       {/* ── FULL-WIDTH IMAGE ───────────────────────────────── */}
-      <section className="px-8 md:px-24 pb-20 max-w-5xl mx-auto">
-        <div className="img-zoom w-full" style={{ height: "auto" }}>
-          <img src="/logo.png" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
-        </div>
-        <div className="flex justify-between items-center mt-4">
-          <div className="rule" style={{ maxWidth: "60px" }} />
-          <p className="uppercase" style={{ fontSize: "10px", letterSpacing: "0.25em", color: "#b4a58f" }}>
-            Night Elegance · 2026
-          </p>
-        </div>
-      </section>
+      
 
       {/* ── OUR STORY ─────────────────────────────────────── */}
       <section>

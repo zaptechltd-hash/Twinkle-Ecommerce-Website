@@ -230,7 +230,7 @@ export default function TermsConditionsPage() {
   return (
     <div style={{ backgroundColor: "#EFEBE2" }} className="min-h-screen">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
 
         .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
 
@@ -344,11 +344,12 @@ export default function TermsConditionsPage() {
           Legal · Last Updated May 2026
         </p>
         <h1
-          className="serif f2 font-light leading-none mb-8"
+          className="serif f2 leading-none mb-8"
           style={{
             fontSize: "clamp(56px, 10vw, 96px)",
             color: "#2c2520",
             letterSpacing: "-0.02em",
+            fontWeight: 500,
           }}
         >
           Terms &amp;
@@ -396,11 +397,12 @@ export default function TermsConditionsPage() {
               Contents
             </p>
             <h2
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(28px, 3vw, 38px)",
                 color: "#2c2520",
                 letterSpacing: "-0.015em",
+                fontWeight: 500,
               }}
             >
               Quick
@@ -462,11 +464,12 @@ export default function TermsConditionsPage() {
                 {s.num}
               </span>
               <h3
-                className="serif font-light leading-snug"
+                className="serif leading-snug"
                 style={{
                   fontSize: "clamp(22px, 2.5vw, 30px)",
                   color: "#2c2520",
                   letterSpacing: "-0.01em",
+                  fontWeight: 500,
                 }}
               >
                 {s.title}
@@ -542,11 +545,12 @@ export default function TermsConditionsPage() {
               17 / Contact
             </p>
             <h3
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(28px, 3vw, 38px)",
                 color: "#2c2520",
                 letterSpacing: "-0.01em",
+                fontWeight: 500,
               }}
             >
               Get in
@@ -637,12 +641,13 @@ export default function TermsConditionsPage() {
           Shop with Confidence
         </p>
         <h2
-          className="serif font-light leading-tight mb-8 mx-auto"
+          className="serif leading-tight mb-8 mx-auto"
           style={{
             fontSize: "clamp(40px, 8vw, 80px)",
             color: "#f0e8de",
             letterSpacing: "-0.025em",
             maxWidth: "580px",
+            fontWeight: 500,
           }}
         >
           Crafted with care,
@@ -686,9 +691,6 @@ export default function TermsConditionsPage() {
           >
             SHOP NOW
           </a>
-          {/* <a href="mailto:info@twinkleofficial.com" className="cta-link">
-            CONTACT US
-          </a> */}
         </div>
         <div
           style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
