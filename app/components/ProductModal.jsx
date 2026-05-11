@@ -230,7 +230,8 @@ export default function ProductModal({
 
   if (!product) return null;
 
-  const images = [...(product.images ?? [])].sort((a, b) => a.order - b.order);
+  // const images = [...(product.images ?? [])].sort((a, b) => a.order - b.order);
+  const images = product.images ?? [];
   const sizes = product.sizes ?? [];
 
   const selectedEntry = sizes.find((s) => s.size === selectedSize);

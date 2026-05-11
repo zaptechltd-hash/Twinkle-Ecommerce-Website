@@ -134,7 +134,7 @@ export default function ExchangeReturnPolicyPage() {
   return (
     <div style={{ backgroundColor: "#EFEBE2" }} className="min-h-screen">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
 
         .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
 
@@ -239,11 +239,12 @@ export default function ExchangeReturnPolicyPage() {
           Policies · Last Updated May 2026
         </p>
         <h1
-          className="serif f2 font-light leading-none mb-8"
+          className="serif f2 leading-none mb-8"
           style={{
             fontSize: "clamp(56px, 10vw, 96px)",
             color: "#2c2520",
             letterSpacing: "-0.02em",
+            fontWeight: 500,
           }}
         >
           Exchange &amp;
@@ -349,11 +350,12 @@ export default function ExchangeReturnPolicyPage() {
               01 / Policy
             </p>
             <h2
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(28px, 3.5vw, 42px)",
                 color: "#2c2520",
                 letterSpacing: "-0.015em",
+                fontWeight: 500,
               }}
             >
               Exchange
@@ -474,11 +476,12 @@ export default function ExchangeReturnPolicyPage() {
               02 / Policy
             </p>
             <h2
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(28px, 3.5vw, 42px)",
                 color: "#2c2520",
                 letterSpacing: "-0.015em",
+                fontWeight: 500,
               }}
             >
               Return
@@ -600,11 +603,12 @@ export default function ExchangeReturnPolicyPage() {
               03 / Note
             </p>
             <h3
-              className="serif font-light leading-snug mb-6"
+              className="serif leading-snug mb-6"
               style={{
                 fontSize: "clamp(24px, 3vw, 36px)",
                 color: "#2c2520",
                 letterSpacing: "-0.01em",
+                fontWeight: 500,
               }}
             >
               Non-Returnable
@@ -639,11 +643,12 @@ export default function ExchangeReturnPolicyPage() {
               04 / Refunds
             </p>
             <h3
-              className="serif font-light leading-snug mb-6"
+              className="serif leading-snug mb-6"
               style={{
                 fontSize: "clamp(24px, 3vw, 36px)",
                 color: "#2c2520",
                 letterSpacing: "-0.01em",
+                fontWeight: 500,
               }}
             >
               Refund
@@ -712,11 +717,12 @@ export default function ExchangeReturnPolicyPage() {
                 05 / Process
               </p>
               <h2
-                className="serif font-light leading-snug"
+                className="serif leading-snug"
                 style={{
                   fontSize: "clamp(28px, 3.5vw, 42px)",
                   color: "#f0e8de",
                   letterSpacing: "-0.015em",
+                  fontWeight: 500,
                 }}
               >
                 How it
@@ -787,11 +793,12 @@ export default function ExchangeReturnPolicyPage() {
               06 / Important
             </p>
             <h3
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(24px, 3vw, 36px)",
                 color: "#2c2520",
                 letterSpacing: "-0.01em",
+                fontWeight: 500,
               }}
             >
               Important
@@ -844,11 +851,12 @@ export default function ExchangeReturnPolicyPage() {
               07 / Contact
             </p>
             <h3
-              className="serif font-light leading-snug"
+              className="serif leading-snug"
               style={{
                 fontSize: "clamp(28px, 3vw, 38px)",
                 color: "#2c2520",
                 letterSpacing: "-0.01em",
+                fontWeight: 500,
               }}
             >
               Get in
@@ -939,12 +947,13 @@ export default function ExchangeReturnPolicyPage() {
           Shop with Confidence
         </p>
         <h2
-          className="serif font-light leading-tight mb-8 mx-auto"
+          className="serif leading-tight mb-8 mx-auto"
           style={{
             fontSize: "clamp(40px, 8vw, 80px)",
             color: "#f0e8de",
             letterSpacing: "-0.025em",
             maxWidth: "580px",
+            fontWeight: 500,
           }}
         >
           Every purchase,
@@ -988,9 +997,6 @@ export default function ExchangeReturnPolicyPage() {
           >
             SHOP NOW
           </a>
-          {/* <a href="mailto:info@twinkleofficial.com" className="cta-link">
-            CONTACT US
-          </a> */}
         </div>
         <div
           style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
