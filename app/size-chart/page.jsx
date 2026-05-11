@@ -880,7 +880,7 @@ export default function SizeChartPage() {
               >
                 {stat.unit}
               </p>
-              <p style={{ fontSize: "11px", color: "#9e8e82" }}>{stat.label}</p>
+              {/* <p style={{ fontSize: "11px", color: "#9e8e82" }}>{stat.label}</p> */}
             </div>
           ))}
         </div>
