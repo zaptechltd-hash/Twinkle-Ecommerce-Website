@@ -123,18 +123,6 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         currentPage="about"
       />
 
-      {/* ── HERO ──────────────────────────────────────────── */}
-      {/* <section className="px-8 md:px-24 pb-20 max-w-5xl mx-auto pt-14 ">
-        <div className="img-zoom w-full" style={{ height: "auto" }}>
-          <img src="/logo.png" alt="Night Elegance Campaign" className="w-full h-full object-cover object-center" />
-        </div>
-        <div className="flex justify-between items-center mt-4">
-          <div className="rule" style={{ maxWidth: "60px" }} />
-          <p className="uppercase" style={{ fontSize: "10px", letterSpacing: "0.25em", color: "#b4a58f" }}>
-            Night Elegance · 2026
-          </p>
-        </div>
-      </section> */}
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
@@ -165,7 +153,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <section>
         <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
           <div className="img-zoom w-full" style={{ height: "540px" }}>
-            <img src="/bg4.jpeg" alt="Editorial" className="w-full h-full object-cover object-center" />
+            <img src="/About1.jpg" alt="Editorial" className="w-full h-full" />
           </div>
           <div className="md:pt-6">
             <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
@@ -249,7 +237,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <section>
         <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
           <div className="img-zoom w-full" style={{ height: "500px" }}>
-            <img src="/bg5.jpeg" alt="Editorial" className="w-full h-full object-cover object-center" />
+            <img src="/About2.jpg" alt="Editorial" className="w-full h-full" />
           </div>
           <div className="md:pt-6">
             <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>

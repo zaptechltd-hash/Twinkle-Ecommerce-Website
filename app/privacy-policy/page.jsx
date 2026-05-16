@@ -125,6 +125,42 @@ const sections = [
   },
 ];
 
+/* ── Reusable sub-label (Option D: dot marker) ── */
+function SubLabel({ children }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        marginBottom: "0.9rem",
+        marginTop: "1.5rem",
+      }}
+    >
+      <span
+        style={{
+          width: "5px",
+          height: "5px",
+          borderRadius: "50%",
+          background: "#b4a58f",
+          flexShrink: 0,
+          display: "inline-block",
+        }}
+      />
+      <span
+        style={{
+          fontSize: "11px",
+          letterSpacing: "0.2em",
+          color: "#4a3f35",
+          textTransform: "uppercase",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
 export default function PrivacyPolicyPage() {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((s) => s.cart);
@@ -221,9 +257,7 @@ export default function PrivacyPolicyPage() {
           padding: 2.5rem 0;
           border-bottom: 0.5px solid rgba(180,165,145,0.2);
         }
-        .policy-section:last-child {
-          border-bottom: none;
-        }
+        .policy-section:last-child { border-bottom: none; }
 
         .policy-item {
           display: flex;
@@ -233,16 +267,6 @@ export default function PrivacyPolicyPage() {
           border-bottom: 0.5px solid rgba(180,165,145,0.12);
         }
         .policy-item:last-child { border-bottom: none; }
-
-        .subsection-label {
-          font-size: 10px;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: #b4a58f;
-          margin-bottom: 0.75rem;
-          margin-top: 1.5rem;
-        }
-        .subsection-label:first-child { margin-top: 0; }
 
         .toc-item {
           display: flex;
@@ -276,11 +300,7 @@ export default function PrivacyPolicyPage() {
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.32em",
-            color: "#b4a58f",
-          }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
         >
           Legal · Last Updated May 2026
         </p>
@@ -328,11 +348,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <p
               className="uppercase mb-3"
-              style={{
-                fontSize: "10px",
-                letterSpacing: "0.32em",
-                color: "#b4a58f",
-              }}
+              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
             >
               Contents
             </p>
@@ -356,11 +372,7 @@ export default function PrivacyPolicyPage() {
               <a key={s.num} href={`#section-${s.num}`} className="toc-item">
                 <span
                   className="serif font-light flex-shrink-0"
-                  style={{
-                    fontSize: "16px",
-                    color: "rgba(180,165,145,0.5)",
-                    minWidth: "28px",
-                  }}
+                  style={{ fontSize: "16px", color: "rgba(180,165,145,0.5)", minWidth: "28px" }}
                 >
                   {s.num}
                 </span>
@@ -447,13 +459,7 @@ export default function PrivacyPolicyPage() {
                       >
                         —
                       </span>
-                      <p
-                        style={{
-                          fontSize: "13px",
-                          lineHeight: "1.8",
-                          color: "#4a3f35",
-                        }}
-                      >
+                      <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
                         {item}
                       </p>
                     </div>
@@ -465,7 +471,7 @@ export default function PrivacyPolicyPage() {
               {s.subsections &&
                 s.subsections.map((sub) => (
                   <div key={sub.label}>
-                    <p className="subsection-label">{sub.label}</p>
+                    <SubLabel>{sub.label}</SubLabel>
                     <div>
                       {sub.items.map((item, i) => (
                         <div key={i} className="policy-item">
@@ -479,13 +485,7 @@ export default function PrivacyPolicyPage() {
                           >
                             —
                           </span>
-                          <p
-                            style={{
-                              fontSize: "13px",
-                              lineHeight: "1.8",
-                              color: "#4a3f35",
-                            }}
-                          >
+                          <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
                             {item}
                           </p>
                         </div>
@@ -506,11 +506,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <p
               className="uppercase mb-3"
-              style={{
-                fontSize: "10px",
-                letterSpacing: "0.32em",
-                color: "#b4a58f",
-              }}
+              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
             >
               13 / Contact
             </p>
@@ -529,27 +525,12 @@ export default function PrivacyPolicyPage() {
             </h3>
           </div>
           <div>
-            <p
-              style={{
-                fontSize: "13px",
-                lineHeight: "1.9",
-                color: "#4a3f35",
-                marginBottom: "1.5rem",
-              }}
-            >
+            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35", marginBottom: "1.5rem" }}>
               If you have any questions about this Privacy Policy or your
               personal data, please reach out to our customer support team.
             </p>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
-              >
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span
                   style={{
                     fontSize: "10px",
@@ -569,9 +550,7 @@ export default function PrivacyPolicyPage() {
                   info@twinkleofficial.com
                 </a>
               </div>
-              <div
-                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
-              >
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span
                   style={{
                     fontSize: "10px",
@@ -602,11 +581,7 @@ export default function PrivacyPolicyPage() {
       >
         <p
           className="uppercase mb-6"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.32em",
-            color: "#b4a58f",
-          }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
         >
           Get in Touch
         </p>
@@ -626,12 +601,7 @@ export default function PrivacyPolicyPage() {
         </h2>
         <p
           className="mx-auto mb-14"
-          style={{
-            fontSize: "13px",
-            lineHeight: "1.9",
-            color: "#7a6a5e",
-            maxWidth: "360px",
-          }}
+          style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "360px" }}
         >
           Have questions about this policy or how we handle your data? Reach us
           directly at
@@ -654,9 +624,7 @@ export default function PrivacyPolicyPage() {
             BACK TO SHOP
           </a>
         </div>
-        <div
-          style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
-        />
+        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
       </section>
 
       {/* ── SIDEBARS & MODALS ──────────────────────────────── */}

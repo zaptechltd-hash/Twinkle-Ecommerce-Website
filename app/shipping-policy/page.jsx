@@ -118,6 +118,80 @@ const sections = [
   },
 ];
 
+/* ── Reusable sub-label (Option D: dot marker) ── */
+function SubLabel({ children }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        marginBottom: "0.9rem",
+        marginTop: "1.25rem",
+      }}
+    >
+      <span
+        style={{
+          width: "5px",
+          height: "5px",
+          borderRadius: "50%",
+          background: "#b4a58f",
+          flexShrink: 0,
+          display: "inline-block",
+        }}
+      />
+      <span
+        style={{
+          fontSize: "11px",
+          letterSpacing: "0.2em",
+          color: "#4a3f35",
+          textTransform: "uppercase",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+/* ── Footer note with serif "Note —" lead ── */
+function FooterNote({ children }) {
+  return (
+    <div
+      style={{
+        marginTop: "1rem",
+        display: "flex",
+        gap: "0.65rem",
+        alignItems: "flex-start",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontSize: "15px",
+          fontStyle: "italic",
+          fontWeight: 300,
+          color: "#b4a58f",
+          flexShrink: 0,
+          marginTop: "1px",
+        }}
+      >
+        Note —
+      </span>
+      <p
+        style={{
+          fontSize: "12px",
+          color: "#6b5c50",
+          lineHeight: "1.85",
+          margin: 0,
+        }}
+      >
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export default function ShippingPolicyPage() {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((s) => s.cart);
@@ -225,15 +299,6 @@ export default function ShippingPolicyPage() {
         }
         .policy-item:last-child { border-bottom: none; }
 
-        .items-label {
-          font-size: 10px;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: #b4a58f;
-          margin-bottom: 0.75rem;
-          margin-top: 1.25rem;
-        }
-
         .toc-item {
           display: flex;
           align-items: center;
@@ -271,11 +336,7 @@ export default function ShippingPolicyPage() {
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.32em",
-            color: "#b4a58f",
-          }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
         >
           Shipping · Last Updated May 2026
         </p>
@@ -321,11 +382,7 @@ export default function ShippingPolicyPage() {
       <section className="px-8 md:px-24 pb-20 max-w-7xl mx-auto">
         <p
           className="uppercase mb-10"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.32em",
-            color: "#b4a58f",
-          }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
         >
           At a Glance
         </p>
@@ -373,11 +430,7 @@ export default function ShippingPolicyPage() {
           <div>
             <p
               className="uppercase mb-3"
-              style={{
-                fontSize: "10px",
-                letterSpacing: "0.32em",
-                color: "#b4a58f",
-              }}
+              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
             >
               Contents
             </p>
@@ -398,18 +451,10 @@ export default function ShippingPolicyPage() {
           <div>
             <div style={{ height: "0.5px", backgroundColor: "#e8e0d6" }} />
             {sections.map((s) => (
-              <a
-                key={s.num}
-                href={`#ship-section-${s.num}`}
-                className="toc-item"
-              >
+              <a key={s.num} href={`#ship-section-${s.num}`} className="toc-item">
                 <span
                   className="serif font-light flex-shrink-0"
-                  style={{
-                    fontSize: "16px",
-                    color: "rgba(180,165,145,0.5)",
-                    minWidth: "28px",
-                  }}
+                  style={{ fontSize: "16px", color: "rgba(180,165,145,0.5)", minWidth: "28px" }}
                 >
                   {s.num}
                 </span>
@@ -468,13 +513,7 @@ export default function ShippingPolicyPage() {
             {/* Right content */}
             <div>
               {s.body && (
-                <p
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: "1.9",
-                    color: "#4a3f35",
-                  }}
-                >
+                <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
                   {s.body}
                 </p>
               )}
@@ -482,9 +521,7 @@ export default function ShippingPolicyPage() {
               {/* Flat items */}
               {s.items && (
                 <>
-                  {s.itemsLabel && (
-                    <p className="items-label">{s.itemsLabel}</p>
-                  )}
+                  {s.itemsLabel && <SubLabel>{s.itemsLabel}</SubLabel>}
                   <div>
                     {s.items.map((item, i) => (
                       <div key={i} className="policy-item">
@@ -498,13 +535,7 @@ export default function ShippingPolicyPage() {
                         >
                           —
                         </span>
-                        <p
-                          style={{
-                            fontSize: "13px",
-                            lineHeight: "1.8",
-                            color: "#4a3f35",
-                          }}
-                        >
+                        <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
                           {item}
                         </p>
                       </div>
@@ -514,25 +545,13 @@ export default function ShippingPolicyPage() {
               )}
 
               {/* Footer note */}
-              {s.footer && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    lineHeight: "1.9",
-                    color: "#9e8e82",
-                    fontStyle: "italic",
-                    marginTop: "1rem",
-                  }}
-                >
-                  {s.footer}
-                </p>
-              )}
+              {s.footer && <FooterNote>{s.footer}</FooterNote>}
 
               {/* Subsections */}
               {s.subsections &&
                 s.subsections.map((sub) => (
                   <div key={sub.label}>
-                    <p className="items-label">{sub.label}</p>
+                    <SubLabel>{sub.label}</SubLabel>
                     <div>
                       {sub.items.map((item, i) => (
                         <div key={i} className="policy-item">
@@ -546,13 +565,7 @@ export default function ShippingPolicyPage() {
                           >
                             —
                           </span>
-                          <p
-                            style={{
-                              fontSize: "13px",
-                              lineHeight: "1.8",
-                              color: "#4a3f35",
-                            }}
-                          >
+                          <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
                             {item}
                           </p>
                         </div>
@@ -573,11 +586,7 @@ export default function ShippingPolicyPage() {
           <div>
             <p
               className="uppercase mb-3"
-              style={{
-                fontSize: "10px",
-                letterSpacing: "0.32em",
-                color: "#b4a58f",
-              }}
+              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
             >
               10 / Contact
             </p>
@@ -596,27 +605,12 @@ export default function ShippingPolicyPage() {
             </h3>
           </div>
           <div>
-            <p
-              style={{
-                fontSize: "13px",
-                lineHeight: "1.9",
-                color: "#4a3f35",
-                marginBottom: "1.5rem",
-              }}
-            >
+            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35", marginBottom: "1.5rem" }}>
               For any shipping-related queries, our customer support team is
               ready to help.
             </p>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
-              >
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span
                   style={{
                     fontSize: "10px",
@@ -636,9 +630,7 @@ export default function ShippingPolicyPage() {
                   info@twinkleofficial.com
                 </a>
               </div>
-              <div
-                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
-              >
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span
                   style={{
                     fontSize: "10px",
@@ -669,11 +661,7 @@ export default function ShippingPolicyPage() {
       >
         <p
           className="uppercase mb-6"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.32em",
-            color: "#b4a58f",
-          }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
         >
           Ready to Order?
         </p>
@@ -693,12 +681,7 @@ export default function ShippingPolicyPage() {
         </h2>
         <p
           className="mx-auto mb-14"
-          style={{
-            fontSize: "13px",
-            lineHeight: "1.9",
-            color: "#7a6a5e",
-            maxWidth: "360px",
-          }}
+          style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "360px" }}
         >
           From Karachi to Lahore to the Northern Areas — your TWINKLE order
           travels carefully to reach you.
@@ -729,9 +712,7 @@ export default function ShippingPolicyPage() {
             SHOP NOW
           </a>
         </div>
-        <div
-          style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }}
-        />
+        <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
       </section>
 
       {/* ── SIDEBARS & MODALS ──────────────────────────────── */}
