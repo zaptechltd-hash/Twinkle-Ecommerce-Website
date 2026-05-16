@@ -158,36 +158,53 @@ function CollectionBanner() {
 
 function EditorialStrip() {
   return (
-    <section className="px-6 md:px-12 lg:px-24 xl:px-60 py-24 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-      <img
-        src="/bg2.jpeg"
-        alt="Editorial"
-        className="h-[500px] md:h-[680px] w-full object-cover"
-      />
-      <div className="flex flex-col gap-6 md:pr-16">
-        <p className="text-[10px] tracking-[0.35em] text-stone-400 uppercase">
-          The Philosophy
-        </p>
-        <h2 className="text-3xl md:text-4xl font-light tracking-wide text-stone-800 leading-snug">
-          From late-night chai
-          <br /> to slow, peaceful mornings
-        </h2>
-        <p className="text-[13px] text-stone-400 leading-relaxed max-w-xs">
-          Our pieces are made for the rhythm of your everyday life. Inspired by
-          the softness of Pakistani nights, each design brings together
-          breathable fabrics, effortless silhouettes, and a touch of quiet
-          luxury.
-        </p>
-        <a
-          href="/about"
-          className="inline-block mt-4 text-[10px] tracking-[0.3em] text-stone-600 uppercase border-b border-stone-400 pb-0.5 w-fit hover:text-stone-900 hover:border-stone-900 transition-colors"
-        >
-          Our Story
-        </a>
+    <section className="px-6 md:px-12 lg:px-24 xl:px-40 py-28">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+        
+        {/* Image */}
+        <div className="flex justify-center md:justify-end"> 
+          <div className="overflow-hidden">
+            <img
+              src="/HomeBg.jpg"
+              alt="Editorial"
+              className="w-full max-w-[520px] h-[650px] object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-md flex flex-col gap-7 mx-auto md:mx-0 text-center md:text-left items-center md:items-start"> {/* ← added mobile centering */}
+          <p className="text-[10px] tracking-[0.4em] text-stone-400 uppercase">
+            The Philosophy
+          </p>
+
+          <h2 className="text-4xl md:text-5xl font-light leading-[1.15] tracking-wide text-stone-800">
+            From late-night chai
+            <br />
+            to slow,
+            <br />
+            peaceful mornings
+          </h2>
+
+          <p className="text-[15px] leading-8 text-stone-500">
+            Our pieces are designed for the gentle rhythm of everyday life.
+            Inspired by the softness of Pakistani nights, each silhouette blends
+            breathable fabrics, understated elegance, and quiet comfort.
+          </p>
+<a
+          
+            href="/about"
+            className="group mt-2 inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-stone-700"
+          >
+            Our Story
+            <span className="w-8 h-px bg-stone-400 transition-all duration-300 group-hover:w-14" />
+          </a>
+        </div>
       </div>
     </section>
   );
 }
+
 
 export default function TwinklePage() {
   const dispatch = useAppDispatch();
