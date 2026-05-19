@@ -6,14 +6,13 @@ export default function Footer() {
       <div className="flex flex-col md:flex-row gap-10 mb-12 pb-12 border-b border-stone-800">
 
         {/* Brand */}
-        <div className="md:w-[40%] shrink-0 flex flex-col justify-between">
+        <div className="md:w-[40%] shrink-0 flex flex-col ">
           <div>
             <p className="text-2xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
               TwinkleOfficial
             </p>
             <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-8">
-              Premium nightwear crafted for elegance, softness, and quiet luxury
-              inspired by Pakistani nights.
+              Twinkle is crafted to bring you joy in ordinary momemts.
             </p>
           </div>
 
