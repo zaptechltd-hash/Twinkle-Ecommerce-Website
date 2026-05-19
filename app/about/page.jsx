@@ -140,8 +140,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         </h1>
         <div className="f3" style={{ display: "flex", alignItems: "flex-start", gap: "1.5rem" }}>
           <p style={{ fontSize: "14px", color: "#6b5c50", lineHeight: "1.9", maxWidth: "340px" }}>
-            We help women across Pakistan feel effortlessly beautiful through
-            premium nightwear crafted for rest and quiet confidence.
+           This brand is an ode to women who have been carrying too much for too long. To the ones who give endlessly, strive endlessly, and are learning that they, too, deserve gentleness unconditionally.
           </p>
         </div>
       </section>
@@ -150,41 +149,46 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       
 
       {/* ── OUR STORY ─────────────────────────────────────── */}
-      <section>
-        <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
-          <div className="img-zoom w-full" style={{ height: "540px" }}>
-            <img src="/About1.jpg" alt="Editorial" className="w-full h-full" />
-          </div>
-          <div className="md:pt-6">
-            <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
-              Our Story
-            </p>
-            <h2
-              className="serif font-light leading-snug mb-8"
-              style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
-            >
-              From a restless search,
-              <br />
-              <em>a brand was born.</em>
-            </h2>
-            <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-            <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              I started this brand because I saw too many women settling for
-              uncomfortable, uninspired sleepwear and knew there had to be a
-              better way.
-            </p>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
-              After years of searching for nightwear that felt both luxurious
-              and true to our culture, I decided to create something that truly
-              helps women rest well and feel seen.
-            </p>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", fontStyle: "italic", color: "#9e8e82" }}>
-              This journey is personal to me, and everything we do today is
-              shaped by that original &ldquo;why.&rdquo;
-            </p>
-          </div>
-        </div>
-      </section>
+     <section>
+  <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
+    <div className="img-zoom w-full" style={{ height: "540px" }}>
+      <img src="/About1.jpg" alt="Editorial" className="w-full h-full" />
+    </div>
+    <div className="md:pt-6">
+      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        Our Story
+      </p>
+      <h2
+        className="serif font-light leading-snug mb-8"
+        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+      >
+        We grow up believing rest
+        <br />
+        <em>is something we earn.</em>
+      </h2>
+      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+        That softness comes after the hard work. That we deserve comfort only once we&rsquo;ve proven ourselves worthy of it.
+      </p>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+        This brand was born from unlearning that. It is for the women who keep showing up for everyone else, for their goals, for their responsibilities often forgetting themselves in the process.
+      </p>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#4a3f35" }}>
+        The women who carry ambition beautifully but quietly crave space to breathe.
+      </p>
+      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
+      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", marginBottom: "0.1rem", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+        We believe comfort should not be conditional.
+      </p>
+      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", marginBottom: "0.1rem", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+        Rest is not a reward.
+      </p>
+      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+        Joy is not something you postpone.
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* ── WHAT WE BELIEVE ───────────────────────────────── */}
       <section className="px-8 md:px-24 py-20" style={{ backgroundColor: "#1a1410" }}>
@@ -217,7 +221,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
               {
                 num: "III",
                 title: "Purpose-Driven Work",
-                desc: "We believe business should make life better one soft, well-made piece at a time.",
+                desc: "We believe in adding value and making lives better.",
               },
             ].map((b) => (
               <div key={b.title} className="belief-card">
@@ -234,43 +238,37 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         </div>
       </section>
 
-      <section>
-        <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
-          <div className="img-zoom w-full" style={{ height: "500px" }}>
-            <img src="/About2.jpg" alt="Editorial" className="w-full h-full" />
-          </div>
-          <div className="md:pt-6">
-            <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
-              Who This Is For
-            </p>
-            <h2
-              className="serif font-light leading-snug mb-10"
-              style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
-            >
-              Made for the woman
-              <br />
-              <em>who knows what she wants.</em>
-            </h2>
-            <div className="flex flex-col" style={{ gap: "0" }}>
-              {[
-                "Women who are done with scratchy, cheaply made sleepwear that doesn't last.",
-                "The woman who wants to feel elevated even at home in her quiet, private moments.",
-                "Anyone who values comfort, craftsmanship, and a touch of quiet luxury.",
-              ].map((item, i) => (
-                <div key={i} className="who-item">
-                  <span className="serif font-light flex-shrink-0" style={{ fontSize: "20px", color: "rgba(180,165,145,0.5)", marginTop: "2px" }}>
-                    0{i + 1}
-                  </span>
-                  <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>{item}</p>
-                </div>
-              ))}
-            </div>
-            <p style={{ marginTop: "2rem", fontSize: "12px", fontStyle: "italic", color: "#9e8e82" }}>
-              If that sounds like you, you&apos;re in the right place.
-            </p>
-          </div>
-        </div>
-      </section>
+     <section>
+  <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
+    <div className="img-zoom w-full" style={{ height: "500px" }}>
+      <img src="/About2.jpg" alt="Editorial" className="w-full h-full" />
+    </div>
+    <div className="md:pt-6">
+      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        Our Philosophy
+      </p>
+      <h2
+        className="serif font-light leading-snug mb-8"
+        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+      >
+        We believe in softer living.
+        <br />
+        <em>Slow mornings.</em>
+      </h2>
+      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+         Quiet rituals. Everything we create is designed to bring comfort and joy into everyday life while still feeling elevated, effortless, and beautiful.
+      </p>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#4a3f35" }}>
+        Inspired by moments of pause and the quiet beauty of slowing down, we create elevated essentials that feel comforting, effortless, and timeless.
+      </p>
+      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
+      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+        Because you should not have to earn your rest to deserve it.
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* ── FOUNDER ───────────────────────────────────────── */}
       {/* <section className="px-8 md:px-24 py-20 bg-[#e2d1a9]">
@@ -330,10 +328,6 @@ const handleRegister = async (name, email, password, phoneNumber) => {
           <br />
           <em>Collection.</em>
         </h2>
-        <p className="mx-auto mb-14" style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "340px" }}>
-          Discover nightwear crafted for the rhythm of your everyday life from
-          late-night chai to slow, peaceful mornings.
-        </p>
         <div className="flex items-center justify-center gap-12 flex-wrap pb-10">
           <a
             href="/#collection"

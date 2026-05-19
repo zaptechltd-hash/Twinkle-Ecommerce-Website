@@ -158,11 +158,19 @@ function CollectionBanner() {
 
 function EditorialStrip() {
   return (
-    <section className="px-6 md:px-12 lg:px-24 xl:px-40 py-28">
+    <section className="px-6 md:px-12 lg:px-24 xl:px-40 py-28" style={{ backgroundColor: "#fff" }}>
+      <style>{`
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+  
+  .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+  
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
+  .animate-marquee { animation: marquee 40s linear infinite; }
+`}</style>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-        
+
         {/* Image */}
-        <div className="flex justify-center md:justify-end"> 
+        <div className="flex justify-center md:justify-end">
           <div className="overflow-hidden">
             <img
               src="/HomeBg.jpg"
@@ -173,32 +181,83 @@ function EditorialStrip() {
         </div>
 
         {/* Content */}
-        <div className="max-w-md flex flex-col gap-7 mx-auto md:mx-0 text-center md:text-left items-center md:items-start"> {/* ← added mobile centering */}
-          <p className="text-[10px] tracking-[0.4em] text-stone-400 uppercase">
-            The Philosophy
+        <div className="max-w-md flex flex-col gap-7 mx-auto md:mx-0 text-center md:text-left items-center md:items-start">
+
+          <p className="uppercase" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+            Our Philosophy
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-light leading-[1.15] tracking-wide text-stone-800">
-            From late-night chai
+          <h2
+            className="serif font-light leading-snug"
+            style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+          >
+            We believe in softer living.
             <br />
-            to slow,
-            <br />
-            peaceful mornings
+            <em>Slow mornings.</em>
           </h2>
 
-          <p className="text-[15px] leading-8 text-stone-500">
-            Our pieces are designed for the gentle rhythm of everyday life.
-            Inspired by the softness of Pakistani nights, each silhouette blends
-            breathable fabrics, understated elegance, and quiet comfort.
+          <div style={{ height: "0.5px", width: "3rem", backgroundColor: "#e8e0d6" }} />
+
+          <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+            Everything we create is designed to bring comfort and joy into everyday
+            life while still feeling elevated, effortless, and beautiful.
+          </p>
+
+          <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
+            Inspired by moments of pause and the quiet beauty of slowing down, we
+            create elevated essentials that feel comforting, effortless, and timeless.
+          </p>
+
+          <p
+            className="serif"
+            style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}
+          >
+            Because you should not have to earn your rest to deserve it.
           </p>
 <a
           
             href="/about"
-            className="group mt-2 inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-stone-700"
+            className="group mt-2 inline-flex items-center gap-2"
+            style={{
+              fontSize: "11px",
+              letterSpacing: "0.35em",
+              textTransform: "uppercase",
+              color: "#4a3f35",
+              border: "0.5px solid #c8b8a8",
+              padding: "12px 24px",
+              textDecoration: "none",
+              transition: "background-color 0.3s, color 0.3s, border-color 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#2c2520";
+              e.currentTarget.style.color = "#e8dfd4";
+              e.currentTarget.style.borderColor = "#2c2520";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#4a3f35";
+              e.currentTarget.style.borderColor = "#c8b8a8";
+            }}
           >
             Our Story
-            <span className="w-8 h-px bg-stone-400 transition-all duration-300 group-hover:w-14" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            >
+              <path
+                d="M1 7H13M13 7L7.5 1.5M13 7L7.5 12.5"
+                stroke="currentColor"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </a>
+
         </div>
       </div>
     </section>
