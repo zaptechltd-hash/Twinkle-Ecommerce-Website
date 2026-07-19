@@ -46,7 +46,7 @@ export default function OrderConfirmationPage() {
               Order ID
             </p>
             <p className="text-[13px] font-mono font-medium text-stone-700">
-              {id.slice(0, 8).toUpperCase()}
+              {id}
             </p>
           </div>
         )}

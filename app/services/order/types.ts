@@ -4,6 +4,7 @@ export type OrderStatus    = "Pending" | "Processing" | "Shipped" | "Delivered" 
 export type PaymentMethod  = "card" | "cod";
 export type PaymentStatus  = "Paid" | "Unpaid" | "Failed" | "Cancelled";
 
+
 // ─── Request bodies ───────────────────────────────────────────────────────────
 
 export interface CreateOrderItemPayload {
@@ -28,6 +29,7 @@ export interface CreateOrderPayload {
   phone:         string;
   paymentMethod: PaymentMethod;
   discountCode?: string;
+  consigneeCityId: number;  
   discountAmount?: number; 
   items:         CreateOrderItemPayload[];
 }
@@ -61,7 +63,7 @@ export interface OrderItem {
 }
 
 export interface Order {
-  id:            string;
+  id: number;         
   userId:        string | null;
   email:         string;
   firstName:     string;
@@ -80,6 +82,9 @@ export interface Order {
   totalAmount:   number;
   shippingCost:  number;
   items:         OrderItem[];
+  trackingNumber:   string | null; 
+  shipmentStatus:   string | null;  
+  isShipmentBooked: boolean;  
   createdAt:     string;
   updatedAt:     string;
 }
