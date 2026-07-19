@@ -126,20 +126,20 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
         <p
           className="f1 uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}
         >
           The Brand · SS 2026
         </p>
         <h1
           className="serif f2 font-light leading-none mb-8"
-          style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#2c2520", letterSpacing: "-0.02em" }}
+          style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#1a1410", letterSpacing: "-0.02em" }}
         >
           About
           <br />
           Twinkle.
         </h1>
         <div className="f3" style={{ display: "flex", alignItems: "flex-start", gap: "1.5rem" }}>
-          <p style={{ fontSize: "14px", color: "#6b5c50", lineHeight: "1.9", maxWidth: "340px" }}>
+          <p style={{ fontSize: "14px", color: "#4a3f35", lineHeight: "1.9", maxWidth: "340px" }}>
            This brand is an ode to women who have been carrying too much for too long. To the ones who give endlessly, strive endlessly, and are learning that they, too, deserve gentleness unconditionally.
           </p>
         </div>
@@ -155,35 +155,35 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <img src="/About1.jpg" alt="Editorial" className="w-full h-full" />
     </div>
     <div className="md:pt-6">
-      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}>
         Our Story
       </p>
       <h2
         className="serif font-light leading-snug mb-8"
-        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#1a1410", letterSpacing: "-0.015em" }}
       >
         We grow up believing rest
         <br />
         <em>is something we earn.</em>
       </h2>
       <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
         That softness comes after the hard work. That we deserve comfort only once we&rsquo;ve proven ourselves worthy of it.
       </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
         This brand was born from unlearning that. It is for the women who keep showing up for everyone else, for their goals, for their responsibilities often forgetting themselves in the process.
       </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#4a3f35" }}>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#362b23" }}>
         The women who carry ambition beautifully but quietly crave space to breathe.
       </p>
       <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", marginBottom: "0.1rem", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", marginBottom: "0.05rem", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
         We believe comfort should not be conditional.
       </p>
-      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", marginBottom: "0.1rem", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", marginBottom: "0.05rem", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
         Rest is not a reward.
       </p>
-      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
         Joy is not something you postpone.
       </p>
     </div>
@@ -244,26 +244,26 @@ const handleRegister = async (name, email, password, phoneNumber) => {
       <img src="/About2.jpg" alt="Editorial" className="w-full h-full" />
     </div>
     <div className="md:pt-6">
-      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}>
         Our Philosophy
       </p>
       <h2
         className="serif font-light leading-snug mb-8"
-        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
+        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#1a1410", letterSpacing: "-0.015em" }}
       >
         We believe in softer living.
         <br />
         <em>Slow mornings.</em>
       </h2>
       <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#4a3f35" }}>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
          Quiet rituals. Everything we create is designed to bring comfort and joy into everyday life while still feeling elevated, effortless, and beautiful.
       </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#4a3f35" }}>
+      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#362b23" }}>
         Inspired by moments of pause and the quiet beauty of slowing down, we create elevated essentials that feel comforting, effortless, and timeless.
       </p>
       <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}>
+      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
         Because you should not have to earn your rest to deserve it.
       </p>
     </div>

@@ -25,7 +25,8 @@ import useSettingsService from "./services/settings/index";
 import { setSettings } from "./store/index";
 
 function Hero() {
-  
+  const currentYear = new Date().getFullYear();
+
   return (
     <section className="relative w-full h-[92vh] overflow-hidden">
       <img
@@ -36,7 +37,7 @@ function Hero() {
       <div className="absolute inset-0 bg-stone-900/20" />
       <div className="absolute bottom-12 left-8 md:left-14">
         <p className="text-[10px] tracking-[0.35em] text-stone-200 uppercase mb-2">
-          New Collection 2026
+          New Collection {currentYear}
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide text-white leading-none">
           Night
@@ -52,7 +53,7 @@ function Hero() {
       </div>
       <div className="absolute top-6 right-8 md:right-14">
         <p className="text-[10px] tracking-[0.25em] text-stone-300 uppercase">
-          SS 2026
+          SS {currentYear}
         </p>
       </div>
     </section>

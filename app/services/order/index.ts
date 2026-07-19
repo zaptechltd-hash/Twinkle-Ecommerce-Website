@@ -47,8 +47,8 @@ const useOrderService = () => {
     });
   };
 
-  /** Get a single order by ID */
-  const getOrder = async (id: string) => {
+/** Get a single order by ID */
+  const getOrder = async (id: number) => {
     return await callApi<Order>({
       method: "get",
       url: OrderEndpointsV1.order(id),
@@ -56,11 +56,27 @@ const useOrderService = () => {
   };
 
   /** Update order status or payment status */
-  const updateOrder = async (id: string, payload: UpdateOrderPayload) => {
+  const updateOrder = async (id: number, payload: UpdateOrderPayload) => {
     return await callApi<Order>({
       method: "patch",
       url: OrderEndpointsV1.order(id),
       data: payload,
+    });
+  };
+
+  /** Book a courier shipment for an order */
+  const bookShipment = async (id: number) => {
+    return await callApi<Order>({
+      method: "post",
+      url: OrderEndpointsV1.bookShipment(id),
+    });
+  };
+
+  /** Cancel an existing shipment for an order */
+  const cancelShipment = async (id: number) => {
+    return await callApi<Order>({
+      method: "post",
+      url: OrderEndpointsV1.cancelShipment(id),
     });
   };
 
@@ -86,6 +102,8 @@ return {
   getOrders,
   getOrder,
   updateOrder,
+  bookShipment,
+  cancelShipment,
   getCustomers,
   getAnalytics,   
   loading,
