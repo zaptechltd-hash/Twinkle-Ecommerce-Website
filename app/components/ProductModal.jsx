@@ -294,11 +294,11 @@ export default function ProductModal({
             </div>
           </div>
 
-          {product.description && (
-            <p className="text-[12px] text-stone-500 leading-relaxed">
-              {product.description}
-            </p>
-          )}
+         {product.description && (
+  <p className="text-[12px] text-stone-500 leading-relaxed whitespace-pre-line">
+    {product.description}
+  </p>
+)}
 
           <div>
             <p className="text-[10px] tracking-[0.25em] text-stone-500 uppercase mb-2">

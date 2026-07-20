@@ -52,12 +52,48 @@ const handleRegister = async (name, email, password, phoneNumber) => {
   }
 };
 
+  // ── Design tokens ─────────────────────────────────────────
+  // One place for every recurring value. Nothing below is
+  // hand-picked per section — it all pulls from here.
+  const T = {
+    light: {
+      heading: "#1a1410",
+      body: "#3a2f26",
+      eyebrow: "#8a7660",
+      divider: "rgba(154,128,96,0.22)",
+    },
+    dark: {
+      heading: "#f0e8de",
+      body: "#a89584",
+      eyebrow: "#b4a58f",
+      divider: "rgba(180,165,145,0.15)",
+    },
+    eyebrowSize: "10px",
+    eyebrowTracking: "0.32em",
+    h1Size: "clamp(56px, 10vw, 96px)",
+    h2Size: "clamp(32px, 5vw, 48px)",
+    bodySize: "15px",
+    bodyLineHeight: "1.85",
+    quoteSize: "17px",
+    measure: "56ch", // reading-line cap — professional typesetting, not full-column width
+    // Spacing scale — every margin in the page maps to one of these.
+    space: {
+      xs: "0.5rem",  // 8px  — tight groupings (quote-to-quote)
+      sm: "1rem",    // 16px — paragraph to paragraph
+      md: "1.5rem",  // 24px — label to heading
+      lg: "2.5rem",  // 40px — heading/divider to body, divider to close
+    },
+  };
+
   return (
     <div style={{ backgroundColor: "#EFEBE2" }} className="min-h-screen">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
 
+        /* Two faces only, each with one job: Cormorant Garamond for
+           display headings, Jost for every other piece of text. */
         .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .sans { font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif; }
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(14px); }
@@ -72,44 +108,10 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         .img-zoom img { transition: transform 0.9s ease; }
         .img-zoom:hover img { transform: scale(1.04); }
 
-        .rule { height: 0.5px; width: 100%; background-color: rgba(180,165,145,0.35); }
-
-        .cta-link {
-          color: #c8b8a8;
-          text-decoration: none;
-          border-bottom: 0.5px solid rgba(200,184,168,0.4);
-          padding-bottom: 2px;
-          font-size: 11px;
-          letter-spacing: 0.18em;
-          transition: color 0.2s, border-color 0.2s;
-        }
-        .cta-link:hover {
-          color: #fff;
-          border-color: rgba(255,255,255,0.6);
-        }
-
         .belief-card {
           border-top: 0.5px solid rgba(255,255,255,0.08);
           padding-top: 1.75rem;
           padding-bottom: 1.75rem;
-        }
-
-        .who-item {
-          display: flex;
-          gap: 1.25rem;
-          align-items: flex-start;
-          padding-bottom: 1.5rem;
-          border-bottom: 0.5px solid rgba(180,165,145,0.2);
-        }
-        .who-item:last-child {
-          border-bottom: none;
-          padding-bottom: 0;
-        }
-
-        .section-card {
-          background: #fff;
-          border-top: 0.5px solid #e8e0d6;
-          border-bottom: 0.5px solid #e8e0d6;
         }
       `}</style>
 
@@ -123,83 +125,79 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         currentPage="about"
       />
 
-      <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
+      <section className="px-8 md:px-24 pt-20 pb-20 max-w-7xl mx-auto">
         <p
-          className="f1 uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}
+          className="sans f1 uppercase"
+          style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
         >
           The Brand · SS 2026
         </p>
         <h1
-          className="serif f2 font-light leading-none mb-8"
-          style={{ fontSize: "clamp(56px, 10vw, 96px)", color: "#1a1410", letterSpacing: "-0.02em" }}
+          className="serif f2 font-light leading-none"
+          style={{ fontSize: T.h1Size, color: T.light.heading, letterSpacing: "-0.02em", marginBottom: T.space.lg }}
         >
-          About
-          <br />
-          Twinkle.
+          About Twinkle.
         </h1>
-        <div className="f3" style={{ display: "flex", alignItems: "flex-start", gap: "1.5rem" }}>
-          <p style={{ fontSize: "14px", color: "#4a3f35", lineHeight: "1.9", maxWidth: "340px" }}>
-           This brand is an ode to women who have been carrying too much for too long. To the ones who give endlessly, strive endlessly, and are learning that they, too, deserve gentleness unconditionally.
-          </p>
-        </div>
+        <p
+          className="sans f3"
+          style={{ fontSize: T.bodySize, color: T.light.body, lineHeight: T.bodyLineHeight}}
+        >
+          This brand is an ode to women who have been carrying too much for too long. To the ones who give endlessly, strive endlessly, and are learning that they, too, deserve gentleness unconditionally.
+        </p>
       </section>
 
-      {/* ── FULL-WIDTH IMAGE ───────────────────────────────── */}
-      
-
       {/* ── OUR STORY ─────────────────────────────────────── */}
-     <section>
-  <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
-    <div className="img-zoom w-full" style={{ height: "540px" }}>
-      <img src="/About1.jpg" alt="Editorial" className="w-full h-full" />
-    </div>
-    <div className="md:pt-6">
-      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}>
-        Our Story
-      </p>
-      <h2
-        className="serif font-light leading-snug mb-8"
-        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#1a1410", letterSpacing: "-0.015em" }}
-      >
-        We grow up believing rest
-        <br />
-        <em>is something we earn.</em>
-      </h2>
-      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
-        That softness comes after the hard work. That we deserve comfort only once we&rsquo;ve proven ourselves worthy of it.
-      </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
-        This brand was born from unlearning that. It is for the women who keep showing up for everyone else, for their goals, for their responsibilities often forgetting themselves in the process.
-      </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#362b23" }}>
-        The women who carry ambition beautifully but quietly crave space to breathe.
-      </p>
-      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", marginBottom: "0.05rem", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
-        We believe comfort should not be conditional.
-      </p>
-      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", marginBottom: "0.05rem", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
-        Rest is not a reward.
-      </p>
-      <p className="serif" style={{ fontSize: "18px", lineHeight: "1.9", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
-        Joy is not something you postpone.
-      </p>
-    </div>
-  </div>
-</section>
+      <section>
+        <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-stretch">
+          <div className="img-zoom w-full" style={{ minHeight: "420px" }}>
+            <img src="/About1.jpg" alt="Editorial" className="w-full h-full object-cover" />
+          </div>
+          <div className="md:pt-6" style={{ maxWidth: T.measure }}>
+            <p className="sans uppercase" style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}>
+              Our Story
+            </p>
+            <h2
+              className="serif font-light leading-snug"
+              style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em", marginBottom: T.space.lg }}
+            >
+              We grow up believing rest
+              <br />
+              is something we earn.
+            </h2>
+            <div style={{ height: "0.5px", backgroundColor: T.light.divider, marginBottom: T.space.lg }} />
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, marginBottom: T.space.sm, color: T.light.body }}>
+              That softness comes after the hard work. That we deserve comfort only once we&rsquo;ve proven ourselves worthy of it.
+            </p>
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, marginBottom: T.space.sm, color: T.light.body }}>
+              This brand was born from unlearning that. It is for the women who keep showing up for everyone else, for their goals, for their responsibilities often forgetting themselves in the process.
+            </p>
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, marginBottom: T.space.lg, color: T.light.body }}>
+              The women who carry ambition beautifully but quietly crave space to breathe.
+            </p>
+            {/* <div style={{ height: "0.5px", backgroundColor: T.light.divider, marginBottom: T.space.lg }} /> */}
+            <p className="serif" style={{ fontSize: T.quoteSize,   fontStyle: "italic", color: T.light.heading, fontWeight: 500 }}>
+              We believe comfort should not be conditional.
+            </p>
+            <p className="serif" style={{ fontSize: T.quoteSize,  fontStyle: "italic", color: T.light.heading, fontWeight: 500 }}>
+              Rest is not a reward.
+            </p>
+            <p className="serif" style={{ fontSize: T.quoteSize, lineHeight: "1.8", fontStyle: "italic", color: T.light.heading, fontWeight: 500 }}>
+              Joy is not something you postpone.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ── WHAT WE BELIEVE ───────────────────────────────── */}
       <section className="px-8 md:px-24 py-20" style={{ backgroundColor: "#1a1410" }}>
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 items-start mb-14">
-            <p className="uppercase md:pt-2" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 items-start" style={{ marginBottom: "3.5rem" }}>
+            <p className="sans uppercase md:pt-2" style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.dark.eyebrow }}>
               What We Believe In
             </p>
             <h2
               className="serif font-light leading-snug"
-              style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#f0e8de", letterSpacing: "-0.015em" }}
+              style={{ fontSize: T.h2Size, color: T.dark.heading, letterSpacing: "-0.015em" }}
             >
               Three things we will
               <br />
@@ -225,50 +223,52 @@ const handleRegister = async (name, email, password, phoneNumber) => {
               },
             ].map((b) => (
               <div key={b.title} className="belief-card">
-                <p className="serif font-light mb-5" style={{ fontSize: "32px", color: "rgba(180,165,145,0.3)" }}>
+                <p className="serif font-light" style={{ fontSize: "32px", color: "rgba(180,165,145,0.3)", marginBottom: T.space.md }}>
                   {b.num}
                 </p>
-                <p className="uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.2em", color: "#e8dfd4" }}>
+                <p className="sans uppercase" style={{ fontSize: T.eyebrowSize, letterSpacing: "0.2em", color: T.dark.heading, marginBottom: T.space.sm }}>
                   {b.title}
                 </p>
-                <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e" }}>{b.desc}</p>
+                <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, color: T.dark.body }}>{b.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-     <section>
-  <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
-    <div className="img-zoom w-full" style={{ height: "500px" }}>
-      <img src="/About2.jpg" alt="Editorial" className="w-full h-full" />
-    </div>
-    <div className="md:pt-6">
-      <p className="uppercase mb-4" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}>
-        Our Philosophy
-      </p>
-      <h2
-        className="serif font-light leading-snug mb-8"
-        style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#1a1410", letterSpacing: "-0.015em" }}
-      >
-        We believe in softer living.
-        <br />
-        <em>Slow mornings.</em>
-      </h2>
-      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "1.25rem", color: "#362b23" }}>
-         Quiet rituals. Everything we create is designed to bring comfort and joy into everyday life while still feeling elevated, effortless, and beautiful.
-      </p>
-      <p style={{ fontSize: "13px", lineHeight: "1.9", marginBottom: "2rem", color: "#362b23" }}>
-        Inspired by moments of pause and the quiet beauty of slowing down, we create elevated essentials that feel comforting, effortless, and timeless.
-      </p>
-      <div style={{ height: "0.5px", backgroundColor: "#e8e0d6", marginBottom: "2rem" }} />
-      <p className="serif" style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#1a1410", fontWeight: 500 }}>
-        Because you should not have to earn your rest to deserve it.
-      </p>
-    </div>
-  </div>
-</section>
+      {/* ── OUR PHILOSOPHY ────────────────────────────────── */}
+      <section>
+        <div className="px-8 md:px-24 py-20 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-stretch">
+          <div className="img-zoom w-full" style={{ minHeight: "420px" }}>
+            <img src="/About2.jpg" alt="Editorial" className="w-full h-full object-cover" />
+          </div>
+          <div className="md:pt-6" style={{ maxWidth: T.measure }}>
+            <p className="sans uppercase" style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}>
+              Our Philosophy
+            </p>
+            <h2
+              className="serif font-light leading-snug"
+              style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em", marginBottom: T.space.lg }}
+            >
+              We believe in softer living.
+              <br />
+              Slow mornings.
+            </h2>
+            <div style={{ height: "0.5px", backgroundColor: T.light.divider, marginBottom: T.space.lg }} />
+
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, marginBottom: T.space.sm, color: T.light.body }}>
+              Quiet rituals. Everything we create is designed to bring comfort and joy into everyday life while still feeling elevated, effortless, and beautiful.
+            </p>
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, marginBottom: T.space.lg, color: T.light.body }}>
+              Inspired by moments of pause and the quiet beauty of slowing down, we create elevated essentials that feel comforting, effortless, and timeless.
+            </p>
+            {/* <div style={{ height: "0.5px", backgroundColor: T.light.divider, marginBottom: T.space.lg }} /> */}
+            <p className="serif" style={{ fontSize: T.quoteSize, lineHeight: "1.8", fontStyle: "italic", color: T.light.heading, fontWeight: 500 }}>
+              Because you should not have to earn your rest to deserve it.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ── FOUNDER ───────────────────────────────────────── */}
       {/* <section className="px-8 md:px-24 py-20 bg-[#e2d1a9]">
@@ -317,12 +317,12 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         className="px-8 md:px-24 py-24 text-center bg-[#161310]"
         style={{ borderTop: "0.5px solid rgba(180,165,145,0.12)" }}
       >
-        <p className="uppercase mb-6" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
+        <p className="sans uppercase" style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.dark.eyebrow, marginBottom: T.space.md }}>
           Ready to Begin
         </p>
         <h2
-          className="serif font-light leading-tight mb-8 mx-auto"
-          style={{ fontSize: "clamp(44px, 9vw, 88px)", color: "#f0e8de", letterSpacing: "-0.025em", maxWidth: "640px" }}
+          className="serif font-light leading-tight mx-auto"
+          style={{ fontSize: "clamp(44px, 9vw, 88px)", color: T.dark.heading, letterSpacing: "-0.025em", maxWidth: "640px", marginBottom: T.space.lg }}
         >
           Explore the
           <br />
@@ -331,7 +331,7 @@ const handleRegister = async (name, email, password, phoneNumber) => {
         <div className="flex items-center justify-center gap-12 flex-wrap pb-10">
           <a
             href="/#collection"
-            className="inline-block"
+            className="sans inline-block"
             style={{
               padding: "16px 52px",
               backgroundColor: "#2c2520",
@@ -353,9 +353,6 @@ const handleRegister = async (name, email, password, phoneNumber) => {
           >
             SHOP NOW
           </a>
-          {/* <a href="mailto:hello@twinkle.pk" className="cta-link">
-            GET IN TOUCH
-          </a> */}
         </div>
         <div style={{ height: "0.5px", backgroundColor: "rgba(100,80,60,0.25)" }} />
       </section>
@@ -386,7 +383,6 @@ const handleRegister = async (name, email, password, phoneNumber) => {
           user={user}
           onClose={() => setAuthOpen(false)}
           onLogin={(userData) => dispatch(login(userData))}
-          // onLogout={() => dispatch(logout())}
           onSubmitLogin={handleLogin}
           onSubmitRegister={handleRegister}
           onError={(msg) => toast.error(msg)}
