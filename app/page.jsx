@@ -184,82 +184,83 @@ function EditorialStrip() {
         {/* Content */}
         <div className="max-w-md flex flex-col gap-7 mx-auto md:mx-0 text-center md:text-left items-center md:items-start">
 
-          <p className="uppercase" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}>
-            Our Philosophy
-          </p>
+  <p className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#8a7660" }}>
+    Our Philosophy
+  </p>
 
-          <h2
-            className="serif font-light leading-snug"
-            style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#2c2520", letterSpacing: "-0.015em" }}
-          >
-            We believe in softer living.
-            <br />
-            <em>Slow mornings.</em>
-          </h2>
+  <h2
+    className="serif font-light leading-snug"
+    style={{ fontSize: "clamp(32px, 5vw, 48px)", color: "#1a1410", letterSpacing: "-0.015em" }}
+  >
+    We believe in softer living.
+    
+    Slow mornings.
+  </h2>
 
-          <div style={{ height: "0.5px", width: "3rem", backgroundColor: "#e8e0d6" }} />
+  <div style={{ height: "0.5px", width: "3rem", backgroundColor: "rgba(154,128,96,0.22)" }} />
 
-          <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
-            Everything we create is designed to bring comfort and joy into everyday
-            life while still feeling elevated, effortless, and beautiful.
-          </p>
+  <p className="sans" style={{ fontSize: "13px", lineHeight: "1.9", color: "#3a2f26" }}>
+    Everything we create is designed to bring comfort and joy into everyday
+    life while still feeling elevated, effortless, and beautiful.
+  </p>
 
-          <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35" }}>
-            Inspired by moments of pause and the quiet beauty of slowing down, we
-            create elevated essentials that feel comforting, effortless, and timeless.
-          </p>
+  <p className="sans" style={{ fontSize: "13px", lineHeight: "1.9", color: "#3a2f26" }}>
+    Inspired by moments of pause and the quiet beauty of slowing down, we
+    create elevated essentials that feel comforting, effortless, and timeless.
+  </p>
 
-          <p
-            className="serif"
-            style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#4a3f35", fontWeight: 500 }}
-          >
-            Because you should not have to earn your rest to deserve it.
-          </p>
+  <p
+    className="serif"
+    style={{ fontSize: "15px", lineHeight: "1.9", fontStyle: "italic", color: "#3a2f26", fontWeight: 500 }}
+  >
+    Because you should not have to earn your rest to deserve it.
+  </p>
 <a
-          
-            href="/about"
-            className="group mt-2 inline-flex items-center gap-2"
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              color: "#4a3f35",
-              border: "0.5px solid #c8b8a8",
-              padding: "12px 24px",
-              textDecoration: "none",
-              transition: "background-color 0.3s, color 0.3s, border-color 0.3s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#2c2520";
-              e.currentTarget.style.color = "#e8dfd4";
-              e.currentTarget.style.borderColor = "#2c2520";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#4a3f35";
-              e.currentTarget.style.borderColor = "#c8b8a8";
-            }}
-          >
-            Our Story
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            >
-              <path
-                d="M1 7H13M13 7L7.5 1.5M13 7L7.5 12.5"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
+    href="/about"
+    className="group mt-2 sans inline-flex items-center gap-2"
+    style={{
+      fontSize: "11px",
+      letterSpacing: "0.35em",
+      textTransform: "uppercase",
+      color: "#3a2f26",
+      border: "0.5px solid rgba(154,128,96,0.4)",
+      padding: "12px 24px",
+      textDecoration: "none",
+      transition: "background-color 0.3s, color 0.3s, border-color 0.3s",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.backgroundColor = "#1a1410";
+      e.currentTarget.style.color = "#f0e8de";
+      e.currentTarget.style.borderColor = "#1a1410";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.backgroundColor = "transparent";
+      e.currentTarget.style.color = "#3a2f26";
+      e.currentTarget.style.borderColor = "rgba(154,128,96,0.4)";
+    }}
+  >
+    Our Story
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="transition-transform duration-300 group-hover:translate-x-1"
+    >
+      <path
+        d="M1 7H13M13 7L7.5 1.5M13 7L7.5 12.5"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </a>
 
-        </div>
+</div>
+
+        
       </div>
     </section>
   );
