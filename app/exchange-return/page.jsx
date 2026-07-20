@@ -297,7 +297,7 @@ export default function ExchangeReturnPolicyPage() {
       />
 
       {/* ── HERO ───────────────────────────────────────────── */}
-      <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
+      <section className="px-8 md:px-24 pt-14 pb-12 max-w-7xl mx-auto">
         <p
           className="f1 uppercase mb-6"
           style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
@@ -314,10 +314,9 @@ export default function ExchangeReturnPolicyPage() {
           }}
         >
           Exchange &amp;
-          <br />
           Return.
         </h1>
-        <div className="f3" style={{ maxWidth: "500px" }}>
+        <div className="f3">
           <p style={{ fontSize: "14px", color: "#2e241c", lineHeight: "1.9" }}>
             At TWINKLE, our customers are our top priority. We aim to provide a
             smooth and hassle-free shopping experience.

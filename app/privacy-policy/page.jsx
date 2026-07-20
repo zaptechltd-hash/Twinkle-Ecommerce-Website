@@ -142,7 +142,7 @@
 //           width: "5px",
 //           height: "5px",
 //           borderRadius: "50%",
-//           background: "#b4a58f",
+//           background: "#6b5642",
 //           flexShrink: 0,
 //           display: "inline-block",
 //         }}
@@ -151,7 +151,7 @@
 //         style={{
 //           fontSize: "11px",
 //           letterSpacing: "0.2em",
-//           color: "#4a3f35",
+//           color: "#241c16",
 //           textTransform: "uppercase",
 //         }}
 //       >
@@ -242,15 +242,15 @@
 //         }
 
 //         .email-link {
-//           color: #4a3f35;
+//           color: #241c16;
 //           text-decoration: none;
-//           border-bottom: 0.5px solid rgba(74,63,53,0.3);
+//           border-bottom: 0.5px solid rgba(46,36,28,0.3);
 //           padding-bottom: 1px;
 //           transition: border-color 0.2s, color 0.2s;
 //         }
 //         .email-link:hover {
-//           color: #2c2520;
-//           border-color: rgba(44,37,32,0.6);
+//           color: #0d0906;
+//           border-color: rgba(13,9,6,0.6);
 //         }
 
 //         .policy-section {
@@ -297,10 +297,10 @@
 //       />
 
 //       {/* ── HERO ───────────────────────────────────────────── */}
-//       <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
+//       <section className="px-8 md:px-24 pt-14 pb-12 max-w-7xl mx-auto">
 //         <p
 //           className="f1 uppercase mb-6"
-//           style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+//           style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
 //         >
 //           Legal · Last Updated May 2026
 //         </p>
@@ -308,17 +308,16 @@
 //           className="serif f2 leading-none mb-8"
 //           style={{
 //             fontSize: "clamp(56px, 10vw, 96px)",
-//             color: "#2c2520",
+//             color: "#0d0906",
 //             letterSpacing: "-0.02em",
 //             fontWeight: 500,
 //           }}
 //         >
 //           Privacy
-//           <br />
 //           Policy.
 //         </h1>
-//         <div className="f3" style={{ maxWidth: "480px" }}>
-//           <p style={{ fontSize: "14px", color: "#6b5c50", lineHeight: "1.9" }}>
+//         <div className="f3">
+//           <p style={{ fontSize: "14px", color: "#2e241c", lineHeight: "1.9" }}>
 //             At Twinkle, we value your privacy and are committed to protecting
 //             your personal information. This policy explains how we collect, use,
 //             store, and protect your data.
@@ -327,7 +326,7 @@
 //             style={{
 //               marginTop: "1rem",
 //               fontSize: "13px",
-//               color: "#9e8e82",
+//               color: "#6b5642",
 //               lineHeight: "1.9",
 //               fontStyle: "italic",
 //             }}
@@ -348,7 +347,7 @@
 //           <div>
 //             <p
 //               className="uppercase mb-3"
-//               style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+//               style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
 //             >
 //               Contents
 //             </p>
@@ -356,7 +355,7 @@
 //               className="serif leading-snug"
 //               style={{
 //                 fontSize: "clamp(28px, 3vw, 38px)",
-//                 color: "#2c2520",
+//                 color: "#0d0906",
 //                 letterSpacing: "-0.015em",
 //                 fontWeight: 500,
 //               }}
@@ -372,7 +371,7 @@
 //               <a key={s.num} href={`#section-${s.num}`} className="toc-item">
 //                 <span
 //                   className="serif font-light flex-shrink-0"
-//                   style={{ fontSize: "16px", color: "rgba(180,165,145,0.5)", minWidth: "28px" }}
+//                   style={{ fontSize: "16px", color: "rgba(107,86,66,0.75)", minWidth: "28px" }}
 //                 >
 //                   {s.num}
 //                 </span>
@@ -380,7 +379,7 @@
 //                   style={{
 //                     fontSize: "12px",
 //                     letterSpacing: "0.12em",
-//                     color: "#4a3f35",
+//                     color: "#241c16",
 //                     textTransform: "uppercase",
 //                   }}
 //                 >
@@ -408,7 +407,7 @@
 //                 className="serif font-light"
 //                 style={{
 //                   fontSize: "13px",
-//                   color: "rgba(180,165,145,0.5)",
+//                   color: "rgba(107,86,66,0.75)",
 //                   display: "block",
 //                   marginBottom: "0.5rem",
 //                 }}
@@ -419,7 +418,7 @@
 //                 className="serif leading-snug"
 //                 style={{
 //                   fontSize: "clamp(22px, 2.5vw, 30px)",
-//                   color: "#2c2520",
+//                   color: "#0d0906",
 //                   letterSpacing: "-0.01em",
 //                   fontWeight: 500,
 //                 }}
@@ -436,7 +435,7 @@
 //                   style={{
 //                     fontSize: "13px",
 //                     lineHeight: "1.9",
-//                     color: "#4a3f35",
+//                     color: "#241c16",
 //                     marginBottom: s.items || s.subsections ? "1.5rem" : "0",
 //                   }}
 //                 >
@@ -459,7 +458,7 @@
 //                       >
 //                         —
 //                       </span>
-//                       <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
+//                       <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#241c16" }}>
 //                         {item}
 //                       </p>
 //                     </div>
@@ -485,7 +484,7 @@
 //                           >
 //                             —
 //                           </span>
-//                           <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#4a3f35" }}>
+//                           <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#241c16" }}>
 //                             {item}
 //                           </p>
 //                         </div>
@@ -506,7 +505,7 @@
 //           <div>
 //             <p
 //               className="uppercase mb-3"
-//               style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+//               style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
 //             >
 //               13 / Contact
 //             </p>
@@ -514,7 +513,7 @@
 //               className="serif leading-snug"
 //               style={{
 //                 fontSize: "clamp(28px, 3vw, 38px)",
-//                 color: "#2c2520",
+//                 color: "#0d0906",
 //                 letterSpacing: "-0.01em",
 //                 fontWeight: 500,
 //               }}
@@ -525,7 +524,7 @@
 //             </h3>
 //           </div>
 //           <div>
-//             <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#4a3f35", marginBottom: "1.5rem" }}>
+//             <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#241c16", marginBottom: "1.5rem" }}>
 //               If you have any questions about this Privacy Policy or your
 //               personal data, please reach out to our customer support team.
 //             </p>
@@ -535,7 +534,7 @@
 //                   style={{
 //                     fontSize: "10px",
 //                     letterSpacing: "0.22em",
-//                     color: "#b4a58f",
+//                     color: "#6b5642",
 //                     textTransform: "uppercase",
 //                     minWidth: "50px",
 //                   }}
@@ -555,14 +554,14 @@
 //                   style={{
 //                     fontSize: "10px",
 //                     letterSpacing: "0.22em",
-//                     color: "#b4a58f",
+//                     color: "#6b5642",
 //                     textTransform: "uppercase",
 //                     minWidth: "50px",
 //                   }}
 //                 >
 //                   Phone
 //                 </span>
-//                 <span style={{ fontSize: "13px", color: "#4a3f35" }}>
+//                 <span style={{ fontSize: "13px", color: "#241c16" }}>
 //                   {settings?.contactNumber || "+92 304 3369149"}
 //                 </span>
 //               </div>
@@ -802,42 +801,6 @@ const sections = [
   },
 ];
 
-/* ── Reusable sub-label (Option D: dot marker) ── */
-function SubLabel({ children }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        marginBottom: "0.9rem",
-        marginTop: "1.5rem",
-      }}
-    >
-      <span
-        style={{
-          width: "5px",
-          height: "5px",
-          borderRadius: "50%",
-          background: "#6b5642",
-          flexShrink: 0,
-          display: "inline-block",
-        }}
-      />
-      <span
-        style={{
-          fontSize: "11px",
-          letterSpacing: "0.2em",
-          color: "#241c16",
-          textTransform: "uppercase",
-        }}
-      >
-        {children}
-      </span>
-    </div>
-  );
-}
-
 export default function PrivacyPolicyPage() {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((s) => s.cart);
@@ -887,12 +850,50 @@ export default function PrivacyPolicyPage() {
     }
   };
 
+  // ── Design tokens ─────────────────────────────────────────
+  // Same source of truth used across the site.
+  const T = {
+    light: {
+      heading: "#1a1410",
+      body: "#3a2f26",
+      eyebrow: "#8a7660",
+      divider: "rgba(154,128,96,0.22)",
+    },
+    dark: {
+      heading: "#f0e8de",
+      body: "#a89584",
+      eyebrow: "#b4a58f",
+      divider: "rgba(180,165,145,0.15)",
+    },
+    eyebrowSize: "10px",
+    eyebrowTracking: "0.32em",
+    h1Size: "clamp(56px, 10vw, 96px)",
+    h2Size: "clamp(28px, 3vw, 38px)",
+    h3Size: "clamp(22px, 2.5vw, 30px)",
+    bodySize: "13px",
+    bodyLineHeight: "1.85",
+    space: { xs: "0.5rem", sm: "1rem", md: "1.5rem", lg: "2.5rem" },
+  };
+
+  function SubLabel({ children }) {
+    return (
+      <div
+        className="sans uppercase"
+        style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: T.space.sm, marginTop: T.space.lg, fontSize: "11px", letterSpacing: "0.2em", color: T.light.heading }}
+      >
+        <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: T.light.eyebrow, flexShrink: 0, display: "inline-block" }} />
+        <span>{children}</span>
+      </div>
+    );
+  }
+
   return (
     <div style={{ backgroundColor: "#EFEBE2" }} className="min-h-screen">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
 
         .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .sans { font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif; }
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(14px); }
@@ -902,12 +903,12 @@ export default function PrivacyPolicyPage() {
         .f2 { animation: fadeUp 1.1s ease 0.3s both; }
         .f3 { animation: fadeUp 1.1s ease 0.55s both; }
 
-        .rule { height: 0.5px; width: 100%; background-color: rgba(180,165,145,0.35); }
+        .rule { height: 0.5px; width: 100%; background-color: ${T.light.divider}; }
 
         .cta-link {
-          color: #c8b8a8;
+          color: ${T.dark.eyebrow};
           text-decoration: none;
-          border-bottom: 0.5px solid rgba(200,184,168,0.4);
+          border-bottom: 0.5px solid rgba(180,165,145,0.4);
           padding-bottom: 2px;
           font-size: 11px;
           letter-spacing: 0.18em;
@@ -919,20 +920,20 @@ export default function PrivacyPolicyPage() {
         }
 
         .email-link {
-          color: #241c16;
+          color: ${T.light.heading};
           text-decoration: none;
-          border-bottom: 0.5px solid rgba(46,36,28,0.3);
+          border-bottom: 0.5px solid ${T.light.divider};
           padding-bottom: 1px;
           transition: border-color 0.2s, color 0.2s;
         }
         .email-link:hover {
-          color: #0d0906;
-          border-color: rgba(13,9,6,0.6);
+          color: ${T.light.eyebrow};
+          border-color: ${T.light.eyebrow};
         }
 
         .policy-section {
           padding: 2.5rem 0;
-          border-bottom: 0.5px solid rgba(180,165,145,0.2);
+          border-bottom: 0.5px solid ${T.light.divider};
         }
         .policy-section:last-child { border-bottom: none; }
 
@@ -941,7 +942,7 @@ export default function PrivacyPolicyPage() {
           gap: 1rem;
           align-items: flex-start;
           padding: 0.65rem 0;
-          border-bottom: 0.5px solid rgba(180,165,145,0.12);
+          border-bottom: 0.5px solid rgba(154,128,96,0.12);
         }
         .policy-item:last-child { border-bottom: none; }
 
@@ -950,7 +951,7 @@ export default function PrivacyPolicyPage() {
           align-items: center;
           gap: 1rem;
           padding: 0.75rem 0;
-          border-bottom: 0.5px solid rgba(180,165,145,0.15);
+          border-bottom: 0.5px solid ${T.light.divider};
           text-decoration: none;
           transition: opacity 0.2s;
         }
@@ -959,7 +960,7 @@ export default function PrivacyPolicyPage() {
 
         .section-divider {
           height: 0.5px;
-          background: linear-gradient(to right, transparent, rgba(180,165,145,0.4), transparent);
+          background: linear-gradient(to right, transparent, rgba(154,128,96,0.4), transparent);
         }
       `}</style>
 
@@ -974,40 +975,28 @@ export default function PrivacyPolicyPage() {
       />
 
       {/* ── HERO ───────────────────────────────────────────── */}
-      <section className="px-8 md:px-24 pt-14 pb-12 max-w-5xl mx-auto">
+      <section className="px-8 md:px-24 pt-20 pb-16 max-w-7xl mx-auto">
         <p
-          className="f1 uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
+          className="sans f1 uppercase"
+          style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
         >
           Legal · Last Updated May 2026
         </p>
         <h1
-          className="serif f2 leading-none mb-8"
-          style={{
-            fontSize: "clamp(56px, 10vw, 96px)",
-            color: "#0d0906",
-            letterSpacing: "-0.02em",
-            fontWeight: 500,
-          }}
+          className="serif f2 font-light leading-none"
+          style={{ fontSize: T.h1Size, color: T.light.heading, letterSpacing: "-0.02em", marginBottom: T.space.lg }}
         >
-          Privacy
-          <br />
-          Policy.
+          Privacy Policy.
         </h1>
-        <div className="f3" style={{ maxWidth: "480px" }}>
-          <p style={{ fontSize: "14px", color: "#2e241c", lineHeight: "1.9" }}>
+        <div className="f3" style={{ maxWidth: "700px" }}>
+          <p className="sans" style={{ fontSize: T.bodySize, color: T.light.body, lineHeight: T.bodyLineHeight }}>
             At Twinkle, we value your privacy and are committed to protecting
-            your personal information. This policy explains how we collect, use,
-            store, and protect your data.
+            your personal information. This policy explains how we collect,
+            use, store, and protect your data.
           </p>
           <p
-            style={{
-              marginTop: "1rem",
-              fontSize: "13px",
-              color: "#6b5642",
-              lineHeight: "1.9",
-              fontStyle: "italic",
-            }}
+            className="serif"
+            style={{ marginTop: T.space.sm, fontSize: "17px", color: T.light.eyebrow, lineHeight: T.bodyLineHeight, fontStyle: "italic" }}
           >
             By using our website, you agree to the terms outlined below.
           </p>
@@ -1015,7 +1004,7 @@ export default function PrivacyPolicyPage() {
       </section>
 
       {/* ── RULE ───────────────────────────────────────────── */}
-      <div className="px-8 md:px-24 max-w-5xl mx-auto pb-16">
+      <div className="px-8 md:px-24 max-w-7xl mx-auto pb-16">
         <div className="rule" />
       </div>
 
@@ -1024,43 +1013,28 @@ export default function PrivacyPolicyPage() {
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
             <p
-              className="uppercase mb-3"
-              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
+              className="sans uppercase"
+              style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
             >
               Contents
             </p>
             <h2
-              className="serif leading-snug"
-              style={{
-                fontSize: "clamp(28px, 3vw, 38px)",
-                color: "#0d0906",
-                letterSpacing: "-0.015em",
-                fontWeight: 500,
-              }}
+              className="serif font-light leading-snug"
+              style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em" }}
             >
               Quick
               <br />
-              <em>Navigation.</em>
+              Navigation.
             </h2>
           </div>
           <div>
             <div style={{ height: "0.5px", backgroundColor: "#e8e0d6" }} />
             {sections.map((s) => (
               <a key={s.num} href={`#section-${s.num}`} className="toc-item">
-                <span
-                  className="serif font-light flex-shrink-0"
-                  style={{ fontSize: "16px", color: "rgba(107,86,66,0.75)", minWidth: "28px" }}
-                >
+                <span className="serif font-light flex-shrink-0" style={{ fontSize: "16px", color: T.light.eyebrow, minWidth: "28px" }}>
                   {s.num}
                 </span>
-                <span
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.12em",
-                    color: "#241c16",
-                    textTransform: "uppercase",
-                  }}
-                >
+                <span className="sans" style={{ fontSize: "12px", letterSpacing: "0.12em", color: T.light.heading, textTransform: "uppercase" }}>
                   {s.title}
                 </span>
               </a>
@@ -1081,25 +1055,12 @@ export default function PrivacyPolicyPage() {
           >
             {/* Left — sticky label */}
             <div className="md:sticky top-24">
-              <span
-                className="serif font-light"
-                style={{
-                  fontSize: "13px",
-                  color: "rgba(107,86,66,0.75)",
-                  display: "block",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <span className="serif font-light" style={{ fontSize: "13px", color: T.light.eyebrow, display: "block", marginBottom: T.space.xs }}>
                 {s.num}
               </span>
               <h3
-                className="serif leading-snug"
-                style={{
-                  fontSize: "clamp(22px, 2.5vw, 30px)",
-                  color: "#0d0906",
-                  letterSpacing: "-0.01em",
-                  fontWeight: 500,
-                }}
+                className="serif font-light leading-snug"
+                style={{ fontSize: T.h3Size, color: T.light.heading, letterSpacing: "-0.01em" }}
               >
                 {s.title}
               </h3>
@@ -1107,36 +1068,23 @@ export default function PrivacyPolicyPage() {
 
             {/* Right — content */}
             <div>
-              {/* Body paragraph */}
               {s.body && (
                 <p
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: "1.9",
-                    color: "#241c16",
-                    marginBottom: s.items || s.subsections ? "1.5rem" : "0",
-                  }}
+                  className="sans"
+                  style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, color: T.light.body, marginBottom: s.items || s.subsections ? T.space.md : "0" }}
                 >
                   {s.body}
                 </p>
               )}
 
-              {/* Flat items list */}
               {s.items && (
                 <div>
                   {s.items.map((item, i) => (
                     <div key={i} className="policy-item">
-                      <span
-                        className="serif font-light flex-shrink-0"
-                        style={{
-                          fontSize: "15px",
-                          color: "rgba(180,165,145,0.4)",
-                          marginTop: "1px",
-                        }}
-                      >
+                      <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(154,128,96,0.5)", marginTop: "1px" }}>
                         —
                       </span>
-                      <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#241c16" }}>
+                      <p className="sans" style={{ fontSize: T.bodySize, lineHeight: "1.8", color: T.light.body }}>
                         {item}
                       </p>
                     </div>
@@ -1144,7 +1092,6 @@ export default function PrivacyPolicyPage() {
                 </div>
               )}
 
-              {/* Subsections */}
               {s.subsections &&
                 s.subsections.map((sub) => (
                   <div key={sub.label}>
@@ -1152,17 +1099,10 @@ export default function PrivacyPolicyPage() {
                     <div>
                       {sub.items.map((item, i) => (
                         <div key={i} className="policy-item">
-                          <span
-                            className="serif font-light flex-shrink-0"
-                            style={{
-                              fontSize: "15px",
-                              color: "rgba(180,165,145,0.4)",
-                              marginTop: "1px",
-                            }}
-                          >
+                          <span className="serif font-light flex-shrink-0" style={{ fontSize: "15px", color: "rgba(154,128,96,0.5)", marginTop: "1px" }}>
                             —
                           </span>
-                          <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#241c16" }}>
+                          <p className="sans" style={{ fontSize: T.bodySize, lineHeight: "1.8", color: T.light.body }}>
                             {item}
                           </p>
                         </div>
@@ -1182,64 +1122,39 @@ export default function PrivacyPolicyPage() {
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
             <p
-              className="uppercase mb-3"
-              style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#6b5642" }}
+              className="sans uppercase"
+              style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
             >
               13 / Contact
             </p>
             <h3
-              className="serif leading-snug"
-              style={{
-                fontSize: "clamp(28px, 3vw, 38px)",
-                color: "#0d0906",
-                letterSpacing: "-0.01em",
-                fontWeight: 500,
-              }}
+              className="serif font-light leading-snug"
+              style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.01em" }}
             >
               Get in
               <br />
-              <em>Touch.</em>
+              Touch.
             </h3>
           </div>
           <div>
-            <p style={{ fontSize: "13px", lineHeight: "1.9", color: "#241c16", marginBottom: "1.5rem" }}>
+            <p className="sans" style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, color: T.light.body, marginBottom: T.space.lg }}>
               If you have any questions about this Privacy Policy or your
               personal data, please reach out to our customer support team.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: T.space.xs }}>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span
-                  style={{
-                    fontSize: "10px",
-                    letterSpacing: "0.22em",
-                    color: "#6b5642",
-                    textTransform: "uppercase",
-                    minWidth: "50px",
-                  }}
-                >
+                <span className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.22em", color: T.light.eyebrow, minWidth: "50px" }}>
                   Email
                 </span>
-                <a
-                  href="mailto:info@twinkleofficial.com"
-                  className="email-link"
-                  style={{ fontSize: "13px" }}
-                >
+                <a href="mailto:info@twinkleofficial.com" className="email-link sans" style={{ fontSize: T.bodySize }}>
                   info@twinkleofficial.com
                 </a>
               </div>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span
-                  style={{
-                    fontSize: "10px",
-                    letterSpacing: "0.22em",
-                    color: "#6b5642",
-                    textTransform: "uppercase",
-                    minWidth: "50px",
-                  }}
-                >
+                <span className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.22em", color: T.light.eyebrow, minWidth: "50px" }}>
                   Phone
                 </span>
-                <span style={{ fontSize: "13px", color: "#241c16" }}>
+                <span className="sans" style={{ fontSize: T.bodySize, color: T.light.body }}>
                   {settings?.contactNumber || "+92 304 3369149"}
                 </span>
               </div>
@@ -1251,40 +1166,31 @@ export default function PrivacyPolicyPage() {
       {/* ── DARK CTA ───────────────────────────────────────── */}
       <section
         className="px-8 md:px-24 py-24 text-center"
-        style={{
-          backgroundColor: "#161310",
-          borderTop: "0.5px solid rgba(180,165,145,0.12)",
-        }}
+        style={{ backgroundColor: "#1a1410", borderTop: "0.5px solid rgba(180,165,145,0.12)" }}
       >
         <p
-          className="uppercase mb-6"
-          style={{ fontSize: "10px", letterSpacing: "0.32em", color: "#b4a58f" }}
+          className="sans uppercase"
+          style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.dark.eyebrow, marginBottom: T.space.md }}
         >
           Get in Touch
         </p>
         <h2
-          className="serif leading-tight mb-8 mx-auto"
-          style={{
-            fontSize: "clamp(40px, 8vw, 80px)",
-            color: "#f0e8de",
-            letterSpacing: "-0.025em",
-            maxWidth: "580px",
-            fontWeight: 500,
-          }}
+          className="serif font-light leading-tight mx-auto"
+          style={{ fontSize: "clamp(40px, 8vw, 80px)", color: T.dark.heading, letterSpacing: "-0.025em", maxWidth: "580px", marginBottom: T.space.md }}
         >
           Your privacy
           <br />
-          <em>matters to us.</em>
+          matters to us.
         </h2>
         <p
-          className="mx-auto mb-14"
-          style={{ fontSize: "13px", lineHeight: "1.9", color: "#7a6a5e", maxWidth: "360px" }}
+          className="sans mx-auto"
+          style={{ fontSize: T.bodySize, lineHeight: T.bodyLineHeight, color: T.dark.body, maxWidth: "360px", marginBottom: "3.5rem" }}
         >
-          Have questions about this policy or how we handle your data? Reach us
-          directly at
+          Have questions about this policy or how we handle your data? Reach us directly at
         </p>
         <div className="flex items-center justify-center gap-12 flex-wrap pb-10">
           <p
+            className="sans"
             style={{
               padding: "16px 52px",
               backgroundColor: "#2c2520",
@@ -1297,7 +1203,7 @@ export default function PrivacyPolicyPage() {
           >
             info@twinkleofficial.com
           </p>
-          <a href="/collection" className="cta-link">
+          <a href="/collection" className="cta-link sans">
             BACK TO SHOP
           </a>
         </div>
@@ -1306,11 +1212,7 @@ export default function PrivacyPolicyPage() {
 
       {/* ── SIDEBARS & MODALS ──────────────────────────────── */}
       {cartOpen && (
-        <CartSidebar
-          cart={cart}
-          onClose={() => setCartOpen(false)}
-          onRemove={(idx) => dispatch(removeFromCart(idx))}
-        />
+        <CartSidebar cart={cart} onClose={() => setCartOpen(false)} onRemove={(idx) => dispatch(removeFromCart(idx))} />
       )}
 
       {wishlistOpen && (
