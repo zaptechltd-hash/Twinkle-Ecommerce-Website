@@ -225,11 +225,11 @@ async function downloadDeliveryPDF(order: Order) {
     doc.setTextColor(95, 94, 90);
     text("Subtotal", totalsX, y);
     text(
-      `PKR ${(order.totalAmount + (order.discountAmount ?? 0)).toLocaleString()}`,
-      W - margin - 1,
-      y,
-      { align: "right" },
-    );
+  `PKR ${(order.totalAmount + (order.discountAmount ?? 0) - order.shippingCost).toLocaleString()}`,
+  W - margin - 1,
+  y,
+  { align: "right" },
+);
     y += lineH;
 
     doc.setTextColor(59, 109, 17); // green
@@ -592,12 +592,12 @@ function OrderModal({
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#e8e5df]">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] text-[#5f5e5a]">Subtotal</p>
-                <p className="text-[12px] text-[#1a1916]">
-                  PKR{" "}
-                  {(
-                    order.totalAmount + (order.discountAmount ?? 0)
-                  ).toLocaleString()}
-                </p>
+               <p className="text-[12px] text-[#1a1916]">
+  PKR{" "}
+  {(
+    order.totalAmount + (order.discountAmount ?? 0) - order.shippingCost
+  ).toLocaleString()}
+</p>
               </div>
               {(order.discountAmount ?? 0) > 0 && (
                 <div className="flex items-center justify-between">
@@ -769,8 +769,8 @@ function Toast({ message }: { message: string }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function OrderManagement() {
-  const { getOrders, updateOrder, bookShipment, cancelShipment } =
-    useOrderService();
+const { getOrders, updateOrder, bookShipment, cancelShipment, bulkMarkShipped } =
+  useOrderService();
 
   // ── Server state ──
   const [orders, setOrders] = useState<Order[]>([]);
@@ -807,6 +807,8 @@ export default function OrderManagement() {
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
+
+
   const fetchOrders = useCallback(async (params: OrderQueryParams) => {
     setFetching(true);
     try {
@@ -819,6 +821,8 @@ export default function OrderManagement() {
       setFetching(false);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  
 
   useEffect(() => {
     const params: OrderQueryParams = {
@@ -932,29 +936,33 @@ export default function OrderManagement() {
 
   // ── Bulk status update ─────────────────────────────────────────────────────
 
-  const handleBulkAction = async (newStatus: string) => {
-    const ids = [...selected];
-    setUpdating(true);
-    try {
+    const handleBulkAction = async (newStatus: string) => {
+  const ids = [...selected];
+  setUpdating(true);
+  try {
+    if (newStatus === "Shipped") {
+      await bulkMarkShipped(ids);
+    } else {
       await Promise.all(
         ids.map((id) => updateOrder(id, { status: newStatus as OrderStatus })),
       );
-      await fetchOrders({
-        page,
-        limit: PER_PAGE,
-        sort,
-        ...(activeStatus !== "All" && { status: activeStatus as OrderStatus }),
-        ...(payFilter !== "All" && { paymentStatus: payFilter as any }),
-        ...(search && { search }),
-      });
-      showToast(
-        `${ids.length} order${ids.length !== 1 ? "s" : ""} marked as ${newStatus}`,
-      );
-      setSelected(new Set());
-    } finally {
-      setUpdating(false);
     }
-  };
+    await fetchOrders({
+      page,
+      limit: PER_PAGE,
+      sort,
+      ...(activeStatus !== "All" && { status: activeStatus as OrderStatus }),
+      ...(payFilter !== "All" && { paymentStatus: payFilter as any }),
+      ...(search && { search }),
+    });
+    showToast(
+      `${ids.length} order${ids.length !== 1 ? "s" : ""} marked as ${newStatus}`,
+    );
+    setSelected(new Set());
+  } finally {
+    setUpdating(false);
+  }
+};
 
   const toggleRow = (id: number) =>
     setSelected((p) => {

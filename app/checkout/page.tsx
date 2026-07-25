@@ -496,7 +496,7 @@ export default function CheckoutPage() {
                 </div>
                 <input
                   type="tel"
-                  placeholder="0332 3520504"
+                  placeholder="332 3512345"
                   value={form.phone}
                   onChange={set("phone")}
                   className={`flex-1 border rounded-r-sm px-3 py-[11px] text-[13px] text-stone-700 outline-none focus:ring-2 transition-colors placeholder:text-stone-300 ${
@@ -626,10 +626,10 @@ export default function CheckoutPage() {
           {/* Notes */}
           <div className="flex flex-col gap-2 px-1">
             {[
-              "Note: You may receive multiple packages for one order (local orders only)",
-              "For Nationwide order delivery will take 2–5 working days",
-              "For International orders, delivery will take 7–10 working days via DHL courier only",
-              "For International orders, VAT and Duties will be paid by the customer",
+              "Note: For Nationwide order delivery will take 2–5 working days",
+              // "",
+              // "For International orders, delivery will take 7–10 working days via DHL courier only",
+              // "For International orders, VAT and Duties will be paid by the customer",
             ].map((note) => (
               <p
                 key={note}

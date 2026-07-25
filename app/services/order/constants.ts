@@ -6,4 +6,5 @@ export const OrderEndpointsV1 = {
   analytics: "/orders/analytics",
   bookShipment:   (id: number | string) => `/orders/${id}/book-shipment`,
   cancelShipment: (id: number | string) => `/orders/${id}/cancel-shipment`,
+  bulkMarkShipped: "/orders/bulk-mark-shipped",   // ← add
 } as const;

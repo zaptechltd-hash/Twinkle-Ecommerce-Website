@@ -261,17 +261,25 @@ export default function ProductModal({
         <ImageGallery images={images} productName={product.name} />
 
         <div className="w-full md:w-1/2 p-8 flex flex-col gap-5">
-          <button
+          {/* <button
             onClick={onClose}
             className="self-end text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
           >
             Close
-          </button>
+          </button> */}
 
           <div>
+             <div className="flex justify-between">
             <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">
               TwinkleOfficial
             </p>
+
+             <button
+            onClick={onClose}
+            className="self-end text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
+          >
+            Close
+          </button></div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-light tracking-[0.15em] text-stone-800 uppercase">
                 {product.name}
@@ -282,6 +290,7 @@ export default function ProductModal({
                 </span>
               )}
             </div>
+            
             <div className="flex items-center gap-2 mt-1">
               <p className="text-[13px] text-stone-500 tracking-wide">
                 PKR {effectivePrice.toLocaleString()}

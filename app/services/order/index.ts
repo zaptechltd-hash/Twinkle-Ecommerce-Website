@@ -72,6 +72,15 @@ const useOrderService = () => {
     });
   };
 
+  /** Mark multiple orders as Shipped and trigger dispatch emails */
+const bulkMarkShipped = async (ids: number[]) => {
+  return await callApi<Order[]>({
+    method: "post",
+    url: OrderEndpointsV1.bulkMarkShipped,
+    data: { ids },
+  });
+};
+
   /** Cancel an existing shipment for an order */
   const cancelShipment = async (id: number) => {
     return await callApi<Order>({
@@ -105,6 +114,7 @@ return {
   bookShipment,
   cancelShipment,
   getCustomers,
+  bulkMarkShipped,
   getAnalytics,   
   loading,
   error,
