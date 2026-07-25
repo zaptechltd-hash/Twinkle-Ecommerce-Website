@@ -217,21 +217,34 @@ async function downloadDeliveryPDF(order: Order) {
   y += 5;
 
   // ── Totals ──
+ // ── Totals ──
   const totalsX = W - margin - 60;
+  const hasDiscount = (order.discountAmount ?? 0) > 0;
 
-  if ((order.discountAmount ?? 0) > 0) {
-    doc.setFontSize(8.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(95, 94, 90);
-    text("Subtotal", totalsX, y);
-    text(
-  `PKR ${(order.totalAmount + (order.discountAmount ?? 0) - order.shippingCost).toLocaleString()}`,
-  W - margin - 1,
-  y,
-  { align: "right" },
-);
-    y += lineH;
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(95, 94, 90);
 
+  // Subtotal (always)
+  text("Subtotal", totalsX, y);
+  text(
+    `PKR ${(order.totalAmount + (order.discountAmount ?? 0) - order.shippingCost).toLocaleString()}`,
+    W - margin - 1,
+    y,
+    { align: "right" },
+  );
+  y += lineH;
+
+  // Delivery charges (always)
+  doc.setTextColor(95, 94, 90);
+  text("Delivery Charges", totalsX, y);
+  text(`PKR ${order.shippingCost.toLocaleString()}`, W - margin - 1, y, {
+    align: "right",
+  });
+  y += lineH;
+
+  // Discount (only if present)
+  if (hasDiscount) {
     doc.setTextColor(59, 109, 17); // green
     text(
       `Discount${order.discountCode ? ` (${order.discountCode})` : ""}`,
@@ -589,7 +602,7 @@ function OrderModal({
                 <OrderItemRow key={item.id} item={item} />
               ))}
             </div>
-            <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#e8e5df]">
+          <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#e8e5df]">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] text-[#5f5e5a]">Subtotal</p>
                <p className="text-[12px] text-[#1a1916]">
@@ -598,6 +611,12 @@ function OrderModal({
     order.totalAmount + (order.discountAmount ?? 0) - order.shippingCost
   ).toLocaleString()}
 </p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] text-[#5f5e5a]">Delivery Charges</p>
+                <p className="text-[12px] text-[#1a1916]">
+                  PKR {order.shippingCost.toLocaleString()}
+                </p>
               </div>
               {(order.discountAmount ?? 0) > 0 && (
                 <div className="flex items-center justify-between">

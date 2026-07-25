@@ -235,6 +235,31 @@ export default function SizeChartPage() {
 
       {/* ── SIZE CHART IMAGES ──────────────────────────────── */}
       <section className="px-8 md:px-24 py-20 max-w-7xl mx-auto">
+      
+
+        {/* <div className="grid grid-cols-1 ">
+       
+          <div>
+            <div className="mb-5 flex items-end justify-between">
+              <p className="serif" style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em" }}>
+                Shirt and Trouser
+              </p>
+              <p className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.2em", color: T.light.eyebrow, paddingBottom: "3px" }}>
+                inches
+              </p>
+            </div>
+            <img
+              src="/size.png"
+              alt="Top size chart — S, M, L measurements for length, width and sleeve"
+              className="chart-image"
+            />
+          </div>
+
+        </div> */}
+        <div className="grid grid-cols-1">
+  {/* Top chart */}
+  <div>
+    <div className="mb-5  flex items-end justify-between" style={{ width: "50%", display: "block", margin: "0 auto" }}>
         <p
           className="sans uppercase"
           style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
@@ -243,46 +268,22 @@ export default function SizeChartPage() {
         </p>
         <h2
           className="serif font-light leading-snug"
-          style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em", marginBottom: "3.5rem" }}
+          style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em" }}
         >
           Size Charts.
         </h2>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Top chart */}
-          <div>
-            <div className="mb-5 flex items-end justify-between">
-              <p className="serif" style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em" }}>
-                Top / Shirt
-              </p>
-              <p className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.2em", color: T.light.eyebrow, paddingBottom: "3px" }}>
-                inches
-              </p>
-            </div>
-            <img
-              src="/TopSizeChart.png"
-              alt="Top size chart — S, M, L measurements for length, width and sleeve"
-              className="chart-image"
-            />
-          </div>
-
-          {/* Bottom chart */}
-          <div>
-            <div className="mb-5 flex items-end justify-between">
-              <p className="serif" style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em" }}>
-                Bottom / Trouser
-              </p>
-              <p className="sans uppercase" style={{ fontSize: "10px", letterSpacing: "0.2em", color: T.light.eyebrow, paddingBottom: "3px" }}>
-                inches
-              </p>
-            </div>
-            <img
-              src="/BottomSizeChart.png"
-              alt="Bottom size chart — S, M, L measurements for length, hip and crotch"
-              className="chart-image"
-            />
-          </div>
-        </div>
+      <p className="serif" style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em" ,  marginBottom: T.space.md}}>
+        Shirt and Trouser
+      </p>
+    </div>
+    <img
+      src="/size.png"
+      alt="Top size chart — S, M, L measurements for length, width and sleeve"
+      className="chart-image"
+      style={{ width: "50%", display: "block", margin: "0 auto" }}
+    />
+  </div>
+</div>
       </section>
 
       <div className="section-divider" />

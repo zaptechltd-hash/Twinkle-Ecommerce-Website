@@ -151,7 +151,7 @@ export default function Navbar({
             aria-label="Account"
           >
             {user ? (
-              <div className="w-10 h-10 rounded-full bg-stone-900 text-white text-[10px] flex items-center justify-center font-medium tracking-wide">
+              <div className="w-8 h-8 rounded-full bg-stone-900 text-white text-[10px] flex items-center justify-center font-medium tracking-wide">
                 {userInitials}
               </div>
             ) : (
