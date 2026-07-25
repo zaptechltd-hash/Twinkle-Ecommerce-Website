@@ -166,7 +166,11 @@ function EditorialStrip() {
   .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
   
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
-  .animate-marquee { animation: marquee 40s linear infinite; }
+.animate-marquee { animation: marquee 40s linear infinite; }
+
+@media (max-width: 768px) {
+  .animate-marquee { animation-duration: 18s; }
+}
 `}</style>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
 
@@ -333,10 +337,13 @@ const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
   return (
     <div className="min-h-screen bg-white">
-      <style>{`
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
-        .animate-marquee { animation: marquee 40s linear infinite; }
-      `}</style>
+    <style>{`
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
+  .animate-marquee { animation: marquee 40s linear infinite; }
+  @media (max-width: 768px) {
+    .animate-marquee { animation-duration: 12s; }
+  }
+`}</style>
 
       <Navbar
         cartCount={cartCount}

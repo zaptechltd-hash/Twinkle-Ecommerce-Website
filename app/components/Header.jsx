@@ -60,7 +60,7 @@ export default function Navbar({
 
   return (
     <>
-      <header className="w-full px-6 md:px-12 py-5 flex items-center justify-between bg-white z-50 sticky top-0 border-b border-stone-100">
+   <header className="relative w-full px-6 md:px-12 py-6 flex items-center justify-between bg-white z-50 sticky top-0 border-b border-stone-100">
         {/* Left */}
         <div className="flex items-center gap-8">
           <button
@@ -83,15 +83,17 @@ export default function Navbar({
         </div>
 
         {/* Logo */}
-        <Image
-          src="/logo.png"
-          alt="TwinkleOfficial"
-          width={80}
-          height={40}
-          style={{ width: "80px", height: "auto" }}
-          loading="eager"
-          priority
-        />
+<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+  <Image
+    src="/logo.png"
+    alt="TwinkleOfficial"
+    width={80}
+    height={40}
+    style={{ width: "80px", height: "auto" }}
+    loading="eager"
+    priority
+  />
+</div>
 
         {/* Right icons */}
         <div className="flex items-center gap-5">
@@ -149,13 +151,13 @@ export default function Navbar({
             aria-label="Account"
           >
             {user ? (
-              <div className="w-7 h-7 rounded-full bg-stone-900 text-white text-[10px] flex items-center justify-center font-medium tracking-wide">
+              <div className="w-10 h-10 rounded-full bg-stone-900 text-white text-[10px] flex items-center justify-center font-medium tracking-wide">
                 {userInitials}
               </div>
             ) : (
               <svg
-                width="18"
-                height="18"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
