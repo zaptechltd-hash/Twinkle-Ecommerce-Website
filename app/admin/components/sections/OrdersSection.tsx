@@ -868,20 +868,51 @@ const { getOrders, updateOrder, bookShipment, cancelShipment, bulkMarkShipped } 
 
   // ── Single order status update ─────────────────────────────────────────────
 
+  // const handleStatusChange = async (id: number, status: OrderStatus) => {
+  //   setUpdating(true);
+  //   try {
+  //     const updated = await updateOrder(id, { status });
+  //     if (updated) {
+  //       setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
+  //       if (modalOrder?.id === id) setModalOrder(updated);
+  //       showToast(`Order status → ${status}`);
+  //       closeModal();
+  //     }
+  //   } finally {
+  //     setUpdating(false);
+  //   }
+  // };
+
   const handleStatusChange = async (id: number, status: OrderStatus) => {
-    setUpdating(true);
-    try {
-      const updated = await updateOrder(id, { status });
-      if (updated) {
-        setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
-        if (modalOrder?.id === id) setModalOrder(updated);
-        showToast(`Order status → ${status}`);
-        closeModal();
-      }
-    } finally {
-      setUpdating(false);
+  setUpdating(true);
+  try {
+    if (status === "Shipped") {
+      // Use the same bulk endpoint (sends the shipped email), just with a single id
+      await bulkMarkShipped([id]);
+      await fetchOrders({
+        page,
+        limit: PER_PAGE,
+        sort,
+        ...(activeStatus !== "All" && { status: activeStatus as OrderStatus }),
+        ...(payFilter !== "All" && { paymentStatus: payFilter as any }),
+        ...(search && { search }),
+      });
+      showToast(`Order status → ${status}`);
+      closeModal();
+      return;
     }
-  };
+
+    const updated = await updateOrder(id, { status });
+    if (updated) {
+      setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
+      if (modalOrder?.id === id) setModalOrder(updated);
+      showToast(`Order status → ${status}`);
+      closeModal();
+    }
+  } finally {
+    setUpdating(false);
+  }
+};
 
   const handlePaymentStatusChange = async (
     id: number,

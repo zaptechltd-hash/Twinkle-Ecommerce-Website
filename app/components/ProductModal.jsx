@@ -255,7 +255,7 @@ export default function ProductModal({
       onClick={onClose}
     >
       <div
-        className="bg-white w-full md:max-w-3xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
+        className="bg-white w-full md:max-w-4xl md:rounded-none max-h-[92vh] overflow-y-auto flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
         <ImageGallery images={images} productName={product.name} />
@@ -269,7 +269,7 @@ export default function ProductModal({
           </button> */}
 
           <div>
-             <div className="flex justify-between">
+             {/* <div className="flex justify-between">
             <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-1">
               TwinkleOfficial
             </p>
@@ -279,7 +279,11 @@ export default function ProductModal({
             className="self-end text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
           >
             Close
-          </button></div>
+          </button>
+          
+          </div> */}
+
+          <div className="flex justify-between">
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-light tracking-[0.15em] text-stone-800 uppercase">
                 {product.name}
@@ -289,6 +293,13 @@ export default function ProductModal({
                   {product.tag}
                 </span>
               )}
+            </div>
+              <button
+            onClick={onClose}
+            className="self-end text-[10px] tracking-[0.2em] text-stone-400 uppercase hover:text-stone-700 transition-colors"
+          >
+            Close
+          </button>
             </div>
             
             <div className="flex items-center gap-2 mt-1">
