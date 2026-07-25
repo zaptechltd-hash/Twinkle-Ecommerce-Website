@@ -256,31 +256,32 @@ export default function SizeChartPage() {
           </div>
 
         </div> */}
-        <div className="grid grid-cols-1">
-  {/* Top chart */}
+    <div className="grid grid-cols-1">
   <div>
-    <div className="mb-5  flex items-end justify-between" style={{ width: "50%", display: "block", margin: "0 auto" }}>
-        <p
-          className="sans uppercase"
-          style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
-        >
-          Measurements
-        </p>
-        <h2
-          className="serif font-light leading-snug"
-          style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em" }}
-        >
-          Size Charts.
-        </h2>
-      <p className="serif" style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em" ,  marginBottom: T.space.md}}>
+    <div className="mb-5 w-full sm:w-4/5 md:w-1/2 max-w-md mx-auto text-center sm:text-left">
+      <p
+        className="sans uppercase"
+        style={{ fontSize: T.eyebrowSize, letterSpacing: T.eyebrowTracking, color: T.light.eyebrow, marginBottom: T.space.md }}
+      >
+        Measurements
+      </p>
+      <h2
+        className="serif font-light leading-snug"
+        style={{ fontSize: T.h2Size, color: T.light.heading, letterSpacing: "-0.015em" }}
+      >
+        Size Charts.
+      </h2>
+      <p
+        className="serif"
+        style={{ fontSize: "22px", color: T.light.heading, fontWeight: 500, letterSpacing: "-0.01em", marginBottom: T.space.md }}
+      >
         Shirt and Trouser
       </p>
     </div>
     <img
       src="/size.png"
       alt="Top size chart — S, M, L measurements for length, width and sleeve"
-      className="chart-image"
-      style={{ width: "50%", display: "block", margin: "0 auto" }}
+      className="chart-image w-full sm:w-4/5 md:w-1/3 max-w-md mx-auto block"
     />
   </div>
 </div>
