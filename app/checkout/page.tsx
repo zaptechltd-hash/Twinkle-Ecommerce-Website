@@ -627,7 +627,6 @@ export default function CheckoutPage() {
           <div className="flex flex-col gap-2 px-1">
             {[
               "Note: For Nationwide order delivery will take 2–5 working days",
-              // "",
               // "For International orders, delivery will take 7–10 working days via DHL courier only",
               // "For International orders, VAT and Duties will be paid by the customer",
             ].map((note) => (
