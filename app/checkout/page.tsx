@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { clearCart } from "../store/index";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useOrderService from "../services/order/index";
@@ -13,7 +12,7 @@ import type {
 } from "../services/order/types";
 import useShippingService from "../services/shipping/index";
 import type { ShippingCity } from "../services/shipping/types";
-
+import { clearCart, updateQty } from "../store/index";
 
 function CheckoutHeader() {
   return (
@@ -226,6 +225,13 @@ export default function CheckoutPage() {
     setCouponSuccess("");
     setCouponError("");
   }
+};
+
+const handleQtyChange = (index: number, delta: number) => {
+  const item = cart[index];
+  const newQty = item.qty + delta;
+  if (newQty < 1) return;
+  dispatch(updateQty({ index, qty: newQty }));
 };
 
   // ── Totals ────────────────────────────────────────────────────────────────
@@ -695,14 +701,36 @@ export default function CheckoutPage() {
                         {item.qty}
                       </span>
                     </div>
-                    <div className="flex flex-col justify-center flex-1 gap-0.5">
-                      <p className="text-[11px] tracking-[0.12em] text-stone-800 uppercase leading-snug">
-                        {item.name}
-                      </p>
-                      <p className="text-[10px] text-stone-400">
-                        {item.selectedSize} · Qty: {item.qty}
-                      </p>
-                    </div>
+                 <div className="flex flex-col justify-center flex-1 gap-1.5">
+  <p className="text-[11px] tracking-[0.12em] text-stone-800 uppercase leading-snug">
+    {item.name}
+  </p>
+  <p className="text-[10px] text-stone-400">{item.selectedSize}</p>
+
+  <div className="flex items-center border border-stone-200 rounded-sm w-fit mt-0.5">
+    <button
+      onClick={() => handleQtyChange(i, -1)}
+      disabled={item.qty <= 1}
+      className="w-6 h-6 flex items-center justify-center text-stone-500 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+    >
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
+    <span className="w-6 text-center text-[11px] text-stone-700 tabular-nums">
+      {item.qty}
+    </span>
+    <button
+      onClick={() => handleQtyChange(i, 1)}
+      className="w-6 h-6 flex items-center justify-center text-stone-500 hover:bg-stone-50 transition-colors"
+    >
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
+  </div>
+</div>
                     <div className="flex flex-col items-end justify-center gap-0.5 flex-shrink-0">
                       <p className="text-[12px] text-stone-700 tracking-wide">
                         PKR {(effectivePrice * item.qty).toLocaleString()}
