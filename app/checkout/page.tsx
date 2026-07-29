@@ -863,9 +863,9 @@ const handleQtyChange = (index: number, delta: number) => {
                     <p className="text-[12px] tracking-[0.2em] text-stone-800 uppercase font-medium">
                       Total
                     </p>
-                    <p className="text-[10px] text-stone-400 mt-0.5">
+                    {/* <p className="text-[10px] text-stone-400 mt-0.5">
                       Incl. PKR {tax.toLocaleString()} in taxes
-                    </p>
+                    </p> */}
                   </div>
                   <p className="text-[16px] text-stone-900 tracking-wide">
                     PKR {total.toLocaleString()}
