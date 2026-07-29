@@ -50,6 +50,12 @@ const cartSlice = createSlice({
     removeFromCart(state, action: PayloadAction<number>) {
       state.splice(action.payload, 1);
     },
+    updateQty(state, action: PayloadAction<{ index: number; qty: number }>) {
+      const item = state[action.payload.index];
+      if (item) {
+        item.qty = Math.max(1, action.payload.qty);
+      }
+    },
     clearCart() {
       return [];
     },
@@ -128,7 +134,7 @@ export const store = configureStore({
 export const persistor = persistStore(store);
 
 // ── Exports ────────────────────────────────────────────
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateQty, clearCart } = cartSlice.actions;
 export const { toggleWishlist, removeFromWishlist }   = wishlistSlice.actions;
 export const { login, logout }                        = authSlice.actions;
 export const { setSettings }                          = settingsSlice.actions; // ← added
