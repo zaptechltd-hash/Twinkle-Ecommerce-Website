@@ -23,6 +23,7 @@ import WishlistSidebar from "./components/WishlistSidebar";
 import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from "./utils/token";
 import useSettingsService from "./services/settings/index";
 import { setSettings } from "./store/index";
+import FAQ from "./components/FAQ";
 
 function Hero() {
   const currentYear = new Date().getFullYear();
@@ -365,6 +366,7 @@ const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
       />
       <CollectionBanner />
       <EditorialStrip />
+      <FAQ />     
       <Footer />
 
       {activeProduct && (
