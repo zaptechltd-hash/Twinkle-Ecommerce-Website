@@ -24,6 +24,7 @@ import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from ".
 import useSettingsService from "./services/settings/index";
 import { setSettings } from "./store/index";
 import FAQ from "./components/FAQ";
+import { useRouter } from "next/navigation";
 
 function Hero() {
   const currentYear = new Date().getFullYear();
@@ -278,6 +279,7 @@ export default function TwinklePage() {
   const { getSettings } = useSettingsService(); 
   const { getProducts } = useProductService();
   const [products, setProducts] = useState([]);
+  const router = useRouter();
 
 const handleLogout = async () => {
   const refreshToken = getRefreshToken();
@@ -360,7 +362,7 @@ const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
       <Marquee />
       <ProductGrid
         products={products}
-        onProductClick={setActiveProduct}
+      onProductClick={(p) => router.push(`/product/${p.id}`)}
         wishlist={wishlist}
         onWishlistToggle={(product) => dispatch(toggleWishlist(product))}
       />

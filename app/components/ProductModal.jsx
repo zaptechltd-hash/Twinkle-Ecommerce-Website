@@ -17,7 +17,7 @@ function ChevronRight() {
   );
 }
 
-function ImageGallery({ images, productName }) {
+export function ImageGallery({ images, productName }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(null);
   const [animating, setAnimating] = useState(false);
