@@ -26,6 +26,7 @@ import {
   getRefreshToken,
   clearTokens,
 } from "../utils/token";
+import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 12;
 
@@ -255,7 +256,7 @@ function ActiveFilters({ filters, onChange, onClear, priceRanges }) {
 
 export default function CollectionPage() {
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   const cart = useAppSelector((s) => s.cart);
   const wishlist = useAppSelector((s) => s.wishlist);
   const user = useAppSelector((s) => s.auth);
@@ -515,7 +516,7 @@ export default function CollectionPage() {
                   product={product}
                   wishlisted={wishlist.some((w) => w.id === product.id)}
                   onWishlistToggle={(p) => dispatch(toggleWishlist(p))}
-                  onClick={setActiveProduct}
+                onClick={(p) => router.push(`/product/${p.id}`)}
                 />
               ))}
             </div>

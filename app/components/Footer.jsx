@@ -6,13 +6,16 @@ export default function Footer() {
 
         {/* Brand */}
         <div className="md:w-[40%] shrink-0 flex flex-col ">
-          <div>
+          <div className="mb-8">
             <p className="text-2xl font-light tracking-[0.2em] text-stone-100 uppercase mb-4">
               TwinkleOfficial
             </p>
-            <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-8">
+            <p className="text-[12px] text-stone-500 leading-relaxed max-w-[300px] mb-2">
               Twinkle is crafted to bring you joy in ordinary momemts.
             </p>
+             <address className="not-italic text-[12px] text-stone-500 leading-relaxed max-w-[300px] tracking-wide">
+   Taj Complex, Saddar, Karachi
+  </address>
           </div>
 
           <div className="flex flex-wrap gap-2">
